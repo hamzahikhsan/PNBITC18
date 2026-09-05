@@ -1,7 +1,7 @@
 # Rencana Regenerasi Prototype Awetin (Web App Berbasis Code)
 
 **Disusun:** 6 September 2026 (hasil sesi brainstorming — `superpowers:brainstorming`)
-**Status:** Rencana disetujui, siap dieksekusi per fase di sesi-sesi berikutnya. Belum ada kode yang ditulis.
+**Status:** Fase 1 selesai. **Link live:** https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172
 **Konteks:** Awetin butuh prototype fungsional interaktif untuk validasi flow & demo internal — **bukan pengganti submission Figma** (juklak lomba tetap wajib Figma, frame iPhone 16 393×852px). Prototype ini dipakai untuk memastikan flow benar-benar "tanpa jalan buntu" sebelum dipindah ke Figma, dan sebagai referensi visual yang lebih hidup daripada static mockup saat presentasi internal tim.
 
 ---
@@ -47,12 +47,13 @@ Fungsinya identik — cuma ganti host, bukan ganti library atau versi.
 
 Setiap fase = satu putaran kerja mandiri dengan checkpoint publish, supaya progres tidak numpuk jadi satu perubahan besar yang susah divalidasi.
 
-### Fase 1 — Fondasi & Migrasi Artifact
+### Fase 1 — Fondasi & Migrasi Artifact ✅ SELESAI
 **Tujuan:** Kode Saif jalan normal di lingkungan Artifact, dengan token baru terpasang, tanpa mengubah perilaku layar apa pun dulu.
-- Ganti sumber CDN (lihat Bagian 2)
-- Ganti seluruh blok `tailwind.config` ke token `DESIGN-awetin.md` (termasuk 4 warna kategori baru & radius/elevation yang sudah diformalkan)
-- Bangun scaffolding dark mode (CSS variable `:root` + `prefers-color-scheme` + `data-theme` override, mengikuti 3-state tema yang dipakai Artifact) — ini benar-benar baru, kode Saif tidak punya dark mode sama sekali
-- **Checkpoint:** publish, verifikasi tampilan masih identik secara fungsional dengan punya Saif (belum ada peningkatan visual/flow — murni ganti fondasi)
+- [x] Fork ke `Prototype/awetin-prototype.html`, sumber CDN diganti (React/ReactDOM 18.3.1, Babel Standalone 7.29.8, semua dipin & diverifikasi hidup di cdnjs) — lihat Bagian 2
+- [x] Tailwind config ditambah (bukan diganti) — token lama Saif dipertahankan 100%, 4 warna kategori & token dark mode ditambahkan sebagai grup baru (`category.*`, `dark.*`)
+- [x] Scaffolding dark mode: CSS variable `--awetin-bg-frame` di `:root`, mengikuti pola 3-state resmi Artifact (`prefers-color-scheme` digguard `:not([data-theme="light"])` + `[data-theme="dark"]`). **Catatan cakupan:** ini baru backdrop luar frame HP yang mengikuti tema viewer Artifact — dark mode ISI aplikasi (semua layar di dalam `#root`) belum disentuh, itu tugas Fase 4 dengan mekanisme toggle in-app sendiri (bukan ikut tema viewer), sesuai PRD ("mode gelap sebagai pilihan" di dalam app, bukan sinkron ke browser)
+- [x] Struktur file disesuaikan ke syarat Artifact (tanpa tag `<!DOCTYPE>/<html>/<head>/<body>`)
+- **Checkpoint:** [dipublikasikan](https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172) — tampilan & perilaku semua layar identik dengan punya Saif, murni ganti fondasi
 
 ### Fase 2 — Navigasi & Sistem Kategori
 **Tujuan:** Struktur navigasi 100% sesuai keputusan final PRD, kategori jasa punya identitas visual konsisten.
