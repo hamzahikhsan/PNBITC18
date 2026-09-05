@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Awetin — Onboarding</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Inter"', '-apple-system', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', '"Roboto Mono"', 'monospace'],
+                    },
+                    colors: {
+                        primary: {
+                            default: '#00AA13', hover: '#049F16', pressed: '#038A10',
+                            disabled: '#A9DCAE', container: '#E3F7E4',
+                            'on-primary': '#FFFFFF', 'on-container': '#046B0C',
+                        },
+                        secondary: { default: '#F6A609', container: '#FFF1D6', 'on-secondary': '#1A1A1A' },
+                        background: '#FFFFFF',
+                        surface: '#FFFFFF',
+                        'surface-variant': '#F1F3F1',
+                        text: { primary: '#14181A', secondary: '#5C6668', tertiary: '#8D9699', disabled: '#B7BEBC' },
+                        border: '#DDE2E1', divider: '#EBEEED',
+                        disabled: { background: '#EEF0EF', foreground: '#B7BEBC' },
+                        success: { default: '#1E9E4A', container: '#E4F7EA' },
+                        warning: { default: '#B8790A', container: '#FFF1D6' },
+                        error: { default: '#D42F2F', container: '#FCE7E7' },
+                        information: { default: '#2F72ED', container: '#E8F0FE' },
+                        category: { elektronik: '#00AA13', pakaian: '#EC6F8E', sepatu: '#F2994A', las: '#5C6BC0' },
+                    },
+                    borderRadius: { xs: '4px', sm: '8px', md: '12px', lg: '16px', xl: '24px' },
+                    boxShadow: {
+                        'elevation-1': '0 1px 4px rgba(20,24,22,0.06)',
+                        'elevation-2': '0 2px 8px rgba(20,24,22,0.08)',
+                        'elevation-3': '0 4px 16px rgba(20,24,22,0.10)',
+                        'elevation-4': '0 8px 24px rgba(20,24,22,0.12)',
+                        'elevation-5': '0 16px 32px rgba(20,24,22,0.16)',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        fadeScaleIn: { '0%': { opacity: 0, transform: 'scale(0.95)' }, '100%': { opacity: 1, transform: 'scale(1)' } },
+                        sheetIn: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } },
+                        sheetOut: { '0%': { transform: 'translateY(0)' }, '100%': { transform: 'translateY(100%)' } },
+                        pageEnter: { '0%': { opacity: 0, transform: 'translateX(20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+                        shimmer: { '0%': { transform: 'translateX(-100%)' }, '100%': { transform: 'translateX(100%)' } },
+                        playfulPop: { '0%': { transform: 'scale(1)' }, '45%': { transform: 'scale(1.18)' }, '100%': { transform: 'scale(1)' } },
+                        pulseSoft: { '0%,100%': { transform: 'scale(1)', opacity: 1 }, '50%': { transform: 'scale(1.06)', opacity: 0.85 } },
+                        ringOut: { '0%': { transform: 'scale(0.9)', opacity: 0.5 }, '100%': { transform: 'scale(1.8)', opacity: 0 } },
+                    },
+                    transitionTimingFunction: {
+                        standard: 'cubic-bezier(0.4,0,0.2,1)',
+                        decelerate: 'cubic-bezier(0,0,0.2,1)',
+                        accelerate: 'cubic-bezier(0.4,0,1,1)',
+                        playful: 'cubic-bezier(0.34,1.3,0.64,1)',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .t-display { font-size: 34px; line-height: 40px; font-weight: 700; letter-spacing: -0.4px; }
+        .t-h1 { font-size: 28px; line-height: 36px; font-weight: 700; letter-spacing: -0.3px; }
+        .t-h2 { font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.2px; }
+        .t-h3 { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -0.1px; }
+        .t-title { font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
+        .t-body-l { font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0; }
+        .t-body-m { font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0; }
+        .t-body-s { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.1px; }
+        .t-label-l { font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: 0.1px; }
+        .t-label-m { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.2px; }
+        .t-label-s { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.2px; }
+        .t-caption { font-size: 11px; line-height: 16px; font-weight: 400; letter-spacing: 0.3px; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+
+        body, html {
+            background-color: #E5E7EB; -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif; color: #14181A;
+            margin: 0; padding: 0; height: 100%; overflow: hidden;
+        }
+        #root {
+            width: 100%; max-width: 414px; margin: 0 auto; background: #FFFFFF;
+            height: 100vh; height: 100dvh; position: relative; overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.12); display: flex; flex-direction: column;
+        }
+        .anim-fade { animation: fadeIn 200ms cubic-bezier(0,0,0.2,1) both; }
+        .anim-fade-scale { animation: fadeScaleIn 200ms cubic-bezier(0,0,0.2,1) both; }
+        .anim-sheet-in { animation: sheetIn 280ms cubic-bezier(0,0,0.2,1) both; }
+        .anim-page { animation: pageEnter 400ms cubic-bezier(0.4,0,0.2,1) both; }
+        .anim-shimmer { animation: shimmer 1.3s linear infinite; }
+        .anim-playful { animation: playfulPop 380ms cubic-bezier(0.34,1.3,0.64,1) both; }
+        .anim-pulse-soft { animation: pulseSoft 2s cubic-bezier(0.4,0,0.2,1) infinite; }
+        .anim-ring { animation: ringOut 2s cubic-bezier(0,0,0.2,1) infinite; }
+        .press-scale { transition: transform 120ms cubic-bezier(0.4,0,0.2,1); }
+        .press-scale:active { transform: scale(0.97); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+
+        /* ============================================================
+           ICONS — stroke-based, 1.5-2dp, bounding box 24x24, no brand marks
+           ============================================================ */
+        const Icon = {
+            ArrowLeft: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
+            Home: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>:<><path d="M3 9.5l9-7 9 7V20a1 1 0 0 1-1 1h-4.5v-7h-7v7H4a1 1 0 0 1-1-1z"/></>}</svg>,
+            X: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+            Check: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+            ChevronRight: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+            ChevronDown: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>,
+            Search: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+            MapPin: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+            Bell: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+            User: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>:<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}</svg>,
+            Wrench: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+            Camera: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+            Receipt: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+            Heart: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
+            Star: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+            Delete: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>,
+            MessageCircle: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
+            MessageSquare: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+            Zap: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+            Shirt: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 3l-4 3-4-3-6 3 3 5 3-2v11h8V9l3 2 3-5z"/></svg>,
+            Footprints: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 16v-2a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M13 8V6a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v2a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2z"/></svg>,
+            Flame: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7.5 7.5 0 1 1-15 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
+            Info: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+            Gift: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
+            Shield: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+            FileText: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+        };
+
+        /* ============================================================
+           PRIMITIVE COMPONENTS
+           ============================================================ */
+        const Button = ({ children, variant='primary', size='md', fullWidth=false, onClick, disabled=false, isLoading=false, className='' }) => {
+            const base = "inline-flex items-center justify-center gap-2 font-semibold press-scale disabled:active:scale-100 disabled:cursor-not-allowed";
+            const sizes = { hero: "h-[52px] px-6 t-label-l rounded-md", md: "h-12 px-6 t-label-l rounded-md", sm: "h-10 px-3 t-label-m rounded-sm" };
+            const width = fullWidth ? "w-full" : "w-fit";
+            const variants = {
+                primary: disabled ? "bg-primary-disabled text-white" : "bg-primary-default text-primary-on-primary shadow-elevation-1",
+                secondary: disabled ? "bg-transparent text-text-disabled border-[1.5px] border-border" : "bg-transparent text-primary-default border-[1.5px] border-primary-default",
+                tertiary: "bg-transparent text-primary-default h-10 px-3",
+                destructive: "bg-error-default text-white",
+                ghost: "bg-surface-variant text-text-secondary",
+            };
+            return (
+                <button onClick={onClick} disabled={disabled||isLoading} className={`${base} ${sizes[size]} ${width} ${variants[variant]} ${className}`}>
+                    {isLoading ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"/> : children}
+                </button>
+            );
+        };
+
+        const Toast = ({ message, show }) => (
+            <div className={`fixed left-1/2 -translate-x-1/2 bottom-24 z-[80] transition-all duration-200 ease-decelerate ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
+                <div className="bg-text-primary text-white t-body-m px-4 py-3 rounded-md shadow-elevation-3 whitespace-nowrap">{message}</div>
+            </div>
+        );
+
+        const TopBar = ({ onBack, title, trailing }) => (
+            <div className="h-14 flex items-center px-2 pt-safe shrink-0 relative bg-surface">
+                {onBack ? (
+                    <button onClick={onBack} className="w-12 h-12 flex items-center justify-center text-text-primary active:bg-surface-variant rounded-full press-scale"><Icon.ArrowLeft size={24}/></button>
+                ) : <div className="w-12"/>}
+                {title && <h3 className="t-title text-text-primary absolute left-1/2 -translate-x-1/2">{title}</h3>}
+                <div className="ml-auto flex items-center">{trailing}</div>
+            </div>
+        );
+
+        const Dots = ({ count, active }) => (
+            <div className="flex items-center gap-1.5">
+                {Array.from({length: count}).map((_,i) => (
+                    <div key={i} className={`h-1.5 rounded-full transition-all duration-200 ease-standard ${i===active ? 'w-5 bg-primary-default' : 'w-1.5 bg-border'}`}/>
+                ))}
+            </div>
+        );
+
+        // Custom docked numeric keypad — signature Gojek-style interaction for phone/OTP entry
+        const NumericKeypad = ({ onDigit, onBackspace }) => {
+            const rows = [
+                [{n:'1',l:''},{n:'2',l:'ABC'},{n:'3',l:'DEF'}],
+                [{n:'4',l:'GHI'},{n:'5',l:'JKL'},{n:'6',l:'MNO'}],
+                [{n:'7',l:'PQRS'},{n:'8',l:'TUV'},{n:'9',l:'WXYZ'}],
+            ];
+            const Key = ({ n, l, onClick, children }) => (
+                <button onClick={onClick} className="h-14 flex flex-col items-center justify-center active:bg-surface-variant rounded-md transition-colors duration-100">
+                    {children ? children : <><span className="t-h2 text-text-primary leading-none">{n}</span>{l && <span className="t-caption text-text-tertiary tracking-wide mt-0.5">{l}</span>}</>}
+                </button>
+            );
+            return (
+                <div className="bg-surface-variant px-6 pt-3 pb-safe grid grid-cols-3 gap-1 shrink-0 border-t border-divider">
+                    {rows.flat().map(k => <Key key={k.n} n={k.n} l={k.l} onClick={()=>onDigit(k.n)}/>)}
+                    <div/>
+                    <Key n="0" onClick={()=>onDigit('0')}/>
+                    <Key onClick={onBackspace}><Icon.Delete size={22} color="#5C6668"/></Key>
+                </div>
+            );
+        };
+
+        const BottomSheet = ({ isOpen, onClose, title, children, dismissible=true }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="absolute inset-0 z-50 flex flex-col justify-end">
+                    <div className="absolute inset-0 bg-[rgba(15,23,21,0.48)] anim-fade" onClick={dismissible ? onClose : undefined}/>
+                    <div className="bg-surface rounded-t-xl relative z-10 anim-sheet-in flex flex-col max-h-[88%] shadow-elevation-4">
+                        <div className="flex justify-center pt-2 pb-1"><div className="w-8 h-1 bg-border rounded-full"/></div>
+                        {title && (
+                            <div className="px-4 pb-3 pt-1 flex justify-between items-center">
+                                <h3 className="t-h3 text-text-primary">{title}</h3>
+                                {dismissible && <button onClick={onClose} className="w-10 h-10 -mr-2 flex items-center justify-center bg-surface-variant rounded-full text-text-secondary press-scale"><Icon.X size={18}/></button>}
+                            </div>
+                        )}
+                        <div className="overflow-y-auto no-scrollbar px-4 pb-safe">{children}</div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Simulates an OS-level permission alert — deliberately styled unlike app chrome (system dialog convention)
+        const SystemDialog = ({ isOpen, title, message, onDeny, denyLabel="Jangan Izinkan", onAllow, allowLabel="Izinkan" }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="absolute inset-0 z-[70] flex items-center justify-center px-10">
+                    <div className="absolute inset-0 bg-[rgba(15,23,21,0.32)] anim-fade"/>
+                    <div className="bg-[#F7F7F7] w-full rounded-xl relative z-10 anim-fade-scale overflow-hidden shadow-elevation-4">
+                        <div className="px-4 pt-5 pb-4 text-center">
+                            <h4 className="text-[15px] leading-5 font-semibold text-text-primary mb-1">{title}</h4>
+                            <p className="text-[13px] leading-[17px] text-text-secondary">{message}</p>
+                        </div>
+                        <div className="flex border-t border-[#D8D8D8]">
+                            <button onClick={onDeny} className="flex-1 h-11 text-[15px] text-text-secondary border-r border-[#D8D8D8] active:bg-black/5">{denyLabel}</button>
+                            <button onClick={onAllow} className="flex-1 h-11 text-[15px] font-semibold text-information-default active:bg-black/5">{allowLabel}</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const TestModeToggle = ({ mode, onChange }) => (
+            <button onClick={() => onChange(mode === 'new' ? 'existing' : 'new')}
+                className="absolute top-safe right-3 mt-2 z-40 bg-text-primary/85 text-white t-caption px-3 py-1.5 rounded-full press-scale flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-secondary-default"/>
+                Mode uji: {mode === 'new' ? 'Akun Baru' : 'Akun Lama'}
+            </button>
+        );
+
+        /* ============================================================
+           ILLUSTRATIONS — original geometric compositions (no proprietary assets)
+           ============================================================ */
+        const IllustrationRepair = () => (
+            <svg viewBox="0 0 240 200" className="w-full h-full">
+                <circle cx="120" cy="100" r="88" fill="#E3F7E4"/>
+                <circle cx="185" cy="52" r="16" fill="#FFF1D6"/>
+                <circle cx="42" cy="140" r="10" fill="#E3F7E4"/>
+                <rect x="72" y="70" width="96" height="80" rx="12" fill="#FFFFFF" stroke="#DDE2E1" strokeWidth="2"/>
+                <rect x="90" y="86" width="60" height="8" rx="4" fill="#F1F3F1"/>
+                <rect x="90" y="100" width="40" height="8" rx="4" fill="#F1F3F1"/>
+                <path d="M100 118 L140 118" stroke="#D42F2F" strokeWidth="2.5" strokeDasharray="4 4" strokeLinecap="round"/>
+                <g transform="translate(128,118) rotate(28)">
+                    <rect x="-8" y="-32" width="16" height="46" rx="4" fill="#00AA13"/>
+                    <rect x="-12" y="-40" width="24" height="14" rx="4" fill="#046B0C"/>
+                </g>
+                <circle cx="60" cy="55" r="5" fill="#F6A609"/>
+                <circle cx="188" cy="132" r="6" fill="#00AA13" opacity="0.5"/>
+            </svg>
+        );
+        const IllustrationTrust = () => (
+            <svg viewBox="0 0 240 200" className="w-full h-full">
+                <circle cx="120" cy="100" r="88" fill="#FFF1D6"/>
+                <circle cx="50" cy="60" r="12" fill="#E3F7E4"/>
+                <path d="M120 50 L162 66 V104 C162 134 144 154 120 162 C96 154 78 134 78 104 V66 Z" fill="#FFFFFF" stroke="#F6A609" strokeWidth="3"/>
+                <path d="M102 108 L115 121 L142 92" fill="none" stroke="#00AA13" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="184" cy="130" r="7" fill="#00AA13" opacity="0.6"/>
+                <circle cx="46" cy="148" r="5" fill="#F6A609"/>
+            </svg>
+        );
+        const IllustrationImpact = () => (
+            <svg viewBox="0 0 240 200" className="w-full h-full">
+                <circle cx="120" cy="100" r="88" fill="#E3F7E4"/>
+                <path d="M120 66 c-16-18-46-14-46 10 c0 26 46 54 46 54 s46-28 46-54 c0-24-30-28-46-10 z" fill="#FFFFFF" stroke="#00AA13" strokeWidth="3"/>
+                <path d="M78 56 a42 42 0 1 0 6-10" fill="none" stroke="#F6A609" strokeWidth="4" strokeLinecap="round" strokeDasharray="6 8"/>
+                <polygon points="80,50 78,62 90,58" fill="#F6A609"/>
+                <circle cx="178" cy="146" r="6" fill="#00AA13" opacity="0.5"/>
+                <circle cx="54" cy="140" r="5" fill="#F6A609"/>
+            </svg>
+        );
+        const IllustrationLocation = () => (
+            <svg viewBox="0 0 240 200" className="w-full h-full">
+                <circle cx="120" cy="108" r="80" fill="#E3F7E4"/>
+                <ellipse cx="120" cy="168" rx="52" ry="8" fill="#DDE2E1"/>
+                <path d="M60 150 C 90 120, 150 120, 180 150" stroke="#B7BEBC" strokeWidth="3" strokeDasharray="2 8" strokeLinecap="round" fill="none"/>
+                <rect x="98" y="132" width="26" height="24" fill="#FFFFFF" stroke="#DDE2E1" strokeWidth="2"/>
+                <polygon points="111,110 90,132 132,132" fill="#F6A609"/>
+                <g className="anim-ring" style={{transformOrigin:'150px 84px'}}>
+                    <circle cx="150" cy="84" r="26" fill="none" stroke="#00AA13" strokeWidth="3"/>
+                </g>
+                <path d="M150 60 c16 0 26 12 26 24 c0 18-26 40-26 40 s-26-22-26-40 c0-12 10-24 26-24z" fill="#00AA13"/>
+                <circle cx="150" cy="84" r="9" fill="#FFFFFF"/>
+            </svg>
+        );
+        const IllustrationTerms = () => (
+            <svg viewBox="0 0 200 160" className="w-full h-full">
+                <rect x="52" y="20" width="96" height="120" rx="10" fill="#FFFFFF" stroke="#DDE2E1" strokeWidth="2"/>
+                <rect x="68" y="40" width="64" height="6" rx="3" fill="#F1F3F1"/>
+                <rect x="68" y="54" width="52" height="6" rx="3" fill="#F1F3F1"/>
+                <rect x="68" y="68" width="60" height="6" rx="3" fill="#F1F3F1"/>
+                <circle cx="140" cy="112" r="26" fill="#E3F7E4"/>
+                <path d="M128 112 L138 122 L154 100" fill="none" stroke="#00AA13" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+        );
+        const IllustrationGift = () => (
+            <svg viewBox="0 0 200 160" className="w-full h-full">
+                <circle cx="100" cy="86" r="70" fill="#FFF1D6"/>
+                <rect x="66" y="76" width="68" height="52" rx="6" fill="#FFFFFF" stroke="#F6A609" strokeWidth="3"/>
+                <rect x="66" y="76" width="68" height="16" fill="#F6A609"/>
+                <rect x="95" y="76" width="10" height="52" fill="#FFF1D6"/>
+                <circle cx="100" cy="64" r="10" fill="#00AA13"/>
+                <circle cx="40" cy="50" r="4" fill="#00AA13"/>
+                <circle cx="156" cy="46" r="5" fill="#00AA13" opacity="0.5"/>
+                <circle cx="150" cy="120" r="4" fill="#F6A609"/>
+            </svg>
+        );
+
+        /* ============================================================
+           ONBOARDING SCREENS
+           ============================================================ */
+        const WelcomeScreen = ({ onEnter }) => {
+            const [slide, setSlide] = useState(0);
+            const slides = [
+                { Illus: IllustrationRepair, title: "Barang rusak?\nJangan buru-buru dibuang.", desc: "Cari tahu dulu apakah barangmu masih layak diperbaiki, cuma lewat foto." },
+                { Illus: IllustrationTrust, title: "Tukang lokal\nyang bisa dipercaya.", desc: "Lihat rating, harga, dan hasil kerja sebelumnya sebelum kamu booking." },
+                { Illus: IllustrationImpact, title: "Setiap perbaikan,\nsatu langkah lebih sedikit sampah.", desc: "Awetin membantumu memperpanjang umur barang, bukan menggantinya." },
+            ];
+            useEffect(() => { const t = setInterval(() => setSlide(s => (s+1)%slides.length), 4200); return () => clearInterval(t); }, []);
+            const s = slides[slide];
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe">
+                    <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+                        <div key={slide} className="w-56 h-48 mb-8 anim-fade-scale"><s.Illus/></div>
+                        <h1 key={'t'+slide} className="t-h2 text-text-primary mb-3 whitespace-pre-line anim-page">{s.title}</h1>
+                        <p key={'d'+slide} className="t-body-l text-text-secondary max-w-[280px] anim-page">{s.desc}</p>
+                    </div>
+                    <div className="flex justify-center mb-6"><Dots count={slides.length} active={slide}/></div>
+                    <div className="px-6 pb-8 flex flex-col gap-3">
+                        <Button fullWidth size="hero" onClick={() => onEnter('login')}>Masuk</Button>
+                        <Button fullWidth size="hero" variant="secondary" onClick={() => onEnter('signup')}>Aku pengguna baru, daftar</Button>
+                        <p className="t-caption text-text-tertiary text-center mt-1 leading-relaxed">Dengan masuk atau mendaftar, kamu menyetujui Syarat Layanan & Kebijakan Privasi Awetin.</p>
+                    </div>
+                </div>
+            );
+        };
+
+        const InterstitialRoleScreen = ({ onBack, onContinue, onShowMitraInfo }) => {
+            const bullets = [
+                { Icon: Icon.Wrench, label: 'Perbaiki', desc: 'Booking tukang tepercaya sesuai kategori barangmu' },
+                { Icon: Icon.Heart, label: 'Jual / Donasi', desc: 'Barang masih layak? Salurkan ke yang membutuhkan' },
+                { Icon: Icon.Zap, label: 'Daur Ulang', desc: 'Rusak parah, kami arahkan ke titik resmi terdekat' },
+            ];
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={onBack}/>
+                    <div className="flex-1 overflow-y-auto no-scrollbar px-6">
+                        <div className="w-16 h-16 rounded-lg bg-primary-container flex items-center justify-center mb-6"><Icon.Wrench size={30} color="#046B0C"/></div>
+                        <h1 className="t-h1 text-text-primary mb-3">Awetin ini untuk kamu yang mau memperbaiki, menjual, atau menyalurkan barang.</h1>
+                        <p className="t-body-l text-text-secondary mb-8">Cari tukang terpercaya, jadwalkan servis, atau salurkan barang yang masih layak pakai.</p>
+                        <div className="flex flex-col gap-4">
+                            {bullets.map((b,i) => (
+                                <div key={i} className="flex items-start gap-4">
+                                    <div className="w-11 h-11 rounded-full bg-surface-variant flex items-center justify-center shrink-0"><b.Icon size={20} color="#5C6668"/></div>
+                                    <div>
+                                        <p className="t-label-l text-text-primary">{b.label}</p>
+                                        <p className="t-body-s text-text-secondary">{b.desc}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="px-6 pt-4 pb-8 flex flex-col gap-4">
+                        <Button fullWidth size="hero" onClick={onContinue}>Lanjutkan</Button>
+                        <button onClick={onShowMitraInfo} className="t-body-m text-text-secondary text-center">
+                            Kamu tukang / mitra reparasi? <span className="text-primary-default font-semibold">Unduh Awetin Mitra</span>
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const MitraInfoSheet = ({ isOpen, onClose }) => (
+            <BottomSheet isOpen={isOpen} onClose={onClose} title="Awetin Mitra">
+                <p className="t-body-l text-text-secondary mb-6">Awetin Mitra adalah aplikasi terpisah, khusus untuk tukang mengelola pesanan dan pendapatan. Aplikasi ini (Awetin) tetap untuk kamu yang mencari jasa perbaikan.</p>
+                <div className="flex flex-col gap-3 pb-4">
+                    <Button fullWidth onClick={onClose}>Buka Store</Button>
+                    <Button fullWidth variant="tertiary" onClick={onClose}>Batal</Button>
+                </div>
+            </BottomSheet>
+        );
+
+        const COUNTRIES = [
+            {name:'Indonesia', code:'+62', flag:'🇮🇩'}, {name:'Singapura', code:'+65', flag:'🇸🇬'},
+            {name:'Malaysia', code:'+60', flag:'🇲🇾'}, {name:'Vietnam', code:'+84', flag:'🇻🇳'},
+            {name:'Thailand', code:'+66', flag:'🇹🇭'}, {name:'Filipina', code:'+63', flag:'🇵🇭'},
+            {name:'Australia', code:'+61', flag:'🇦🇺'}, {name:'Amerika Serikat', code:'+1', flag:'🇺🇸'},
+            {name:'Jepang', code:'+81', flag:'🇯🇵'}, {name:'Korea Selatan', code:'+82', flag:'🇰🇷'},
+        ];
+
+        const CountryPickerScreen = ({ onBack, onSelect }) => {
+            const [q, setQ] = useState('');
+            const filtered = COUNTRIES.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.code.includes(q));
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page absolute inset-0 z-40">
+                    <TopBar onBack={onBack} title="Kode Negara"/>
+                    <div className="px-4 pb-3">
+                        <div className="flex items-center gap-2 bg-surface-variant rounded-sm h-11 px-3">
+                            <Icon.Search size={18} color="#8D9699"/>
+                            <input autoFocus value={q} onChange={e=>setQ(e.target.value)} placeholder="Cari nama atau kode negara" className="bg-transparent outline-none w-full t-body-m text-text-primary placeholder:text-text-tertiary"/>
+                        </div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-safe">
+                        {!q && <p className="t-label-m text-text-tertiary uppercase mb-2 mt-1">Populer</p>}
+                        {filtered.map((c,i) => (
+                            <button key={i} onClick={()=>onSelect(c)} className="w-full flex items-center justify-between py-3 border-b border-divider text-left active:bg-surface-variant">
+                                <span className="t-body-l text-text-primary">{c.flag}&nbsp;&nbsp;{c.name}</span>
+                                <span className="t-body-m text-text-secondary">{c.code}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const PhoneEntryScreen = ({ onBack, onContinue, onGuest, onRecovery, testMode, setTestMode }) => {
+            const [country, setCountry] = useState(COUNTRIES[0]);
+            const [phone, setPhone] = useState('');
+            const [showCountry, setShowCountry] = useState(false);
+            const [isLoading, setIsLoading] = useState(false);
+            const valid = phone.length >= 8;
+
+            const handleDigit = (d) => { if (phone.length < 13) setPhone(p => p + d); };
+            const handleBack = () => setPhone(p => p.slice(0, -1));
+            const handleContinue = () => {
+                setIsLoading(true);
+                setTimeout(() => { setIsLoading(false); onContinue({ country, phone }); }, 700);
+            };
+
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe relative anim-page">
+                    <TestModeToggle mode={testMode} onChange={setTestMode}/>
+                    <TopBar onBack={onBack}/>
+                    <div className="flex-1 overflow-y-auto no-scrollbar px-6">
+                        <h1 className="t-h1 text-text-primary mb-2">Selamat datang di Awetin!</h1>
+                        <p className="t-body-l text-text-secondary mb-8">Masukkan atau buat akun dalam beberapa langkah mudah.</p>
+                        <label className="t-label-m text-text-secondary block mb-2">Nomor HP</label>
+                        <div className="flex items-center border border-border rounded-sm h-14 px-4 focus-within:border-[1.5px] focus-within:border-primary-default">
+                            <button onClick={()=>setShowCountry(true)} className="flex items-center gap-1.5 pr-3 border-r border-border mr-3 shrink-0">
+                                <span className="t-body-l">{country.flag}</span>
+                                <span className="t-label-l text-text-primary">{country.code}</span>
+                                <Icon.ChevronDown size={16} color="#8D9699"/>
+                            </button>
+                            <span className={`t-body-l flex-1 ${phone ? 'text-text-primary' : 'text-text-tertiary'}`}>{phone || '81x-xxx-xxx'}</span>
+                            {phone && <span className="w-[1.5px] h-5 bg-primary-default animate-pulse"/>}
+                        </div>
+                    </div>
+                    <div className="px-6 pb-4 pt-2">
+                        <Button fullWidth size="hero" disabled={!valid} isLoading={isLoading} onClick={handleContinue}>Lanjutkan</Button>
+                        <p className="t-caption text-text-tertiary text-center mt-3">Saya menyetujui <span className="text-primary-default font-semibold">Syarat Layanan</span> & <span className="text-primary-default font-semibold">Kebijakan Privasi</span> Awetin.</p>
+                        <button onClick={onRecovery} className="t-body-m text-primary-default font-semibold text-center w-full mt-4">Nomor HP lama hilang atau ganti?</button>
+                        <button onClick={onGuest} className="t-body-m text-text-secondary text-center w-full mt-3 mb-1">Lewati, jelajahi dulu</button>
+                    </div>
+                    <NumericKeypad onDigit={handleDigit} onBackspace={handleBack}/>
+                    {showCountry && <CountryPickerScreen onBack={()=>setShowCountry(false)} onSelect={(c)=>{setCountry(c); setShowCountry(false);}}/>}
+                </div>
+            );
+        };
+
+        const OtpMethodScreen = ({ onBack, phoneLabel, onSelect }) => (
+            <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                <TopBar onBack={onBack}/>
+                <div className="px-6 flex-1">
+                    <h1 className="t-h1 text-text-primary mb-2">Pilih metode verifikasi</h1>
+                    <p className="t-body-l text-text-secondary mb-8">Kode akan dikirim ke {phoneLabel}</p>
+                    <button onClick={()=>onSelect('sms')} className="w-full flex items-center gap-4 py-4 border-b border-divider active:bg-surface-variant">
+                        <div className="w-11 h-11 rounded-md bg-information-container flex items-center justify-center"><Icon.MessageSquare size={20} color="#2F72ED"/></div>
+                        <span className="t-body-l text-text-primary flex-1 text-left">OTP via SMS</span>
+                        <Icon.ChevronRight size={20} color="#8D9699"/>
+                    </button>
+                    <button onClick={()=>onSelect('wa')} className="w-full flex items-center gap-4 py-4 border-b border-divider active:bg-surface-variant">
+                        <div className="w-11 h-11 rounded-md bg-success-container flex items-center justify-center"><Icon.MessageCircle size={20} color="#1E9E4A"/></div>
+                        <span className="t-body-l text-text-primary flex-1 text-left">OTP via WhatsApp</span>
+                        <Icon.ChevronRight size={20} color="#8D9699"/>
+                    </button>
+                </div>
+            </div>
+        );
+
+        const OtpEntryScreen = ({ onBack, phoneLabel, method, onVerified, onChangeMethod }) => {
+            const [otp, setOtp] = useState('');
+            const [timer, setTimer] = useState(45);
+            const [shake, setShake] = useState(false);
+            const [verifying, setVerifying] = useState(false);
+
+            useEffect(() => { if (timer<=0) return; const t = setTimeout(()=>setTimer(x=>x-1),1000); return ()=>clearTimeout(t); }, [timer]);
+
+            const handleDigit = (d) => {
+                if (otp.length >= 4 || verifying) return;
+                const next = otp + d;
+                setOtp(next);
+                if (next.length === 4) { setVerifying(true); setTimeout(() => onVerified(), 650); }
+            };
+            const handleBack = () => setOtp(p => p.slice(0,-1));
+
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={onBack}/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Masukkan kode OTP</h1>
+                        <p className="t-body-l text-text-secondary mb-8">Kami mengirim OTP via {method==='wa'?'WhatsApp':'SMS'} ke {phoneLabel}</p>
+                        <div className="flex items-center gap-4 mb-6">
+                            {[0,1,2,3].map(i => (
+                                <div key={i} className={`w-12 h-14 rounded-sm border flex items-center justify-center t-h2 text-text-primary transition-colors duration-150 ${otp[i] ? 'border-primary-default bg-primary-container/40' : 'border-border'}`}>
+                                    {otp[i] || ''}
+                                </div>
+                            ))}
+                            {verifying && <div className="w-5 h-5 border-2 border-primary-default border-t-transparent rounded-full animate-spin ml-1"/>}
+                        </div>
+                        <button onClick={onChangeMethod} className="t-label-l text-primary-default font-semibold">Coba metode lain</button>
+                    </div>
+                    <p className="t-body-m text-text-secondary text-center pb-4">
+                        {timer>0 ? <>Kirim ulang kode dalam <span className="font-mono font-semibold text-text-primary">00:{String(timer).padStart(2,'0')}</span></> : <button onClick={()=>setTimer(45)} className="text-primary-default font-semibold">Kirim ulang kode</button>}
+                    </p>
+                    <NumericKeypad onDigit={handleDigit} onBackspace={handleBack}/>
+                </div>
+            );
+        };
+
+        const TermsGateSheet = ({ onAgree }) => {
+            const [nudge, setNudge] = useState(false);
+            return (
+                <div className="absolute inset-0 z-50 flex flex-col justify-end anim-fade">
+                    <div className="absolute inset-0 bg-[rgba(15,23,21,0.48)]"/>
+                    <div className="bg-surface rounded-t-xl relative z-10 anim-sheet-in px-6 pt-8 pb-safe text-center">
+                        <button onClick={()=>{setNudge(true); setTimeout(()=>setNudge(false),1600);}} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-variant flex items-center justify-center text-text-secondary press-scale"><Icon.X size={16}/></button>
+                        <div className="w-40 h-32 mx-auto mb-6"><IllustrationTerms/></div>
+                        <h2 className="t-h3 text-text-primary mb-2">Untuk lanjut, setujui dulu syarat & kebijakan kami</h2>
+                        <p className="t-body-m text-text-secondary mb-6">Baca <span className="text-primary-default font-semibold">Syarat Layanan</span> & <span className="text-primary-default font-semibold">Kebijakan Privasi</span></p>
+                        {nudge && <p className="t-body-s text-error-default mb-3 -mt-3">Kamu perlu menyetujui ini untuk melanjutkan pendaftaran.</p>}
+                        <Button fullWidth size="hero" onClick={onAgree}>Saya Setuju</Button>
+                    </div>
+                </div>
+            );
+        };
+
+        const NameEntryScreen = ({ onContinue }) => {
+            const [name, setName] = useState('');
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Siapa nama kamu?</h1>
+                        <label className="t-label-m text-text-secondary block mb-2 mt-8">Nama Lengkap</label>
+                        <input autoFocus value={name} onChange={e=>setName(e.target.value)} placeholder="Ketik nama kamu"
+                            className="w-full h-14 border border-border rounded-sm px-4 t-body-l text-text-primary outline-none focus:border-[1.5px] focus:border-primary-default"/>
+                        <p className="t-caption text-text-tertiary mt-2">Huruf latin, tanpa emoji atau simbol.</p>
+                    </div>
+                    <div className="px-6 pb-8"><Button fullWidth size="hero" disabled={name.trim().length<2} onClick={()=>onContinue(name)}>Simpan & Lanjut</Button></div>
+                </div>
+            );
+        };
+
+        const EmailEntryScreen = ({ onContinue, onSkip }) => {
+            const [email, setEmail] = useState('');
+            const valid = /\S+@\S+\.\S+/.test(email);
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Alamat email? (Opsional)</h1>
+                        <label className="t-label-m text-text-secondary block mb-2 mt-8">Email</label>
+                        <input autoFocus value={email} onChange={e=>setEmail(e.target.value)} placeholder="nama@contoh.com" type="email"
+                            className="w-full h-14 border border-border rounded-sm px-4 t-body-l text-text-primary outline-none focus:border-[1.5px] focus:border-primary-default"/>
+                        <p className="t-caption text-text-tertiary mt-2">Untuk mengirim struk digital & info penting akun.</p>
+                    </div>
+                    <div className="px-6 pb-8 flex flex-col gap-3">
+                        <Button fullWidth size="hero" disabled={email.length>0 && !valid} onClick={()=>onContinue(email)}>{email ? 'Simpan & Lanjut' : 'Lanjutkan'}</Button>
+                        {!email && <Button fullWidth variant="tertiary" onClick={onSkip}>Lewati</Button>}
+                    </div>
+                </div>
+            );
+        };
+
+        const LocationPermissionScreen = ({ onAllow, onManual }) => {
+            const [dialogStep, setDialogStep] = useState(null); // 'location' | 'notif' | null
+
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page relative">
+                    <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+                        <div className="w-52 h-44 mb-8"><IllustrationLocation/></div>
+                        <h1 className="t-h1 text-text-primary mb-3">Terakhir, aktifkan lokasi kamu</h1>
+                        <p className="t-body-l text-text-secondary max-w-[280px]">Supaya kami bisa menunjukkan tukang terdekat dan mengisi alamat booking otomatis.</p>
+                    </div>
+                    <div className="px-6 pb-8 flex flex-col gap-3">
+                        <Button fullWidth size="hero" onClick={()=>setDialogStep('location')}>Izinkan Lokasi</Button>
+                        <button onClick={onManual} className="t-body-m text-text-secondary text-center">Tidak bisa aktifkan? <span className="text-primary-default font-semibold">Isi alamat manual</span></button>
+                    </div>
+                    <SystemDialog isOpen={dialogStep==='location'} title={'"Awetin" Ingin Mengakses Lokasi Kamu'} message="Lokasi dipakai untuk menunjukkan tukang terdekat dan mengisi alamat secara otomatis." denyLabel="Jangan Izinkan" allowLabel="Izinkan" onDeny={()=>setDialogStep('notif')} onAllow={()=>setDialogStep('notif')}/>
+                    <SystemDialog isOpen={dialogStep==='notif'} title={'"Awetin" Ingin Mengirim Notifikasi'} message="Dapatkan update status pesanan, promo, dan info dampak komunitas." denyLabel="Jangan Izinkan" allowLabel="Izinkan" onDeny={onAllow} onAllow={onAllow}/>
+                </div>
+            );
+        };
+
+        const WelcomeOfferScreen = ({ onContinue }) => (
+            <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
+                    <div className="w-48 h-40 mb-6"><IllustrationGift/></div>
+                    <span className="t-label-m text-secondary-default bg-secondary-container px-3 py-1 rounded-full mb-4">Khusus Pengguna Baru</span>
+                    <h1 className="t-h1 text-text-primary mb-3">Gratis Ongkos Cek untuk servis pertamamu! 🎉</h1>
+                    <p className="t-body-l text-text-secondary max-w-[280px]">Berlaku otomatis pada booking servis pertama kamu di Awetin.</p>
+                </div>
+                <div className="px-6 pb-8"><Button fullWidth size="hero" onClick={onContinue}>Mulai Jelajahi</Button></div>
+            </div>
+        );
+
+        const TransitionScreen = ({ onDone }) => {
+            useEffect(() => { const t = setTimeout(() => onDone && onDone(), 1400); return () => clearTimeout(t); }, []);
+            return (
+                <div className="flex flex-col h-full bg-primary-default items-center justify-center anim-fade">
+                    <div className="relative mb-6">
+                        <div className="anim-ring absolute inset-0 rounded-full border-2 border-white" style={{transformOrigin:'center'}}/>
+                        <div className="w-20 h-20 rounded-xl bg-white flex items-center justify-center anim-pulse-soft"><Icon.Wrench size={36} color="#00AA13"/></div>
+                    </div>
+                    <p className="t-label-l text-white">Menuju Beranda Awetin...</p>
+                </div>
+            );
+        };
+
+        /* ============================================================
+           HOME (Anatomy: header stat card, quick actions, service grid,
+           promo carousel) — polished baseline, disempurnakan tahap berikutnya
+           ============================================================ */
+        const PromoOverlay = ({ onDismiss, isGuest }) => (
+            <div className="absolute inset-0 z-40 bg-[rgba(15,23,21,0.4)] flex flex-col justify-end anim-fade">
+                <div className="bg-surface rounded-t-xl anim-sheet-in px-6 pt-8 pb-safe text-center">
+                    <span className="t-label-m text-primary-default bg-primary-container px-3 py-1 rounded-full">{isGuest ? 'Jelajahi Dulu' : 'Baru di sini?'}</span>
+                    <h2 className="t-h2 text-text-primary mt-3 mb-2">{isGuest ? 'Yuk lihat-lihat Awetin' : 'Kami siapkan sambutan untukmu'}</h2>
+                    <p className="t-body-l text-text-secondary mb-6">{isGuest ? 'Booking & scan AI perlu masuk lebih dulu, tapi kamu bisa lihat-lihat direktori tukang sekarang.' : 'Gratis ongkos cek aktif untuk servis pertamamu. Langsung pakai kapan saja.'}</p>
+                    <Button fullWidth size="hero" onClick={onDismiss}>{isGuest ? 'Mulai Jelajahi' : 'Oke, Mengerti'}</Button>
+                </div>
+            </div>
+        );
+
+        const HomeScreen = ({ userName, isGuest, isReturning }) => {
+            const [showPromo, setShowPromo] = useState(!isReturning);
+            const [toast, setToast] = useState('');
+            const showToast = (m) => { setToast(m); setTimeout(()=>setToast(''), 2200); };
+            const notify = () => showToast('Fitur ini disempurnakan di tahap berikutnya');
+
+            const categories = [
+                { name:'Elektronik', Icon: Icon.Zap, bg:'category-elektronik' },
+                { name:'Pakaian', Icon: Icon.Shirt, bg:'category-pakaian' },
+                { name:'Sepatu', Icon: Icon.Footprints, bg:'category-sepatu' },
+                { name:'Las', Icon: Icon.Flame, bg:'category-las' },
+            ];
+            const quickActions = [
+                { label:'Booking Ulang', Icon: Icon.Receipt },
+                { label:'Status Servis', Icon: Icon.Wrench },
+                { label:'Tukang Terdekat', Icon: Icon.MapPin },
+                { label:'Bantuan', Icon: Icon.Info },
+            ];
+
+            return (
+                <div className="flex flex-col h-full bg-background relative">
+                    <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
+                        <div className="pt-safe px-4 pb-4 bg-surface">
+                            <div className="flex items-center justify-between mt-2 mb-4">
+                                <div>
+                                    <p className="t-body-m text-text-secondary">Halo, {isGuest ? 'Teman' : userName}!</p>
+                                    <p className="t-h3 text-text-primary">Mau perbaiki apa hari ini?</p>
+                                </div>
+                                <button onClick={notify} className="w-11 h-11 rounded-full bg-surface-variant flex items-center justify-center relative press-scale">
+                                    <Icon.Bell size={20} color="#5C6668"/>
+                                    {!isGuest && <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-error-default rounded-full"/>}
+                                </button>
+                            </div>
+                            <button onClick={notify} className="w-full flex items-center gap-2 bg-surface-variant rounded-full h-12 px-4 press-scale">
+                                <Icon.Search size={18} color="#8D9699"/>
+                                <span className="t-body-m text-text-tertiary">Cari tukang atau kategori...</span>
+                            </button>
+                        </div>
+
+                        {!isGuest && (
+                            <div className="px-4 mt-4">
+                                <button onClick={notify} className="w-full bg-primary-container rounded-lg p-4 flex items-center justify-between press-scale">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center"><Icon.Heart size={18} filled color="#00AA13"/></div>
+                                        <div className="text-left">
+                                            <p className="t-caption text-primary-on-container uppercase tracking-wide">Dampak Komunitas</p>
+                                            <p className="t-h3 text-text-primary">142 <span className="t-body-s font-normal text-text-secondary">barang diselamatkan</span></p>
+                                        </div>
+                                    </div>
+                                    <Icon.ChevronRight size={18} color="#046B0C"/>
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-4 gap-2 px-4 mt-6">
+                            {quickActions.map((q,i) => (
+                                <button key={i} onClick={notify} className="flex flex-col items-center gap-1.5 press-scale">
+                                    <div className="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center"><q.Icon size={20} color="#5C6668"/></div>
+                                    <span className="t-label-s text-text-secondary text-center leading-tight">{q.label}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 px-4">
+                            <h3 className="t-title text-text-primary mb-3">Kategori Perbaikan</h3>
+                            <div className="grid grid-cols-4 gap-2">
+                                {categories.map((c,i) => (
+                                    <button key={i} onClick={notify} className="flex flex-col items-center gap-1.5 press-scale">
+                                        <div className={`w-14 h-14 rounded-lg flex items-center justify-center bg-${c.bg}`}><c.Icon size={24} color="#FFFFFF"/></div>
+                                        <span className="t-label-s text-text-secondary text-center">{c.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-8 px-4">
+                            <div className="rounded-lg overflow-hidden relative h-32 bg-information-container flex items-center px-5 press-scale" onClick={notify}>
+                                <div className="flex-1">
+                                    <span className="t-label-m text-information-default bg-white px-2 py-0.5 rounded-full">Tips</span>
+                                    <h4 className="t-title text-text-primary mt-2">Rawat kulkas, tahan 2x lebih lama</h4>
+                                </div>
+                                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shrink-0"><Icon.Info size={26} color="#2F72ED"/></div>
+                            </div>
+                            <div className="flex justify-center gap-1.5 mt-3"><div className="w-4 h-1.5 rounded-full bg-primary-default"/><div className="w-1.5 h-1.5 rounded-full bg-border"/><div className="w-1.5 h-1.5 rounded-full bg-border"/></div>
+                        </div>
+
+                        <div className="mt-8 px-4">
+                            <div className="flex justify-between items-center mb-3"><h3 className="t-title text-text-primary">Tukang Favorit</h3><button onClick={notify} className="t-label-m text-primary-default font-semibold">Lihat Semua</button></div>
+                            {isGuest ? (
+                                <div className="flex flex-col items-center text-center py-8 px-4 bg-surface-variant rounded-lg">
+                                    <Icon.Star size={28} color="#8D9699"/>
+                                    <p className="t-body-m text-text-secondary mt-3">Booking tukang pertamamu, lalu tandai favorit.</p>
+                                </div>
+                            ) : (
+                                <button onClick={notify} className="w-full flex gap-3 bg-surface border border-border rounded-lg p-3 press-scale">
+                                    <div className="w-16 h-16 rounded-md bg-surface-variant flex items-center justify-center shrink-0"><Icon.User size={28} color="#8D9699"/></div>
+                                    <div className="flex-1 text-left">
+                                        <p className="t-label-l text-text-primary">Kang Mamat AC</p>
+                                        <p className="t-body-s text-text-secondary">Elektronik · 0.8 km</p>
+                                        <div className="flex items-center gap-1 mt-1"><Icon.Star size={12} filled color="#F6A609"/><span className="t-label-s text-text-primary">4.9</span></div>
+                                    </div>
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {showPromo && <PromoOverlay isGuest={isGuest} onDismiss={()=>setShowPromo(false)}/>}
+                    <Toast message={toast} show={!!toast}/>
+                </div>
+            );
+        };
+
+        const StubScreen = ({ label }) => (
+            <div className="flex flex-col h-full bg-background items-center justify-center px-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center mb-4"><Icon.Info size={28} color="#8D9699"/></div>
+                <h3 className="t-h3 text-text-primary mb-2">{label}</h3>
+                <p className="t-body-m text-text-secondary">Halaman ini akan kita sempurnakan di tahap berikutnya.</p>
+            </div>
+        );
+
+        const BottomNav = ({ active, onChange }) => {
+            const tabs = [
+                { id:'home', label:'Beranda', Icon: Icon.Home },
+                { id:'pesanan', label:'Pesanan', Icon: Icon.Receipt },
+                { id:'perbaiki', label:'Perbaiki', Icon: Icon.Camera, center:true },
+                { id:'tukang', label:'Tukang', Icon: Icon.Wrench },
+                { id:'profil', label:'Profil', Icon: Icon.User },
+            ];
+            return (
+                <div className="absolute bottom-0 left-0 right-0 bg-surface border-t border-divider pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-30">
+                    <div className="flex items-center justify-around h-16">
+                        {tabs.map(t => t.center ? (
+                            <button key={t.id} onClick={()=>onChange(t.id)} className="-mt-6 press-scale">
+                                <div className="w-14 h-14 rounded-full bg-primary-default flex items-center justify-center shadow-elevation-3 border-4 border-surface"><t.Icon size={24} color="#FFFFFF"/></div>
+                            </button>
+                        ) : (
+                            <button key={t.id} onClick={()=>onChange(t.id)} className="flex flex-col items-center gap-1 w-14">
+                                <t.Icon size={22} filled={active===t.id} color={active===t.id ? '#00AA13' : '#8D9699'}/>
+                                <span className={`t-label-s ${active===t.id?'text-primary-default':'text-text-tertiary'}`}>{t.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const AppShell = ({ userName, isGuest, isReturning }) => {
+            const [tab, setTab] = useState('home');
+            return (
+                <div className="flex flex-col h-full bg-background relative">
+                    <div className="flex-1 overflow-hidden">
+                        {tab==='home' && <HomeScreen userName={userName} isGuest={isGuest} isReturning={isReturning}/>}
+                        {tab==='pesanan' && <StubScreen label="Pesanan"/>}
+                        {tab==='perbaiki' && <StubScreen label="Perbaiki (Scan AI)"/>}
+                        {tab==='tukang' && <StubScreen label="Tukang"/>}
+                        {tab==='profil' && <StubScreen label="Profil"/>}
+                    </div>
+                    <BottomNav active={tab} onChange={setTab}/>
+                </div>
+            );
+        };
+
+        /* ============================================================
+           RECOVERY FLOW (compact — nomor lama hilang/ganti)
+           ============================================================ */
+        const RecoveryFlow = ({ onBack, onDone }) => {
+            const [step, setStep] = useState('old_phone');
+            const [oldPhone, setOldPhone] = useState('');
+            const [newPhone, setNewPhone] = useState('');
+            const [otp, setOtp] = useState('');
+
+            const digitHandler = (setter, max) => (d) => setter(p => p.length < max ? p+d : p);
+            const backHandler = (setter) => () => setter(p => p.slice(0,-1));
+
+            if (step === 'old_phone') return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={onBack}/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Pemulihan Akun</h1>
+                        <p className="t-body-l text-text-secondary mb-8">Masukkan nomor HP lamamu untuk verifikasi.</p>
+                        <div className="flex items-center border border-border rounded-sm h-14 px-4">
+                            <span className="t-label-l text-text-primary pr-3 border-r border-border mr-3">+62</span>
+                            <span className={`t-body-l ${oldPhone?'text-text-primary':'text-text-tertiary'}`}>{oldPhone || 'Nomor lama'}</span>
+                        </div>
+                    </div>
+                    <div className="px-6 pb-4"><Button fullWidth size="hero" disabled={oldPhone.length<8} onClick={()=>setStep('otp_old')}>Kirim OTP ke Nomor Lama</Button></div>
+                    <NumericKeypad onDigit={digitHandler(setOldPhone,13)} onBackspace={backHandler(setOldPhone)}/>
+                </div>
+            );
+            if (step === 'otp_old') return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={()=>setStep('old_phone')}/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Verifikasi Nomor Lama</h1>
+                        <div className="flex gap-4 mb-4">{[0,1,2,3].map(i=><div key={i} className={`w-12 h-14 rounded-sm border flex items-center justify-center t-h2 ${otp[i]?'border-primary-default':'border-border'}`}>{otp[i]||''}</div>)}</div>
+                    </div>
+                    <NumericKeypad onDigit={(d)=>{ if(otp.length<4){ const n=otp+d; setOtp(n); if(n.length===4) setTimeout(()=>{setOtp(''); setStep('new_phone');},500);} }} onBackspace={backHandler(setOtp)}/>
+                </div>
+            );
+            if (step === 'new_phone') return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={()=>setStep('otp_old')}/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Nomor HP Baru</h1>
+                        <p className="t-body-l text-text-secondary mb-8">Akunmu akan dipindahkan ke nomor ini.</p>
+                        <div className="flex items-center border border-border rounded-sm h-14 px-4">
+                            <span className="t-label-l text-text-primary pr-3 border-r border-border mr-3">+62</span>
+                            <span className={`t-body-l ${newPhone?'text-text-primary':'text-text-tertiary'}`}>{newPhone || 'Nomor baru'}</span>
+                        </div>
+                    </div>
+                    <div className="px-6 pb-4"><Button fullWidth size="hero" disabled={newPhone.length<8} onClick={()=>setStep('otp_new')}>Kirim OTP ke Nomor Baru</Button></div>
+                    <NumericKeypad onDigit={digitHandler(setNewPhone,13)} onBackspace={backHandler(setNewPhone)}/>
+                </div>
+            );
+            if (step === 'otp_new') return (
+                <div className="flex flex-col h-full bg-surface pt-safe anim-page">
+                    <TopBar onBack={()=>setStep('new_phone')}/>
+                    <div className="px-6 flex-1">
+                        <h1 className="t-h1 text-text-primary mb-2">Verifikasi Nomor Baru</h1>
+                        <div className="flex gap-4 mb-4">{[0,1,2,3].map(i=><div key={i} className={`w-12 h-14 rounded-sm border flex items-center justify-center t-h2 ${otp[i]?'border-primary-default':'border-border'}`}>{otp[i]||''}</div>)}</div>
+                    </div>
+                    <NumericKeypad onDigit={(d)=>{ if(otp.length<4){ const n=otp+d; setOtp(n); if(n.length===4) setTimeout(()=>setStep('done'),500);} }} onBackspace={backHandler(setOtp)}/>
+                </div>
+            );
+            return (
+                <div className="flex flex-col h-full bg-surface pt-safe items-center justify-center px-8 text-center anim-fade">
+                    <div className="w-16 h-16 rounded-full bg-success-container flex items-center justify-center mb-4"><Icon.Check size={28} color="#1E9E4A"/></div>
+                    <h2 className="t-h2 text-text-primary mb-2">Akun Berpindah</h2>
+                    <p className="t-body-l text-text-secondary mb-8">Nomormu berhasil diperbarui.</p>
+                    <Button fullWidth size="hero" onClick={onDone}>Selesai</Button>
+                </div>
+            );
+        };
+
+        /* ============================================================
+           ONBOARDING ORCHESTRATOR
+           ============================================================ */
+        const OnboardingFlow = ({ onFinish }) => {
+            const [step, setStep] = useState('welcome');
+            const [mitraInfo, setMitraInfo] = useState(false);
+            const [testMode, setTestMode] = useState('new');
+            const [data, setData] = useState({ country: COUNTRIES[0], phone: '', method: 'sms', name: '', email: '' });
+
+            const phoneLabel = `${data.country.code} ${data.phone}`;
+
+            if (step === 'welcome') return <WelcomeScreen onEnter={()=>setStep('interstitial')}/>;
+
+            if (step === 'interstitial') return (
+                <>
+                    <InterstitialRoleScreen onBack={()=>setStep('welcome')} onContinue={()=>setStep('phone')} onShowMitraInfo={()=>setMitraInfo(true)}/>
+                    <MitraInfoSheet isOpen={mitraInfo} onClose={()=>setMitraInfo(false)}/>
+                </>
+            );
+
+            if (step === 'phone') return (
+                <PhoneEntryScreen
+                    onBack={()=>setStep('interstitial')}
+                    testMode={testMode} setTestMode={setTestMode}
+                    onGuest={()=>onFinish({ isGuest:true })}
+                    onRecovery={()=>setStep('recovery')}
+                    onContinue={(d)=>{ setData(prev=>({...prev, ...d})); setStep('otp_method'); }}
+                />
+            );
+
+            if (step === 'recovery') return <RecoveryFlow onBack={()=>setStep('phone')} onDone={()=>setStep('phone')}/>;
+
+            if (step === 'otp_method') return (
+                <OtpMethodScreen onBack={()=>setStep('phone')} phoneLabel={phoneLabel} onSelect={(m)=>{ setData(p=>({...p, method:m})); setStep('otp_entry'); }}/>
+            );
+
+            if (step === 'otp_entry') return (
+                <OtpEntryScreen
+                    onBack={()=>setStep('otp_method')}
+                    phoneLabel={phoneLabel} method={data.method}
+                    onChangeMethod={()=>setStep('otp_method')}
+                    onVerified={()=> setStep(testMode === 'existing' ? 'transition' : 'terms_gate')}
+                />
+            );
+
+            if (step === 'terms_gate') return (
+                <div className="relative h-full">
+                    <div className="h-full opacity-40 pointer-events-none"><OtpEntryScreen phoneLabel={phoneLabel} method={data.method} onVerified={()=>{}} onChangeMethod={()=>{}} onBack={()=>{}}/></div>
+                    <TermsGateSheet onAgree={()=>setStep('name')}/>
+                </div>
+            );
+
+            if (step === 'name') return <NameEntryScreen onContinue={(name)=>{ setData(p=>({...p,name})); setStep('email'); }}/>;
+
+            if (step === 'email') return (
+                <EmailEntryScreen
+                    onContinue={(email)=>{ setData(p=>({...p,email})); setStep('location'); }}
+                    onSkip={()=>setStep('location')}
+                />
+            );
+
+            if (step === 'location') return (
+                <LocationPermissionScreen onAllow={()=>setStep('welcome_offer')} onManual={()=>setStep('welcome_offer')}/>
+            );
+
+            if (step === 'welcome_offer') return <WelcomeOfferScreen onContinue={()=>setStep('transition')}/>;
+
+            if (step === 'transition') return <TransitionScreen onDone={() => onFinish({ isGuest:false, name: data.name || 'Budi', isReturning: testMode === 'existing' })}/>;
+
+            return null;
+        };
+
+        /* ============================================================
+           APP ROOT
+           ============================================================ */
+        const App = () => {
+            const [phase, setPhase] = useState('splash');
+            const [user, setUser] = useState({ isGuest:false, name:'Budi' });
+
+            useEffect(() => { if (phase==='splash') { const t=setTimeout(()=>setPhase('onboarding'),1800); return ()=>clearTimeout(t); } }, [phase]);
+
+            if (phase === 'splash') return (
+                <div className="flex flex-col items-center justify-center h-full bg-primary-default">
+                    <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center mb-5 shadow-elevation-3 anim-pulse-soft"><Icon.Wrench size={38} color="#00AA13"/></div>
+                    <h1 className="t-display text-white">Awetin</h1>
+                    <p className="t-body-l text-white/85 mt-1">Jangan Dibuang, Perbaiki.</p>
+                </div>
+            );
+
+            if (phase === 'onboarding') return <OnboardingFlow onFinish={(u)=>{ setUser(u); setPhase('shell'); }}/>;
+
+            return <AppShell userName={user.name} isGuest={user.isGuest} isReturning={user.isReturning}/>;
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+</body>
+</html>
