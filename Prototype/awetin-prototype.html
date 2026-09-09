@@ -202,6 +202,8 @@ const IMG = {
    Sengaja beda hue dari primary hijau & 4 warna semantic
    (success/warning/error/information) supaya tidak ambigu makna.
    ============================================================ */
+const BARANG_BESAR_KEYWORDS = ['kulkas', 'ac', 'mesin cuci', 'kompor'];
+
 const CATEGORY_STYLE = {
     Elektronik: { icon: Icon.Zap, bg: 'bg-category-elektronik-container', text: 'text-category-elektronik-on-container', hex: '#6C63E0' },
     Pakaian: { icon: Icon.Shirt, bg: 'bg-category-jahit-container', text: 'text-category-jahit-on-container', hex: '#E8628C' },
@@ -1422,9 +1424,18 @@ const ScanAIScreen = ({ onBack, onNavigate }) => {
         }
     }, [phase]);
 
-    const handleGenerateDraft = () => {
-        const draft = `Halo kak, saya butuh perbaikan Kulkas LG 2 Pintu.\n\nSistem AI Awetin mendeteksi:\n🚨 Diagnosa: Kompresor Macet / Overheat\n🌡️ Suhu: 48°C (Kritis)\n🔊 Suara: 92dB (Kasar & Bergetar)\n\nKronologi saya: "${transcript}"\n\nKira-kira apa yang harus diganti dan berapa estimasinya?`;
-        onNavigate('service_flow_kecil', { category: 'Elektronik', issue: 'Kompresor Macet / Overheat — Kulkas LG 2 Pintu', aiDraft: draft });
+    const draft = `Halo kak, saya butuh perbaikan Kulkas LG 2 Pintu.\n\nSistem AI Awetin mendeteksi:\n🚨 Diagnosa: Kompresor Macet / Overheat\n🌡️ Suhu: 48°C (Kritis)\n🔊 Suara: 92dB (Kasar & Bergetar)\n\nKronologi saya: "${transcript}"\n\nKira-kira apa yang harus diganti dan berapa estimasinya?`;
+    const detectedIssue = 'Kompresor Macet / Overheat — Kulkas LG 2 Pintu';
+    // Fase 3: segmentasi ukuran otomatis dari kategori terdeteksi (Flow 7.2 poin 3 PRD) —
+    // "Kulkas" termasuk daftar tetap Barang Besar, jadi harus lewat Flow 7.3, bukan chat Barang Kecil.
+    const isBarangBesar = BARANG_BESAR_KEYWORDS.some(k => detectedIssue.toLowerCase().includes(k));
+
+    const handleTriase = (pilihan) => {
+        if (pilihan === 'perbaiki' && isBarangBesar) return onNavigate('pilih_tukang_besar', { category: 'Elektronik', issue: detectedIssue, aiDraft: draft });
+        if (pilihan === 'perbaiki') return onNavigate('service_flow_kecil', { category: 'Elektronik', issue: detectedIssue, aiDraft: draft });
+        if (pilihan === 'jual_donasi') return onNavigate('jual_beli_form');
+        if (pilihan === 'daur_ulang') return onNavigate('fallback', 'Direktori Daur Ulang Resmi');
+        return onBack(); // "Belum yakin, nanti saja" — kembali ke Home, tanpa jalan buntu
     };
 
     return (
@@ -1583,24 +1594,23 @@ const ScanAIScreen = ({ onBack, onNavigate }) => {
                     </div>
 
                     <div className="pt-2">
-                        <h3 className="text-[18px] font-extrabold text-[#14181A] mb-4 px-1">Rekomendasi Tindakan</h3>
-                        <div className="bg-white border border-[#E8EBEA] shadow-sm rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden group">
-                            <div className="flex gap-4 relative z-10">
-                                <div className="w-14 h-14 bg-[#F8FAFA] rounded-2xl flex items-center justify-center border border-[#E8EBEA] text-[#8D9699] shadow-sm flex-shrink-0">
-                                    <Icon.User size={28} />
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex items-center justify-between mb-1">
-                                        <p className="text-[16px] font-extrabold text-[#14181A] line-clamp-1">Direktori Tukang Ahli</p>
-                                    </div>
-                                    <p className="text-[13px] text-[#5C6668] mt-1">Sistem AI menyusun draf keluhan otomatis, siap dikirim setelah kamu memilih tukang.</p>
-                                </div>
-                            </div>
-                            <div className="border-t border-[#E8EBEA] pt-4 relative z-10">
-                                <button onClick={handleGenerateDraft} className="w-full h-12 bg-gradient-to-r from-[#00AA13] to-[#049F16] text-white font-bold rounded-full shadow-[0_4px_12px_rgba(0,170,19,0.2)] active:scale-[0.98] transition-transform shimmer-bg flex items-center justify-center gap-2 text-[16px]">
-                                    <Icon.Sparkles size={18} /> Lihat Tukang yang Sesuai
-                                </button>
-                            </div>
+                        <h3 className="text-[18px] font-extrabold text-[#14181A] mb-1 px-1">Apa yang kamu inginkan untuk barang ini?</h3>
+                        <p className="text-[12px] text-[#8D9699] mb-4 px-1">
+                            {isBarangBesar ? 'Kulkas termasuk Barang Besar — perbaikan lewat kunjungan tukang ke lokasimu.' : 'Servis bisa lewat antar sendiri atau chat langsung ke tukang.'}
+                        </p>
+                        <div className="flex flex-col gap-2.5">
+                            <button onClick={() => handleTriase('perbaiki')} className="w-full h-14 bg-gradient-to-r from-[#00AA13] to-[#049F16] text-white font-bold rounded-2xl shadow-[0_4px_12px_rgba(0,170,19,0.2)] active:scale-[0.98] transition-transform shimmer-bg flex items-center justify-center gap-2 text-[15px]">
+                                <Icon.Wrench size={18} /> Ingin Diperbaiki
+                            </button>
+                            <button onClick={() => handleTriase('jual_donasi')} className="w-full h-12 bg-white border border-[#E8EBEA] text-[#14181A] font-bold rounded-2xl flex items-center justify-center gap-2 text-[14px] active:bg-[#F8FAFA] transition-colors">
+                                <Icon.Gift size={16} /> Sudah Tidak Ingin Pakai, Masih Layak
+                            </button>
+                            <button onClick={() => handleTriase('daur_ulang')} className="w-full h-12 bg-white border border-[#E8EBEA] text-[#14181A] font-bold rounded-2xl flex items-center justify-center gap-2 text-[14px] active:bg-[#F8FAFA] transition-colors">
+                                <Icon.AlertTriangle size={16} /> Sudah Rusak Parah
+                            </button>
+                            <button onClick={() => handleTriase('batal')} className="w-full h-10 text-[#5C6668] font-bold text-[13px]">
+                                Belum Yakin, Nanti Saja
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1676,6 +1686,207 @@ const ServiceFlowKecilScreen = ({ data, onBack, onNavigate }) => (
         </div>
     </div>
 );
+
+/* ============================================================
+   Fase 3: FLOW SERVIS BARANG BESAR (PRD Flow 7.3 — "anti-tembak")
+   Pilih Tukang → Jadwal & Biaya Jasa Tetap → Tukang Menuju Lokasi →
+   Verifikasi Kode → Cek Fisik → Invoice & Persetujuan → Dikerjakan →
+   Selesai + Before/After → Serah Terima
+   ============================================================ */
+
+const PilihTukangBesarScreen = ({ data, onBack, onNavigate }) => (
+    <div className="absolute inset-0 z-50 bg-[#F4F6F6] flex flex-col anim-page">
+        <MTopBar onBack={onBack} title="Pilih Tukang" />
+        <div className="p-5 overflow-y-auto flex-1 pb-safe">
+            {data?.issue && (
+                <div className="bg-white border border-[#E8EBEA] rounded-xl p-4 mb-4 flex gap-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+                        <Icon.Sparkles size={18} color="#00AA13" />
+                    </div>
+                    <div className="min-w-0">
+                        <p className="text-[10px] font-extrabold text-[#00AA13] uppercase tracking-wide mb-0.5">Hasil Diagnosa AI</p>
+                        <p className="text-[13px] font-bold text-[#14181A] leading-snug">{data.issue}</p>
+                    </div>
+                </div>
+            )}
+            <div className="bg-information-container border border-[#2F72ED]/20 rounded-xl p-4 mb-5">
+                <p className="text-[12px] font-extrabold text-[#2F72ED] uppercase tracking-wide mb-1">Rentang Harga Dasar</p>
+                <p className="text-[15px] font-extrabold text-[#14181A]">Rp100.000 – Rp250.000</p>
+                <p className="text-[11px] text-[#5C6668] mt-1">Estimasi awal dari sistem — harga final ditentukan setelah tukang cek fisik langsung, dan wajib kamu setujui dulu sebelum dikerjakan.</p>
+            </div>
+            <h3 className="text-[16px] font-extrabold text-[#14181A] mb-3">Tukang Tersedia untuk Kunjungan</h3>
+            {TUKANG_LIST.filter(w => w.category === (data?.category || 'Elektronik')).map(w => (
+                <div key={w.id} className="mb-3">
+                    <ScanWorkerCard w={w} onClick={() => onNavigate('barang_besar_flow', { worker: w, issue: data?.issue })} />
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+const MJadwalBiayaStep = ({ worker, onConfirm }) => {
+    const [jadwal, setJadwal] = useState('Sekarang');
+    const [loading, setLoading] = useState(false);
+    return (
+        <div className="flex flex-col h-full bg-[#F4F6F6] anim-page">
+            <MTopBar title="Jadwal & Biaya Kunjungan" />
+            <div className="flex-1 overflow-y-auto p-5 pb-safe">
+                <div className="flex items-center gap-3 bg-white border border-[#E8EBEA] rounded-xl p-3 mb-5 shadow-sm">
+                    <img src={worker.photo} className="w-12 h-12 rounded-full object-cover" alt={worker.name} />
+                    <div className="min-w-0">
+                        <p className="text-[14px] font-extrabold text-[#14181A] truncate">{worker.name}</p>
+                        <p className="text-[12px] text-[#5C6668]">{worker.category} · {worker.distance}</p>
+                    </div>
+                </div>
+                <label className="text-[12px] font-extrabold text-[#5C6668] uppercase tracking-wide block mb-2">Jadwal Kunjungan</label>
+                <div className="flex gap-2 mb-6">
+                    {['Sekarang', 'Sore ini', 'Besok pagi'].map(j => (
+                        <button key={j} onClick={() => setJadwal(j)} className={`flex-1 h-10 rounded-full text-[13px] font-bold border transition-colors ${jadwal === j ? 'bg-primary-container text-[#046B0C] border-primary-default' : 'bg-white text-[#5C6668] border-[#E8EBEA]'}`}>{j}</button>
+                    ))}
+                </div>
+                <div className="bg-white border border-[#E8EBEA] rounded-2xl p-4 shadow-sm">
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-[14px] font-bold text-[#14181A]">Biaya Jasa Tetap</p>
+                        <p className="text-[16px] font-extrabold text-[#14181A]">Rp25.000</p>
+                    </div>
+                    <p className="text-[12px] text-[#5C6668] leading-relaxed">Ongkos kunjungan & cek fisik, dibayar di muka lewat QRIS. Kalau kamu batal setelah tukang berangkat, biaya ini tetap jadi milik tukang sebagai jaminan kunjungan. Kalau lanjut servis, biaya ini otomatis masuk ke total tagihan — bukan biaya terpisah lagi.</p>
+                </div>
+            </div>
+            <div className="p-5 pt-2 pb-safe bg-white border-t border-[#E8EBEA]">
+                <MButton fullWidth size="hero" disabled={loading} onClick={() => { setLoading(true); setTimeout(() => onConfirm(jadwal), 900); }}>
+                    {loading ? 'Memproses QRIS...' : 'Bayar Rp25.000 & Konfirmasi Jadwal'}
+                </MButton>
+            </div>
+        </div>
+    );
+};
+
+const MMenujuLokasiStep = ({ worker, jadwal, onArrived }) => {
+    useEffect(() => { const t = setTimeout(onArrived, 2200); return () => clearTimeout(t); }, []);
+    return (
+        <div className="flex flex-col h-full bg-[#F4F6F6] items-center justify-center px-8 text-center anim-fade">
+            <div className="w-24 h-24 rounded-full bg-primary-container flex items-center justify-center mb-6 anim-pulse-soft"><Icon.MapPin size={40} color="#046B0C" /></div>
+            <h2 className="text-[18px] font-extrabold text-[#14181A] mb-2">{worker.name} sedang menuju lokasimu</h2>
+            <p className="text-[13px] text-[#5C6668]">Jadwal: {jadwal} · Biaya Jasa Tetap Rp25.000 sudah terverifikasi</p>
+        </div>
+    );
+};
+
+const MVerifikasiKodeStep = ({ onVerified }) => {
+    const [code, setCode] = useState('');
+    const handleDigit = (d) => { if (code.length < 4) { const next = code + d; setCode(next); if (next.length === 4) setTimeout(onVerified, 400); } };
+    return (
+        <div className="flex flex-col h-full bg-white anim-page">
+            <MTopBar title="Kode Verifikasi" />
+            <div className="flex-1 px-6 pt-6">
+                <h1 className="t-h2 text-text-primary mb-2">Tukang sudah tiba?</h1>
+                <p className="t-body-m text-text-secondary mb-6">Minta tukang menunjukkan kode di aplikasinya, lalu masukkan di sini sebelum cek fisik dimulai. Ini gerbang wajib — tanpa kode benar, servis tidak bisa lanjut.</p>
+                <div className="flex justify-between gap-3 mb-6">
+                    {[0, 1, 2, 3].map(i => (
+                        <div key={i} className={`flex-1 aspect-square rounded-xl border-2 flex items-center justify-center t-h1 ${code[i] ? 'border-primary-default bg-primary-container/30 text-primary-default' : 'border-border bg-surface-variant text-transparent'}`}>{code[i] || '0'}</div>
+                    ))}
+                </div>
+            </div>
+            <OBNumericKeypad onDigit={handleDigit} onBackspace={() => setCode(c => c.slice(0, -1))} />
+        </div>
+    );
+};
+
+const MCekFisikStep = ({ onDone }) => {
+    useEffect(() => { const t = setTimeout(onDone, 1800); return () => clearTimeout(t); }, []);
+    return (
+        <div className="flex flex-col h-full bg-white items-center justify-center px-8 text-center anim-fade">
+            <div className="w-16 h-16 border-4 border-primary-container border-t-primary-default rounded-full animate-spin mb-6" />
+            <h2 className="text-[16px] font-extrabold text-[#14181A] mb-1">Tukang sedang cek fisik barang...</h2>
+            <p className="text-[13px] text-[#5C6668]">Menyusun rincian harga final.</p>
+        </div>
+    );
+};
+
+const MInvoiceStep = ({ worker, onApprove, onReject }) => {
+    const [rejectOpen, setRejectOpen] = useState(false);
+    const biayaTetap = 25000, biayaPerbaikan = 125000, total = biayaTetap + biayaPerbaikan;
+    return (
+        <div className="flex flex-col h-full bg-white anim-page">
+            <MTopBar title="Invoice Digital" />
+            <div className="flex-1 overflow-y-auto p-5 pb-safe">
+                <div className="bg-[#F8FAFA] border border-[#E8EBEA] rounded-2xl p-5 mb-5">
+                    <p className="text-[12px] font-extrabold text-[#5C6668] uppercase tracking-wide mb-3">Rincian Biaya</p>
+                    <div className="flex justify-between text-[14px] text-[#14181A] mb-2"><span>Biaya Jasa Tetap (sudah dibayar)</span><span className="font-mono">Rp{biayaTetap.toLocaleString('id-ID')}</span></div>
+                    <div className="flex justify-between text-[14px] text-[#14181A] mb-3"><span>Sparepart & Perbaikan Kompresor</span><span className="font-mono">Rp{biayaPerbaikan.toLocaleString('id-ID')}</span></div>
+                    <div className="border-t border-[#E8EBEA] pt-3 flex justify-between text-[16px] font-extrabold text-[#14181A]"><span>Total</span><span className="font-mono">Rp{total.toLocaleString('id-ID')}</span></div>
+                </div>
+                <p className="text-[12px] text-[#8D9699] leading-relaxed px-1">Servis baru dimulai setelah kamu menyetujui invoice ini. Kalau menolak, Biaya Jasa Tetap yang sudah dibayar tetap jadi milik tukang sebagai jaminan kunjungan.</p>
+            </div>
+            <div className="p-5 pt-2 pb-safe bg-white border-t border-[#E8EBEA] flex gap-3">
+                <MButton variant="secondary" fullWidth onClick={() => setRejectOpen(true)}>Tolak</MButton>
+                <MButton variant="primary" fullWidth onClick={() => onApprove(total)}>Setuju</MButton>
+            </div>
+            <MBottomSheet isOpen={rejectOpen} onClose={() => setRejectOpen(false)} title="Tolak Biaya Tambahan?">
+                <div className="flex flex-col gap-4 pb-2">
+                    <p className="text-[14px] text-[#5C6668] leading-relaxed">Servis tidak akan dilanjutkan. Biaya Jasa Tetap Rp{biayaTetap.toLocaleString('id-ID')} tetap menjadi milik tukang sesuai kesepakatan awal.</p>
+                    <div className="flex gap-3">
+                        <MButton variant="secondary" fullWidth onClick={() => setRejectOpen(false)}>Batal</MButton>
+                        <MButton variant="primary" fullWidth onClick={() => onReject(biayaTetap)}>Ya, Tolak</MButton>
+                    </div>
+                </div>
+            </MBottomSheet>
+        </div>
+    );
+};
+
+const MMengerjakanStep = ({ onDone }) => {
+    useEffect(() => { const t = setTimeout(onDone, 1800); return () => clearTimeout(t); }, []);
+    return (
+        <div className="flex flex-col h-full bg-white items-center justify-center px-8 text-center anim-fade">
+            <div className="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center mb-6"><Icon.Wrench size={32} color="#046B0C" /></div>
+            <h2 className="text-[16px] font-extrabold text-[#14181A] mb-1">Sedang Diperbaiki</h2>
+            <p className="text-[13px] text-[#5C6668]">Tukang sedang mengerjakan servis kulkasmu.</p>
+        </div>
+    );
+};
+
+const MBeforeAfterStep = ({ onDone }) => {
+    const [uploaded, setUploaded] = useState({ before: false, after: false });
+    const both = uploaded.before && uploaded.after;
+    return (
+        <div className="flex flex-col h-full bg-white anim-page">
+            <MTopBar title="Bukti Hasil Servis" />
+            <div className="flex-1 p-5">
+                <p className="text-[13px] text-[#5C6668] mb-5">Unggah foto sebelum & sesudah supaya tercatat rapi di riwayatmu.</p>
+                <div className="grid grid-cols-2 gap-4">
+                    {['before', 'after'].map(k => (
+                        <button key={k} onClick={() => setUploaded(u => ({ ...u, [k]: true }))} className={`aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors ${uploaded[k] ? 'border-primary-default bg-primary-container/20' : 'border-[#E8EBEA] bg-[#F8FAFA]'}`}>
+                            {uploaded[k] ? <Icon.CheckCircle size={28} color="#00AA13" /> : <Icon.Camera size={28} color="#8D9699" />}
+                            <span className={`text-[12px] font-bold ${uploaded[k] ? 'text-[#046B0C]' : 'text-[#8D9699]'}`}>{k === 'before' ? 'Foto Sebelum' : 'Foto Sesudah'}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+            <div className="p-5 pt-2 pb-safe bg-white border-t border-[#E8EBEA]">
+                <MButton fullWidth size="hero" disabled={!both} onClick={onDone}>Selesai & Serah Terima</MButton>
+            </div>
+        </div>
+    );
+};
+
+const BarangBesarFlow = ({ data, onBack, onComplete }) => {
+    const [step, setStep] = useState('jadwal');
+    const [jadwal, setJadwal] = useState('Sekarang');
+    const [invoiceTotal, setInvoiceTotal] = useState(150000);
+    const worker = data.worker;
+
+    if (step === 'jadwal') return <MJadwalBiayaStep worker={worker} onConfirm={(j) => { setJadwal(j); setStep('menuju'); }} />;
+    if (step === 'menuju') return <MMenujuLokasiStep worker={worker} jadwal={jadwal} onArrived={() => setStep('kode')} />;
+    if (step === 'kode') return <MVerifikasiKodeStep onVerified={() => setStep('cek_fisik')} />;
+    if (step === 'cek_fisik') return <MCekFisikStep onDone={() => setStep('invoice')} />;
+    if (step === 'invoice') return <MInvoiceStep worker={worker}
+        onApprove={(total) => { setInvoiceTotal(total); setStep('mengerjakan'); }}
+        onReject={(biayaTetap) => onComplete({ worker, issue: data.issue, status: 'rejected', total: biayaTetap })} />;
+    if (step === 'mengerjakan') return <MMengerjakanStep onDone={() => setStep('before_after')} />;
+    if (step === 'before_after') return <MBeforeAfterStep onDone={() => onComplete({ worker, issue: data.issue, status: 'selesai', total: invoiceTotal })} />;
+    return null;
+};
 
 const WORKER_AUTO_REPLIES = [
     'Baik kak, ditunggu ya.',
@@ -2961,6 +3172,26 @@ const AppShell = ({ userName, onLogout }) => {
         addImpact(worker.category);
     };
 
+    const addOrderFromBarangBesar = ({ worker, issue, status, total }) => {
+        const newOrder = {
+            id: 'ORD-' + String(++orderSeq).padStart(3, '0'),
+            name: worker.name,
+            category: worker.category,
+            issue: issue || `Servis ${worker.category}`,
+            status: 'Selesai',
+            statusLabel: status === 'rejected' ? 'Selesai — Biaya Tambahan Ditolak' : 'Selesai',
+            date: 'Hari ini, baru saja',
+            price: `Rp${total.toLocaleString('id-ID')}`,
+            photo: worker.photo,
+        };
+        setOrders(o => [newOrder, ...o]);
+        setHasBookedBefore(true);
+        closeAllOverlays();
+        setTab('pesanan');
+        if (status !== 'rejected') addImpact(worker.category);
+        showToast(status === 'rejected' ? 'Servis dihentikan — Biaya Jasa Tetap tetap milik tukang.' : 'Servis selesai! Terima kasih sudah pakai Awetin 🎉');
+    };
+
     const handleReorder = (order) => {
         const worker = TUKANG_LIST.find(w => w.name === order.name) || TUKANG_LIST[0];
         replaceTop('booking', worker);
@@ -3024,6 +3255,10 @@ const AppShell = ({ userName, onLogout }) => {
                         {ov.screen === 'ai_scan' && <ScanAIScreen onBack={closeOverlay} onNavigate={(r, d) => push(r, d)} />}
 
                         {ov.screen === 'service_flow_kecil' && <ServiceFlowKecilScreen data={ov.data} onBack={closeOverlay} onNavigate={(r, d) => push(r, d)} />}
+
+                        {ov.screen === 'pilih_tukang_besar' && <PilihTukangBesarScreen data={ov.data} onBack={closeOverlay} onNavigate={(r, d) => push(r, d)} />}
+
+                        {ov.screen === 'barang_besar_flow' && <BarangBesarFlow data={ov.data} onBack={closeOverlay} onComplete={addOrderFromBarangBesar} />}
 
                         {ov.screen === 'chat' && <ChatScreen worker={ov.data?.worker} initialDraft={ov.data?.draft} issue={ov.data?.issue} onBack={closeOverlay} onAcceptQuote={addOrderFromChat} />}
 
