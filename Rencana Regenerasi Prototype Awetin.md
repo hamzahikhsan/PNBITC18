@@ -55,19 +55,21 @@ Setiap fase = satu putaran kerja mandiri dengan checkpoint publish, supaya progr
 - [x] Struktur file disesuaikan ke syarat Artifact (tanpa tag `<!DOCTYPE>/<html>/<head>/<body>`)
 - **Checkpoint:** [dipublikasikan](https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172) — tampilan & perilaku semua layar identik dengan punya Saif, murni ganti fondasi
 
-### Fase 2 — Navigasi & Sistem Kategori
+### Fase 2 — Navigasi & Sistem Kategori ✅ SELESAI
 **Tujuan:** Struktur navigasi 100% sesuai keputusan final PRD, kategori jasa punya identitas visual konsisten.
-- Audit & perbaiki bottom nav sisi pengguna ke 5 tab final PRD 5.2: **Home — Pesanan — Perbaiki (FAB tombol tengah) — Tukang — Profil**
-- Terapkan 4 warna aksen kategori (Elektronik/Jahit/Sepatu/Las) secara konsisten di: grid kategori Home, chip filter Direktori Tukang, tag hasil deteksi Scan AI, kartu listing Jual-Beli
-- **Checkpoint:** publish, telusuri navigasi antar 5 tab + filter kategori
+- [x] Audit bottom nav — **ternyata sudah sesuai** PRD 5.2 final (5 tab: Home/Pesanan/Perbaiki-FAB/Tukang/Profil), tidak perlu perbaikan struktural
+- [x] Satu sumber warna kategori (`CATEGORY_STYLE`) menggantikan 3 definisi ad-hoc berbeda yang sebelumnya ada di kode Saif — salah satunya (Elektronik) sempat pakai hijau primary yang sama persis dengan CTA, sekarang dipisah pakai token `DESIGN-awetin.md`
+- [x] Diterapkan di: grid kategori Home, dashboard Dampak Komunitas, kategori populer di Search
+- **Checkpoint:** [dipublikasikan](https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172)
 
-### Fase 3 — Menambal Gap Flow (dari Audit)
-**Tujuan:** Menutup 4 layar/flow yang terbukti hilang total dari build Saif.
-- **Klaim Garansi** — form (foto + keterangan) + status "Sedang Ditinjau" (Flow 7.12)
-- **Direktori Partner Donasi** — flow redirect sesuai kategori barang (Flow 7.6 poin 4), bukan cuma checkbox "Donasikan gratis" di form Jual
-- **Direktori Dropbox Daur Ulang Resmi** — termasuk percabangan pesan: elektronik (limbah B3, dropbox e-waste resmi) vs non-elektronik (bank sampah/daur ulang tekstil) (Flow 7.7)
-- **Riwayat Penyaluran Non-Servis** — layar terpisah mencatat barang yang sudah tersalur lewat jual/donasi/daur ulang (Screen #26)
-- **Checkpoint:** publish, pastikan ke-4 flow baru bisa diakses dari titik masuk yang benar (Triase, Riwayat, dsb.) — bukan layar yatim yang tidak terhubung dari mana pun
+### Fase 3 — Menambal Gap Flow (dari Audit) 🔶 SEBAGIAN SELESAI
+**Tujuan:** Menutup gap flow yang ditemukan.
+- [x] **Prioritas kritis (ditemukan saat verifikasi Fase 1-2, lebih penting dari 4 gap awal):** ScanAI cuma py 1 skenario ter-script (Kulkas) yang salah rute langsung ke chat Barang Kecil, padahal kulkas = Barang Besar per PRD. **Sudah diperbaiki:** Triase 3-arah ditambahkan di ScanAIScreen, dan flow Barang Besar penuh dibangun (Pilih Tukang → Jadwal & Biaya Jasa Tetap (QRIS) → Tukang Menuju Lokasi → Verifikasi Kode → Cek Fisik → Invoice & Persetujuan → Mengerjakan → Before/After → Serah Terima) — MVP backbone PRD Bagian 12 sekarang punya wujud nyata.
+- [ ] **Klaim Garansi** — form (foto + keterangan) + status "Sedang Ditinjau" (Flow 7.12) — belum dikerjakan
+- [ ] **Direktori Partner Donasi** — saat ini Triase "Jual-Donasi" masih redirect ke form Jual biasa (bukan direktori partner sesuai kategori, Flow 7.6 poin 4) — belum dikerjakan
+- [ ] **Direktori Dropbox Daur Ulang Resmi** — saat ini Triase "Daur Ulang" masih placeholder jujur (`FallbackScreen`), belum ada direktori dropbox sungguhan (Flow 7.7) — belum dikerjakan
+- [ ] **Riwayat Penyaluran Non-Servis** — layar terpisah (Screen #26) — belum dikerjakan
+- **Checkpoint:** [dipublikasikan](https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172) — bagian kritis sudah live, 4 item sisanya masih terbuka
 
 ### Fase 4 — Pengetatan UX ("Tanpa Jalan Buntu")
 **Tujuan:** Menegakkan Prinsip Desain #3 PRD secara menyeluruh, bukan cuma di layar-layar utama.
