@@ -1433,8 +1433,8 @@ const ScanAIScreen = ({ onBack, onNavigate }) => {
     const handleTriase = (pilihan) => {
         if (pilihan === 'perbaiki' && isBarangBesar) return onNavigate('pilih_tukang_besar', { category: 'Elektronik', issue: detectedIssue, aiDraft: draft });
         if (pilihan === 'perbaiki') return onNavigate('service_flow_kecil', { category: 'Elektronik', issue: detectedIssue, aiDraft: draft });
-        if (pilihan === 'jual_donasi') return onNavigate('jual_beli_form');
-        if (pilihan === 'daur_ulang') return onNavigate('fallback', 'Direktori Daur Ulang Resmi');
+        if (pilihan === 'jual_donasi') return onNavigate('jual_atau_donasi', { category: 'Elektronik' });
+        if (pilihan === 'daur_ulang') return onNavigate('daur_ulang_resmi', { category: 'Elektronik' });
         return onBack(); // "Belum yakin, nanti saja" — kembali ke Home, tanpa jalan buntu
     };
 
@@ -1886,6 +1886,170 @@ const BarangBesarFlow = ({ data, onBack, onComplete }) => {
     if (step === 'mengerjakan') return <MMengerjakanStep onDone={() => setStep('before_after')} />;
     if (step === 'before_after') return <MBeforeAfterStep onDone={() => onComplete({ worker, issue: data.issue, status: 'selesai', total: invoiceTotal })} />;
     return null;
+};
+
+/* ============================================================
+   Fase 3 (lanjutan): 4 gap flow dari Audit — Klaim Garansi,
+   Jual/Donasi (Flow 7.6), Daur Ulang Resmi (Flow 7.7),
+   Riwayat Penyaluran Non-Servis (Screen #26)
+   ============================================================ */
+
+const DONASI_PARTNERS = {
+    Elektronik: [{ name: 'Kembali.id — Donasi Elektronik', desc: 'Elektronik kecil & rumah tangga yang masih menyala akan direfurbish untuk keluarga prasejahtera.', jam: 'Senin–Sabtu, 09.00–17.00' }],
+    Pakaian: [{ name: 'Yayasan Peduli Sesama', desc: 'Pakaian layak pakai disalurkan ke panti asuhan & korban bencana.', jam: 'Setiap hari, 08.00–20.00' }],
+    Sepatu: [{ name: 'Sepatu Untuk Semua', desc: 'Sepatu layak pakai didistribusikan ke anak sekolah kurang mampu.', jam: 'Senin–Jumat, 09.00–16.00' }],
+    Las: [{ name: 'Bank Material Bekas Kota', desc: 'Logam & material las bekas didaur ulang jadi material konstruksi baru.', jam: 'Senin–Sabtu, 08.00–15.00' }],
+};
+
+const DAURULANG_POINTS = {
+    elektronik: [
+        { name: 'Dropbox E-Waste RJ Mall', alamat: 'Lobby Utama RJ Mall, Lt. Dasar', jam: 'Setiap hari, 10.00–21.00' },
+        { name: 'Dropbox Kantor Kelurahan', alamat: 'Kantor Kelurahan setempat', jam: 'Senin–Jumat, 08.00–15.00' },
+    ],
+    nonElektronik: [
+        { name: 'Bank Sampah Induk Wilayah', alamat: 'Jl. Melati No. 12', jam: 'Selasa & Jumat, 08.00–12.00' },
+    ],
+};
+
+const JualAtauDonasiScreen = ({ onBack, onPilihJual, onPilihDonasi }) => (
+    <div className="absolute inset-0 z-50 bg-white flex flex-col anim-page">
+        <MTopBar onBack={onBack} title="Jual atau Donasi" />
+        <div className="flex-1 p-5">
+            <div className="bg-warning-container border border-[#B8790A]/20 rounded-xl p-4 mb-6">
+                <p className="text-[12px] font-extrabold text-[#B8790A] uppercase tracking-wide mb-1">Perlu Diperhatikan</p>
+                <p className="text-[13px] text-[#5C6668] leading-relaxed">Khusus barang milik sendiri dari dalam negeri — bukan untuk memfasilitasi barang impor bekas ilegal.</p>
+            </div>
+            <div className="flex flex-col gap-3">
+                <button onClick={onPilihJual} className="w-full bg-white border border-[#E8EBEA] rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm active:bg-[#F8FAFA] transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center shrink-0"><Icon.ArrowUpRight size={22} color="#B8790A" /></div>
+                    <div className="flex-1"><p className="text-[15px] font-extrabold text-[#14181A]">Jual ke Warga Sekitar</p><p className="text-[12px] text-[#5C6668] mt-0.5">Pasang listing, atur harga sendiri</p></div>
+                    <Icon.ChevronRight size={18} color="#8D9699" />
+                </button>
+                <button onClick={onPilihDonasi} className="w-full bg-white border border-[#E8EBEA] rounded-2xl p-4 flex items-center gap-4 text-left shadow-sm active:bg-[#F8FAFA] transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center shrink-0"><Icon.Gift size={22} color="#046B0C" /></div>
+                    <div className="flex-1"><p className="text-[15px] font-extrabold text-[#14181A]">Donasikan ke Partner Resmi</p><p className="text-[12px] text-[#5C6668] mt-0.5">Disalurkan ke yang membutuhkan</p></div>
+                    <Icon.ChevronRight size={18} color="#8D9699" />
+                </button>
+            </div>
+        </div>
+    </div>
+);
+
+const DonasiPartnerScreen = ({ data, onBack, onDone }) => {
+    const [selected, setSelected] = useState(null);
+    const partners = DONASI_PARTNERS[data?.category] || DONASI_PARTNERS.Elektronik;
+    return (
+        <div className="absolute inset-0 z-50 bg-[#F4F6F6] flex flex-col anim-page">
+            <MTopBar onBack={onBack} title="Direktori Partner Donasi" />
+            <div className="flex-1 overflow-y-auto p-5">
+                <p className="text-[13px] text-[#5C6668] mb-4">Partner resmi untuk kategori {data?.category || 'Elektronik'}:</p>
+                {partners.map((p, i) => (
+                    <button key={i} onClick={() => setSelected(p)} className="w-full bg-white border border-[#E8EBEA] rounded-2xl p-4 mb-3 text-left shadow-sm active:bg-white/80 transition-colors">
+                        <p className="text-[15px] font-extrabold text-[#14181A] mb-1">{p.name}</p>
+                        <p className="text-[13px] text-[#5C6668] leading-relaxed mb-2">{p.desc}</p>
+                        <p className="text-[11px] text-[#8D9699] font-bold">{p.jam}</p>
+                    </button>
+                ))}
+            </div>
+            <MBottomSheet isOpen={!!selected} onClose={() => setSelected(null)} title={selected?.name}>
+                {selected && (
+                    <div className="flex flex-col gap-4 pb-2">
+                        <p className="text-[13px] text-[#5C6668] leading-relaxed">Antar barangmu langsung ke partner ini pada jam operasional, atau hubungi dulu untuk konfirmasi. Setelah barang diterima, tandai sudah disalurkan supaya tercatat di riwayat & dampak komunitasmu.</p>
+                        <MButton fullWidth size="hero" onClick={() => onDone({ category: data?.category, partnerName: selected.name })}>Tandai Sudah Disalurkan</MButton>
+                    </div>
+                )}
+            </MBottomSheet>
+        </div>
+    );
+};
+
+const DaurUlangResmiScreen = ({ data, onBack, onDone }) => {
+    const [selected, setSelected] = useState(null);
+    const isElektronik = (data?.category || 'Elektronik') === 'Elektronik';
+    const points = isElektronik ? DAURULANG_POINTS.elektronik : DAURULANG_POINTS.nonElektronik;
+    return (
+        <div className="absolute inset-0 z-50 bg-[#F4F6F6] flex flex-col anim-page">
+            <MTopBar onBack={onBack} title="Daur Ulang Resmi" />
+            <div className="flex-1 overflow-y-auto p-5">
+                <div className={`rounded-xl p-4 mb-5 border ${isElektronik ? 'bg-error-container border-[#D42F2F]/20' : 'bg-information-container border-[#2F72ED]/20'}`}>
+                    <div className="flex gap-3">
+                        <Icon.AlertTriangle size={20} color={isElektronik ? '#D42F2F' : '#2F72ED'} />
+                        <p className={`text-[13px] leading-relaxed font-bold ${isElektronik ? 'text-[#D42F2F]' : 'text-[#1B57BE]'}`}>
+                            {isElektronik ? 'Barang elektronik rusak termasuk limbah B3 — jangan dibuang ke tempat sampah biasa. Salurkan ke dropbox e-waste resmi.' : 'Salurkan ke bank sampah/opsi daur ulang tekstil terdekat, bukan tempat sampah biasa.'}
+                        </p>
+                    </div>
+                </div>
+                <p className="text-[13px] text-[#5C6668] mb-4">Titik terdekat:</p>
+                {points.map((p, i) => (
+                    <button key={i} onClick={() => setSelected(p)} className="w-full bg-white border border-[#E8EBEA] rounded-2xl p-4 mb-3 text-left shadow-sm active:bg-white/80 transition-colors flex items-start gap-3">
+                        <Icon.MapPin size={20} color="#8D9699" />
+                        <div className="flex-1"><p className="text-[14px] font-extrabold text-[#14181A]">{p.name}</p><p className="text-[12px] text-[#5C6668] mt-0.5">{p.alamat}</p><p className="text-[11px] text-[#8D9699] font-bold mt-1">{p.jam}</p></div>
+                    </button>
+                ))}
+            </div>
+            <MBottomSheet isOpen={!!selected} onClose={() => setSelected(null)} title={selected?.name}>
+                {selected && (
+                    <div className="flex flex-col gap-4 pb-2">
+                        <p className="text-[13px] text-[#5C6668] leading-relaxed">Antar barangmu ke titik ini pada jam operasional. Setelah diterima, tandai sudah disalurkan.</p>
+                        <MButton fullWidth size="hero" onClick={() => onDone({ category: data?.category, dropboxName: selected.name })}>Tandai Sudah Disalurkan</MButton>
+                    </div>
+                )}
+            </MBottomSheet>
+        </div>
+    );
+};
+
+const RiwayatPenyaluranScreen = ({ history, onBack }) => (
+    <div className="absolute inset-0 z-40 bg-[#F4F6F6] flex flex-col anim-page">
+        <MTopBar onBack={onBack} title="Riwayat Penyaluran" />
+        <div className="flex-1 overflow-y-auto p-5">
+            {history.length === 0 ? (
+                <div className="flex flex-col items-center text-center pt-20 px-6">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm"><Icon.Package size={32} color="#8D9699" /></div>
+                    <h3 className="text-[18px] font-bold text-[#14181A] mb-2">Belum ada riwayat</h3>
+                    <p className="text-[14px] text-[#5C6668]">Barang yang kamu jual, donasikan, atau daur ulang lewat Awetin akan tercatat di sini.</p>
+                </div>
+            ) : history.map(h => (
+                <div key={h.id} className="bg-white border border-[#E8EBEA] rounded-2xl p-4 mb-3 shadow-sm flex items-center gap-3">
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${h.type === 'Jual' ? 'bg-secondary-container' : h.type === 'Donasi' ? 'bg-primary-container' : 'bg-error-container'}`}>
+                        {h.type === 'Jual' ? <Icon.ArrowUpRight size={20} color="#B8790A" /> : h.type === 'Donasi' ? <Icon.Gift size={20} color="#046B0C" /> : <Icon.AlertTriangle size={20} color="#D42F2F" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-extrabold text-[#14181A] truncate">{h.item}</p>
+                        <p className="text-[12px] text-[#5C6668]">{h.type} · {h.target}</p>
+                    </div>
+                    <p className="text-[11px] text-[#8D9699] font-bold shrink-0">{h.date}</p>
+                </div>
+            ))}
+        </div>
+    </div>
+);
+
+const KlaimGaransiScreen = ({ order, onBack, onSubmit }) => {
+    const [foto, setFoto] = useState(false);
+    const [keterangan, setKeterangan] = useState('');
+    if (!order) return null;
+    return (
+        <div className="absolute inset-0 z-50 bg-white flex flex-col anim-page">
+            <MTopBar onBack={onBack} title="Klaim Garansi" />
+            <div className="flex-1 overflow-y-auto p-5 pb-safe">
+                <div className="bg-[#F8FAFA] border border-[#E8EBEA] rounded-xl p-3 mb-5 flex items-center gap-3">
+                    <img src={order.photo} className="w-10 h-10 rounded-full object-cover" alt={order.name} />
+                    <div className="min-w-0"><p className="text-[13px] font-extrabold text-[#14181A] truncate">{order.issue}</p><p className="text-[11px] text-[#8D9699]">{order.name} · {order.date}</p></div>
+                </div>
+                <label className="text-[12px] font-extrabold text-[#5C6668] uppercase tracking-wide block mb-2">Foto Kondisi Barang</label>
+                <button onClick={() => setFoto(true)} className={`w-full aspect-video rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 mb-5 transition-colors ${foto ? 'border-primary-default bg-primary-container/20' : 'border-[#E8EBEA] bg-[#F8FAFA]'}`}>
+                    {foto ? <Icon.CheckCircle size={28} color="#00AA13" /> : <Icon.Camera size={28} color="#8D9699" />}
+                    <span className={`text-[12px] font-bold ${foto ? 'text-[#046B0C]' : 'text-[#8D9699]'}`}>{foto ? 'Foto terunggah' : 'Unggah foto masalahnya'}</span>
+                </button>
+                <label className="text-[12px] font-extrabold text-[#5C6668] uppercase tracking-wide block mb-2">Keterangan</label>
+                <textarea value={keterangan} onChange={e => setKeterangan(e.target.value)} rows={4} placeholder="Jelaskan masalah yang muncul kembali setelah servis..." className="w-full bg-[#F8FAFA] border border-[#E8EBEA] rounded-xl p-3 text-[14px] text-[#14181A] outline-none focus:border-primary-default focus:bg-white transition-colors resize-none" />
+            </div>
+            <div className="p-5 pt-2 pb-safe bg-white border-t border-[#E8EBEA]">
+                <MButton fullWidth size="hero" disabled={!foto || !keterangan.trim()} onClick={() => onSubmit({ foto, keterangan })}>Ajukan Klaim Garansi</MButton>
+            </div>
+        </div>
+    );
 };
 
 const WORKER_AUTO_REPLIES = [
@@ -2378,10 +2542,11 @@ const ProfilTab = ({ userName = 'Budi Santoso', onLogout, onNavigate }) => {
                         <h4 className="text-[13px] font-extrabold text-[#5C6668] mb-2 px-1">Lainnya</h4>
                         <div className="bg-white rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-[#E8EBEA] overflow-hidden">
                             {[
+                                { icon: Icon.Package, label: 'Riwayat Penyaluran', route: 'riwayat_penyaluran' },
                                 { icon: Icon.MessageSquare, label: 'Bantuan & Pusat Panduan', route: 'help_center' },
                                 { icon: Icon.Info, label: 'Tentang Awetin', route: 'about' },
                             ].map((item, i) => (
-                                <button key={i} onClick={() => onNavigate(item.route, item.label)} className={`w-full flex justify-between items-center p-4 active:bg-[#F8FAFA] transition-colors text-left ${i !== 1 ? 'border-b border-[#E8EBEA]' : ''}`}>
+                                <button key={i} onClick={() => onNavigate(item.route, item.label)} className={`w-full flex justify-between items-center p-4 active:bg-[#F8FAFA] transition-colors text-left ${i !== 2 ? 'border-b border-[#E8EBEA]' : ''}`}>
                                     <div className="flex items-center gap-4">
                                         <item.icon size={20} color="#5C6668" />
                                         <span className="text-[15px] font-bold text-[#14181A]">{item.label}</span>
@@ -2657,7 +2822,7 @@ const AllFavoritesScreen = ({ favoriteIds, onBack, onSelectWorker }) => {
     );
 };
 
-const OrderDetailScreen = ({ order, onBack, onChatWorker, onReorder, onCompleteOrder }) => {
+const OrderDetailScreen = ({ order, onBack, onChatWorker, onReorder, onCompleteOrder, onKlaimGaransi }) => {
     const [reviewOpen, setReviewOpen] = useState(false);
     const [reviewRating, setReviewRating] = useState(5);
     const [reviewText, setReviewText] = useState('');
@@ -2734,14 +2899,28 @@ const OrderDetailScreen = ({ order, onBack, onChatWorker, onReorder, onCompleteO
                         <p className="text-[13px] font-bold text-[#046B0C]">Terima kasih atas ulasanmu!</p>
                     </div>
                 )}
+
+                {order.status === 'Selesai' && order.garansiStatus && (
+                    <div className="mx-5 mb-5 p-4 bg-warning-container border border-[#B8790A]/20 rounded-xl">
+                        <p className="text-[12px] font-extrabold text-[#B8790A] uppercase tracking-wide mb-1">Klaim Garansi</p>
+                        <p className="text-[13px] font-bold text-[#14181A]">
+                            {order.garansiStatus === 'Sedang Ditinjau' ? 'Sedang Ditinjau — menunggu respons tukang' : `Terjadwal servis ulang: ${order.garansiJadwal}`}
+                        </p>
+                    </div>
+                )}
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-[#E8EBEA] p-4 pb-safe flex flex-col gap-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
                 {order.status === 'Selesai' ? (
-                    <div className="flex gap-3">
-                        <MButton variant="secondary" fullWidth onClick={() => setReviewOpen(true)} disabled={reviewSent}>{reviewSent ? 'Sudah Diulas' : 'Beri Ulasan'}</MButton>
-                        <MButton variant="primary" fullWidth onClick={() => onReorder(order)}>Pesan Lagi</MButton>
-                    </div>
+                    <>
+                        <div className="flex gap-3">
+                            <MButton variant="secondary" fullWidth onClick={() => setReviewOpen(true)} disabled={reviewSent}>{reviewSent ? 'Sudah Diulas' : 'Beri Ulasan'}</MButton>
+                            <MButton variant="primary" fullWidth onClick={() => onReorder(order)}>Pesan Lagi</MButton>
+                        </div>
+                        {!order.garansiStatus && (
+                            <button onClick={() => onKlaimGaransi(order)} className="text-[13px] font-bold text-[#B8790A] text-center py-1">Ajukan Klaim Garansi</button>
+                        )}
+                    </>
                 ) : order.status === 'Dibatalkan' ? (
                     <MButton variant="primary" fullWidth onClick={() => onReorder(order)}>Pesan Lagi</MButton>
                 ) : (
@@ -3081,6 +3260,7 @@ const FallbackScreen = ({ label, onBack }) => (
 );
 
 let orderSeq = 4;
+let penyaluranSeq = 0;
 
 const INITIAL_IMPACT_COUNTS = { Elektronik: 60, Pakaian: 40, Sepatu: 25, Las: 17 };
 
@@ -3097,6 +3277,7 @@ const AppShell = ({ userName, onLogout }) => {
     const [impactCounts, setImpactCounts] = useState(INITIAL_IMPACT_COUNTS);
     const [personalContribution, setPersonalContribution] = useState(2);
     const [hasBookedBefore, setHasBookedBefore] = useState(false);
+    const [penyaluranHistory, setPenyaluranHistory] = useState([]);
 
     const showToast = (m) => { setToast(m); setTimeout(() => setToast(''), 2200); };
 
@@ -3192,6 +3373,32 @@ const AppShell = ({ userName, onLogout }) => {
         showToast(status === 'rejected' ? 'Servis dihentikan — Biaya Jasa Tetap tetap milik tukang.' : 'Servis selesai! Terima kasih sudah pakai Awetin 🎉');
     };
 
+    const addPenyaluranFromDonasi = ({ category, partnerName }) => {
+        setPenyaluranHistory(h => [{ id: 'PNY-' + String(++penyaluranSeq).padStart(3, '0'), type: 'Donasi', item: 'Kulkas LG 2 Pintu', category, target: partnerName, date: 'Hari ini' }, ...h]);
+        addImpact(category);
+        closeAllOverlays();
+        setTab('home');
+        showToast('Barangmu berhasil diselamatkan! +1 untuk wilayahmu.');
+    };
+
+    const addPenyaluranFromDaurUlang = ({ category, dropboxName }) => {
+        setPenyaluranHistory(h => [{ id: 'PNY-' + String(++penyaluranSeq).padStart(3, '0'), type: 'Daur Ulang', item: 'Kulkas LG 2 Pintu', category, target: dropboxName, date: 'Hari ini' }, ...h]);
+        addImpact(category);
+        closeAllOverlays();
+        setTab('home');
+        showToast('Barangmu berhasil disalurkan ke daur ulang resmi!');
+    };
+
+    const submitKlaimGaransi = (orderId) => {
+        setOrders(list => list.map(o => o.id === orderId ? { ...o, garansiStatus: 'Sedang Ditinjau' } : o));
+        closeOverlay();
+        showToast('Klaim garansi diajukan. Menunggu respons tukang.');
+        setTimeout(() => {
+            setOrders(list => list.map(o => o.id === orderId ? { ...o, garansiStatus: 'Terjadwal', garansiJadwal: 'Besok, 10:00' } : o));
+            showToast('Tukang menjadwalkan servis ulang untuk klaim garansimu.');
+        }, 4000);
+    };
+
     const handleReorder = (order) => {
         const worker = TUKANG_LIST.find(w => w.name === order.name) || TUKANG_LIST[0];
         replaceTop('booking', worker);
@@ -3212,7 +3419,7 @@ const AppShell = ({ userName, onLogout }) => {
     };
 
     const handleProfileNavigate = (route, data) => {
-        if (['keamanan', 'alamat', 'notif_pref', 'edit_profile', 'help_center', 'about'].includes(route)) return push(route);
+        if (['keamanan', 'alamat', 'notif_pref', 'edit_profile', 'help_center', 'about', 'riwayat_penyaluran'].includes(route)) return push(route);
         return push('fallback', data || route);
     };
 
@@ -3280,9 +3487,28 @@ const AppShell = ({ userName, onLogout }) => {
                         {ov.screen === 'order_detail' && <OrderDetailScreen order={liveOrder} onBack={closeOverlay}
                             onChatWorker={(order) => { const w = TUKANG_LIST.find(x => x.name === order.name); push('chat', { worker: w || TUKANG_LIST[0] }); }}
                             onReorder={handleReorder}
-                            onCompleteOrder={completeOrder} />}
+                            onCompleteOrder={completeOrder}
+                            onKlaimGaransi={(order) => push('klaim_garansi', order)} />}
 
-                        {ov.screen === 'jual_beli_form' && <JualBeliFormScreen onBack={closeOverlay} onSubmit={(listing) => { setListings(l => [listing, ...l]); closeOverlay(); showToast('Barang berhasil diunggah!'); }} />}
+                        {ov.screen === 'jual_beli_form' && <JualBeliFormScreen onBack={closeOverlay} onSubmit={(listing) => {
+                            setListings(l => [listing, ...l]);
+                            setPenyaluranHistory(h => [{ id: 'PNY-' + String(++penyaluranSeq).padStart(3, '0'), type: 'Jual', item: listing.title, category: 'Elektronik', target: 'Direktori Jual-Beli', date: 'Hari ini' }, ...h]);
+                            closeAllOverlays();
+                            setTab('tukang');
+                            showToast('Barang berhasil diunggah!');
+                        }} />}
+
+                        {ov.screen === 'jual_atau_donasi' && <JualAtauDonasiScreen onBack={closeOverlay}
+                            onPilihJual={() => push('jual_beli_form')}
+                            onPilihDonasi={() => push('donasi_partner', ov.data)} />}
+
+                        {ov.screen === 'donasi_partner' && <DonasiPartnerScreen data={ov.data} onBack={closeOverlay} onDone={addPenyaluranFromDonasi} />}
+
+                        {ov.screen === 'daur_ulang_resmi' && <DaurUlangResmiScreen data={ov.data} onBack={closeOverlay} onDone={addPenyaluranFromDaurUlang} />}
+
+                        {ov.screen === 'riwayat_penyaluran' && <RiwayatPenyaluranScreen history={penyaluranHistory} onBack={closeOverlay} />}
+
+                        {ov.screen === 'klaim_garansi' && <KlaimGaransiScreen order={liveOrder || ov.data} onBack={closeOverlay} onSubmit={() => submitKlaimGaransi(ov.data.id)} />}
 
                         {ov.screen === 'listing_detail' && <ListingDetailScreen listing={ov.data} onBack={closeOverlay}
                             onDelete={(id) => { setListings(l => l.filter(x => x.id !== id)); closeOverlay(); showToast('Listing dihapus.'); }} />}
