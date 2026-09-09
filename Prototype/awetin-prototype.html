@@ -198,6 +198,18 @@ const IMG = {
 };
 
 /* ============================================================
+   Fase 2: sumber tunggal warna kategori jasa (DESIGN-awetin.md)
+   Sengaja beda hue dari primary hijau & 4 warna semantic
+   (success/warning/error/information) supaya tidak ambigu makna.
+   ============================================================ */
+const CATEGORY_STYLE = {
+    Elektronik: { icon: Icon.Zap, bg: 'bg-category-elektronik-container', text: 'text-category-elektronik-on-container', hex: '#6C63E0' },
+    Pakaian: { icon: Icon.Shirt, bg: 'bg-category-jahit-container', text: 'text-category-jahit-on-container', hex: '#E8628C' },
+    Sepatu: { icon: Icon.Footprints, bg: 'bg-category-sepatu-container', text: 'text-category-sepatu-on-container', hex: '#8B4A3C' },
+    Las: { icon: Icon.Flame, bg: 'bg-category-las-container', text: 'text-category-las-on-container', hex: '#2C8C99' },
+};
+
+/* ============================================================
    BAGIAN 1: ONBOARDING / SIGN IN / SIGN UP  (sumber: file ke-1)
    Prefix "OB" dipakai supaya tidak bentrok dengan komponen layar utama.
    ============================================================ */
@@ -818,12 +830,7 @@ const HomeBannerCarousel = ({ onAction, banners }) => {
 };
 
 const HomeScreen = ({ userName, onNavigate, unreadCount = 0, totalImpact = 142, hasBookedBefore = false }) => {
-    const categories = [
-        { id: 'Elektronik', name: 'Elektronik', icon: Icon.Zap, bg: 'bg-green-100', text: 'text-green-600' },
-        { id: 'Pakaian', name: 'Pakaian', icon: Icon.Heart, bg: 'bg-pink-100', text: 'text-pink-600' },
-        { id: 'Sepatu', name: 'Sepatu', icon: Icon.Footprints, bg: 'bg-orange-100', text: 'text-orange-600' },
-        { id: 'Las', name: 'Las', icon: Icon.Flame, bg: 'bg-indigo-100', text: 'text-indigo-600' },
-    ];
+    const categories = ['Elektronik', 'Pakaian', 'Sepatu', 'Las'].map(id => ({ id, name: id, ...CATEGORY_STYLE[id] }));
     const favoriteWorkers = TUKANG_LIST.slice(0, 2);
 
     return (
@@ -995,10 +1002,10 @@ const BottomNav = ({ active, onChange }) => {
    ============================================================ */
 
 const IMPACT_META = {
-    Elektronik: { color: '#00AA13', bg: 'bg-[#E3F7E4]', Icon: Icon.Zap },
-    Pakaian: { color: '#EC6F8E', bg: 'bg-[#FCE7EB]', Icon: Icon.Shirt },
-    Sepatu: { color: '#F2994A', bg: 'bg-[#FEF1E6]', Icon: Icon.Footprints },
-    Las: { color: '#5C6BC0', bg: 'bg-[#EFEFF9]', Icon: Icon.Flame },
+    Elektronik: { color: CATEGORY_STYLE.Elektronik.hex, bg: CATEGORY_STYLE.Elektronik.bg, Icon: CATEGORY_STYLE.Elektronik.icon },
+    Pakaian: { color: CATEGORY_STYLE.Pakaian.hex, bg: CATEGORY_STYLE.Pakaian.bg, Icon: CATEGORY_STYLE.Pakaian.icon },
+    Sepatu: { color: CATEGORY_STYLE.Sepatu.hex, bg: CATEGORY_STYLE.Sepatu.bg, Icon: CATEGORY_STYLE.Sepatu.icon },
+    Las: { color: CATEGORY_STYLE.Las.hex, bg: CATEGORY_STYLE.Las.bg, Icon: CATEGORY_STYLE.Las.icon },
 };
 
 const DampakDashboardScreen = ({ onBack, impactCounts, personalContribution }) => {
@@ -1890,11 +1897,8 @@ const SearchScreen = ({ onBack, onSelectWorker }) => {
                         <div>
                             <h3 className="text-[14px] font-bold text-[#14181A] mb-4">Kategori Populer</h3>
                             <div className="grid grid-cols-2 gap-3">
-                                {[{ n: 'Elektronik', I: Icon.Zap, bg: 'bg-green-100', c: '#00AA13' },
-                                { n: 'Pakaian', I: Icon.Shirt, bg: 'bg-pink-100', c: '#EC6F8E' },
-                                { n: 'Sepatu', I: Icon.Footprints, bg: 'bg-orange-100', c: '#F2994A' },
-                                { n: 'Las', I: Icon.Flame, bg: 'bg-blue-100', c: '#5C6BC0' }
-                                ].map((cat, i) => (
+                                {['Elektronik', 'Pakaian', 'Sepatu', 'Las'].map(id => ({ n: id, I: CATEGORY_STYLE[id].icon, bg: CATEGORY_STYLE[id].bg, c: CATEGORY_STYLE[id].hex }))
+                                .map((cat, i) => (
                                     <button key={i} onClick={() => setQ(cat.n)} className="bg-white rounded-xl p-4 flex items-center gap-3 shadow-sm border border-[#E8ECEB] active:scale-[0.98] transition-transform text-left">
                                         <div className={`w-10 h-10 rounded-full ${cat.bg} flex items-center justify-center shrink-0`}><cat.I size={20} color={cat.c} /></div>
                                         <span className="text-[14px] font-bold text-[#14181A]">{cat.n}</span>
