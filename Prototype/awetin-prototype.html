@@ -379,7 +379,7 @@ const OB_COUNTRIES = [
     {name:'Malaysia', code:'+60', flag:'🇲🇾'}, {name:'Thailand', code:'+66', flag:'🇹🇭'},
 ];
 
-const OBWelcomeScreen = ({ onEnter }) => {
+const OBWelcomeScreen = ({ onEnter, onBrowseGuest }) => {
     const [slide, setSlide] = useState(0);
     const slides = [
         { title: "Barang rusak?\nJangan buru-buru dibuang.", desc: "Cek apakah barangmu masih layak diperbaiki cuma lewat foto." },
@@ -404,6 +404,7 @@ const OBWelcomeScreen = ({ onEnter }) => {
             </div>
             <div className="px-6 pb-8 flex flex-col gap-3">
                 <OBButton fullWidth size="hero" onClick={() => onEnter('login')}>Masuk / Daftar</OBButton>
+                <button onClick={onBrowseGuest} className="t-label-l text-text-secondary text-center py-1">Jelajahi Dulu, Nanti Saja</button>
                 <p className="t-caption text-text-tertiary text-center mt-2 leading-relaxed">Dengan masuk atau mendaftar, kamu menyetujui<br/><span className="text-primary-default font-semibold">Syarat Layanan</span> & <span className="text-primary-default font-semibold">Kebijakan Privasi</span> Awetin.</p>
             </div>
         </div>
@@ -683,8 +684,8 @@ const OBRecoveryFlow = ({ onBack, onDone }) => {
     );
 };
 
-const OnboardingFlow = ({ onComplete }) => {
-    const [step, setStep] = useState('welcome');
+const OnboardingFlow = ({ onComplete, onBrowseGuest, initialStep = 'welcome' }) => {
+    const [step, setStep] = useState(initialStep);
     const [mitraInfo, setMitraInfo] = useState(false);
     const [data, setData] = useState({ phone: '', method: 'wa', name: '', email: '' });
 
@@ -695,7 +696,7 @@ const OnboardingFlow = ({ onComplete }) => {
         }
     }, [step]);
 
-    if (step === 'welcome') return <OBWelcomeScreen onEnter={()=>setStep('interstitial')}/>;
+    if (step === 'welcome') return <OBWelcomeScreen onEnter={()=>setStep('interstitial')} onBrowseGuest={onBrowseGuest}/>;
     if (step === 'interstitial') return <><OBInterstitialRoleScreen onBack={()=>setStep('welcome')} onContinue={()=>setStep('phone')} onShowMitraInfo={()=>setMitraInfo(true)}/><OBMitraInfoSheet isOpen={mitraInfo} onClose={()=>setMitraInfo(false)}/></>;
     if (step === 'phone') return <OBPhoneEntryScreen onBack={()=>setStep('interstitial')} onRecovery={()=>setStep('recovery')} onContinue={(phone)=>{ setData(prev=>({...prev, phone})); setStep('otp_method'); }}/>;
     if (step === 'recovery') return <OBRecoveryFlow onBack={()=>setStep('phone')} onDone={()=>setStep('phone')}/>;
@@ -3349,8 +3350,14 @@ let penyaluranSeq = 0;
 
 const INITIAL_IMPACT_COUNTS = { Elektronik: 60, Pakaian: 40, Sepatu: 25, Las: 17 };
 
-const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
+const AppShell = ({ userName, onLogout, isDark, onToggleDark, isGuest, onRequireLogin }) => {
     const [tab, setTab] = useState('home');
+    const [loginGateOpen, setLoginGateOpen] = useState(false);
+    // Fase "lengkapi": PRD 7.1 - jelajah tanpa akun boleh, tapi transaksi nyata wajib login dulu.
+    const requireAuth = () => {
+        if (isGuest) { setLoginGateOpen(true); return false; }
+        return true;
+    };
     const [overlayStack, setOverlayStack] = useState([]);
     const [orders, setOrders] = useState(DATA_PESANAN);
     const [favoriteIds, setFavoriteIds] = useState(FAVORIT_IDS);
@@ -3367,7 +3374,14 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
     const showToast = (m) => { setToast(m); setTimeout(() => setToast(''), 2200); };
 
     const overlay = overlayStack[overlayStack.length - 1] || null;
-    const push = (screen, data) => setOverlayStack(s => [...s, { screen, data }]);
+    // Rute yang butuh login (PRD 7.1: boleh jelajah tanpa akun, wajib login pas mau transaksi nyata)
+    // Direktori/browsing (kategori, tukang, partner donasi, titik daur ulang) sengaja TIDAK dijaga —
+    // sesuai PRD 7.1. Gerbang login cuma di titik komitmen transaksi nyata.
+    const GUARDED_ROUTES = ['booking', 'chat', 'barang_besar_flow', 'jual_beli_form', 'klaim_garansi'];
+    const push = (screen, data) => {
+        if (GUARDED_ROUTES.includes(screen) && !requireAuth()) return;
+        setOverlayStack(s => [...s, { screen, data }]);
+    };
     const closeOverlay = () => setOverlayStack(s => s.slice(0, -1));
     const closeAllOverlays = () => setOverlayStack([]);
     const replaceTop = (screen, data) => setOverlayStack(s => [...s.slice(0, -1), { screen, data }]);
@@ -3389,6 +3403,7 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
     };
 
     const addOrderFromBooking = ({ worker, keluhan, jadwal }) => {
+        if (!requireAuth()) return;
         const newOrder = {
             id: 'ORD-' + String(++orderSeq).padStart(3, '0'),
             name: worker.name,
@@ -3409,6 +3424,7 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
     };
 
     const addOrderFromChat = ({ worker, quote, issue }) => {
+        if (!requireAuth()) return;
         const newOrder = {
             id: 'ORD-' + String(++orderSeq).padStart(3, '0'),
             name: worker.name,
@@ -3459,6 +3475,7 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
     };
 
     const addPenyaluranFromDonasi = ({ category, partnerName }) => {
+        if (!requireAuth()) return;
         setPenyaluranHistory(h => [{ id: 'PNY-' + String(++penyaluranSeq).padStart(3, '0'), type: 'Donasi', item: 'Kulkas LG 2 Pintu', category, target: partnerName, date: 'Hari ini' }, ...h]);
         addImpact(category);
         closeAllOverlays();
@@ -3467,6 +3484,7 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
     };
 
     const addPenyaluranFromDaurUlang = ({ category, dropboxName }) => {
+        if (!requireAuth()) return;
         setPenyaluranHistory(h => [{ id: 'PNY-' + String(++penyaluranSeq).padStart(3, '0'), type: 'Daur Ulang', item: 'Kulkas LG 2 Pintu', category, target: dropboxName, date: 'Hari ini' }, ...h]);
         addImpact(category);
         closeAllOverlays();
@@ -3514,7 +3532,7 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
                 {tab === 'home' && <HomeScreen userName={profileName} onNavigate={handleHomeNavigate} unreadCount={unreadCount} totalImpact={totalImpact} hasBookedBefore={hasBookedBefore} />}
                 {tab === 'pesanan' && <PesananScreen orders={orders} onViewDetail={(o) => push('order_detail', o)} onReorder={handleReorder} onGoHome={() => setTab('home')} />}
                 {tab === 'tukang' && <TukangDirectoryScreen
-                    isGuest={false}
+                    isGuest={isGuest}
                     favoriteIds={favoriteIds}
                     onToggleFavorite={toggleFavorite}
                     listings={listings}
@@ -3620,6 +3638,15 @@ const AppShell = ({ userName, onLogout, isDark, onToggleDark }) => {
             })}
 
             <Toast message={toast} show={!!toast} />
+
+            <MBottomSheet isOpen={loginGateOpen} onClose={() => setLoginGateOpen(false)} title="Masuk Dulu, Yuk">
+                <div className="flex flex-col gap-4 pb-2">
+                    <div className="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center mx-auto"><Icon.User size={28} color="#046B0C" /></div>
+                    <p className="text-[14px] text-text-secondary text-center leading-relaxed">Kamu bisa jelajah kategori & estimasi harga tanpa akun. Tapi buat lanjut transaksi ini (booking, chat, jual/donasi, klaim garansi), masuk atau daftar dulu ya — cuma butuh nomor HP.</p>
+                    <MButton fullWidth size="hero" onClick={() => { setLoginGateOpen(false); onRequireLogin(); }}>Masuk / Daftar</MButton>
+                    <button onClick={() => setLoginGateOpen(false)} className="text-[13px] font-bold text-text-secondary text-center py-1">Nanti Saja</button>
+                </div>
+            </MBottomSheet>
         </div>
     );
 };
@@ -3642,20 +3669,28 @@ const applyTheme = (mode) => {
 const App = () => {
     const [appPhase, setAppPhase] = useState('onboarding'); // 'onboarding' | 'main'
     const [userData, setUserData] = useState(null);
+    const [isGuest, setIsGuest] = useState(false);
+    const [onboardingStep, setOnboardingStep] = useState('welcome');
     const [themeMode, setThemeMode] = useState(() => readSavedTheme());
 
     useEffect(() => { applyTheme(themeMode); }, [themeMode]);
 
     if (appPhase === 'onboarding') {
         return (
-            <OnboardingFlow onComplete={(data) => { setUserData(data); setAppPhase('main'); }} />
+            <OnboardingFlow
+                initialStep={onboardingStep}
+                onBrowseGuest={() => { setIsGuest(true); setAppPhase('main'); }}
+                onComplete={(data) => { setUserData(data); setIsGuest(false); setAppPhase('main'); }}
+            />
         );
     }
 
     return (
         <AppShell
             userName={userData?.name || 'Budi'}
-            onLogout={() => { setUserData(null); setAppPhase('onboarding'); }}
+            isGuest={isGuest}
+            onRequireLogin={() => { setOnboardingStep('phone'); setAppPhase('onboarding'); }}
+            onLogout={() => { setUserData(null); setIsGuest(false); setOnboardingStep('welcome'); setAppPhase('onboarding'); }}
             isDark={themeMode ? themeMode === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches}
             onToggleDark={(checked) => setThemeMode(checked ? 'dark' : 'light')}
         />
