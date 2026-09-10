@@ -1,7 +1,7 @@
 # Rencana & Laporan Regenerasi Prototype Awetin (Web App Berbasis Code)
 
-**Disusun:** 6 September 2026 (brainstorming) — **diselesaikan:** 9 September 2026
-**Status:** ✅ **Fase 1–5 SELESAI.** **Link live:** https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172
+**Disusun:** 6 September 2026 (brainstorming) — **diselesaikan:** 9 September 2026 — **update:** 11 September 2026
+**Status:** ✅ **Fase 1–5 SELESAI** + gap "login dipaksa di depan" (ditemukan saat cross-check ke FigJam board "AWETIN — User Flow Lengkap") sudah ditutup — sekarang ada opsi "Jelajahi Dulu, Nanti Saja" sesuai PRD 7.1, gerbang login baru muncul di titik komitmen transaksi. **Link live:** https://claude.ai/code/artifact/6c1004e4-4a99-45dd-a5f8-f24ebbf3c172
 **Konteks:** Awetin butuh prototype fungsional interaktif untuk validasi flow & demo internal — **bukan pengganti submission Figma** (juklak lomba tetap wajib Figma, frame iPhone 16 393×852px). Prototype ini dipakai untuk memastikan flow benar-benar "tanpa jalan buntu" sebelum dipindah ke Figma, dan sebagai referensi visual yang lebih hidup daripada static mockup saat presentasi internal tim.
 
 ---
