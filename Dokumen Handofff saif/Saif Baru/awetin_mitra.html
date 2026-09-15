@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Awetin Mitra - Full App Prototype</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    mono: ['"JetBrains Mono"', 'monospace'],
+                },
+                colors: {
+                    primary: {
+                        default: '#00AA13', hover: '#049F16', pressed: '#038A10',
+                        disabled: '#A9DCAE', container: '#E3F7E4',
+                        'on-primary': '#FFFFFF', 'on-container': '#046B0C',
+                    },
+                    secondary: { default: '#F6A609', container: '#FFF1D6', 'on-secondary': '#1A1A1A' },
+                    background: '#F4F6F6',
+                    surface: '#FFFFFF',
+                    'surface-variant': '#F8FAFA',
+                    text: { primary: '#14181A', secondary: '#5C6668', tertiary: '#8D9699', disabled: '#B7BEBC' },
+                    border: '#E8EBEA', divider: '#F0F3F2',
+                    disabled: { background: '#EEF0EF', foreground: '#B7BEBC' },
+                    success: { default: '#1E9E4A', container: '#E4F7EA' },
+                    warning: { default: '#B8790A', container: '#FFF1D6' },
+                    error: { default: '#D42F2F', container: '#FCE7E7' },
+                    information: { default: '#2F72ED', container: '#E8F0FE' },
+                },
+                borderRadius: { xs: '4px', sm: '8px', md: '12px', lg: '16px', xl: '24px' },
+                boxShadow: {
+                    'elevation-1': '0 2px 8px rgba(20,24,22,0.04)',
+                    'elevation-2': '0 4px 16px rgba(20,24,22,0.08)',
+                    'elevation-3': '0 8px 24px rgba(20,24,22,0.12)',
+                    'elevation-4': '0 16px 32px rgba(20,24,22,0.16)',
+                    'bottom-nav': '0 -4px 24px rgba(0,0,0,0.06)',
+                },
+                keyframes: {
+                    fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                    fadeScaleIn: { '0%': { opacity: 0, transform: 'scale(0.95)' }, '100%': { opacity: 1, transform: 'scale(1)' } },
+                    sheetIn: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } },
+                    pageEnter: { '0%': { opacity: 0, transform: 'translateX(15px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+                    pulseSoft: { '0%,100%': { transform: 'scale(1)', opacity: 1 }, '50%': { transform: 'scale(1.06)', opacity: 0.85 } },
+                },
+                transitionTimingFunction: {
+                    standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    decelerate: 'cubic-bezier(0, 0, 0.2, 1)',
+                    accelerate: 'cubic-bezier(0.4, 0, 1, 1)',
+                },
+            }
+        }
+    }
+</script>
+
+<style>
+    .t-display { font-size: 34px; line-height: 40px; font-weight: 800; letter-spacing: -0.5px; }
+    .t-h1 { font-size: 28px; line-height: 36px; font-weight: 800; letter-spacing: -0.4px; }
+    .t-h2 { font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.3px; }
+    .t-h3 { font-size: 20px; line-height: 28px; font-weight: 700; letter-spacing: -0.2px; }
+    .t-title { font-size: 16px; line-height: 24px; font-weight: 700; letter-spacing: 0; }
+    .t-body-l { font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0; }
+    .t-body-m { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+    .t-body-s { font-size: 12px; line-height: 18px; font-weight: 500; letter-spacing: 0.1px; }
+    .t-label-l { font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: 0.1px; }
+    .t-label-m { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.2px; }
+    .t-label-s { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.2px; }
+    .t-caption { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.3px; }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+    .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+
+    html, body {
+        background-color: #E5E7EB; -webkit-tap-highlight-color: transparent;
+        font-family: 'Plus Jakarta Sans', sans-serif; color: #14181A;
+        margin: 0; padding: 0; height: 100%; overflow: hidden;
+    }
+    #root {
+        width: 100%; max-width: 414px; margin: 0 auto; background: #FFFFFF;
+        height: 100vh; height: 100dvh; position: relative; overflow: hidden;
+        box-shadow: 0 0 40px rgba(0,0,0,0.12); display: flex; flex-direction: column;
+    }
+
+    .anim-fade { animation: fadeIn 250ms ease-out both; }
+    .anim-fade-scale { animation: fadeScaleIn 250ms ease-out both; }
+    .anim-sheet-in { animation: sheetIn 300ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .anim-page { animation: pageEnter 300ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+    .anim-pulse-soft { animation: pulseSoft 2s infinite; }
+    .press-scale { transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1); }
+    .press-scale:active { transform: scale(0.96); }
+
+    .shimmer-bg { position: relative; overflow: hidden; }
+    .shimmer-bg::after {
+        content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
+        animation: shimmer-slide 1.4s infinite;
+    }
+    @keyframes shimmer-slide { 0% { left: -150%; } 100% { left: 150%; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+/* ============================================================
+   ICON DICTIONARY — Awetin Mitra
+   Stroke-based, konsisten dengan app Awetin (Pencari Jasa)
+   ============================================================ */
+const Icon = {
+    ArrowLeft: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>,
+    ArrowRight: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+    ArrowUpRight: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>,
+    X: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    Check: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+    CheckCircle: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.filled?"none":(p.color||"currentColor")} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{p.filled?<><circle cx="12" cy="12" r="10" fill={p.color||"currentColor"}/><path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" strokeWidth="2" fill="none"/></>:<><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></>}</svg>,
+    ChevronRight: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+    ChevronDown: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>,
+    Search: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    Wrench: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+    Home: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/>:<><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>}</svg>,
+    Receipt: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M4 2v20l2-2 2 2 2-2 2 2 2-2 2 2 2-2 2 2V2H4zm12 14H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V6h8v2z"/>:<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></>}</svg>,
+    Store: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M4 21V10.5L2 6l1-3h18l1 3-2 4.5V21h-6v-6H10v6H4z"/>:<><path d="M3 9l1-5h16l1 5"/><path d="M3 9a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0"/><path d="M4 9v11h16V9"/><path d="M10 20v-6h4v6"/></>}</svg>,
+    Wallet: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M21 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h17a1 1 0 0 0 1-1v-3h-4a3 3 0 0 1 0-6h4V8a1 1 0 0 0-1-1zM22 12a1 1 0 0 0-1-1h-4a2 2 0 0 0 0 4h4a1 1 0 0 0 1-1v-2zM17 5H5a1 1 0 0 0 0 2h12a1 1 0 0 0 0-2z"/>:<><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><path d="M18 12a2 2 0 0 0 0 4h3v-4z"/><path d="M3 9h18"/></>}</svg>,
+    TrendingUp: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    Images: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M3 13l3.5-3.5a1.5 1.5 0 0 1 2.12 0L13 14"/><circle cx="9.5" cy="7.5" r="1.25" fill={p.color||"currentColor"} stroke="none"/><path d="M7 21h11a2 2 0 0 0 2-2V8"/></svg>,
+    Lock: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>,
+    Fingerprint: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 10a2 2 0 0 0-2 2c0 1.5-.3 3.5-1 5"/><path d="M6 8a6 6 0 0 1 12 0c0 1 0 2.5-.3 4"/><path d="M12 4a8 8 0 0 1 8 8c0 1.5-.1 3-.4 4.5"/><path d="M9.5 20a12 12 0 0 0 1-4.5"/><path d="M4 12a8 8 0 0 1 .5-2.5"/><path d="M14 13.5a2 2 0 0 1-2 2.5"/></svg>,
+    LogOut: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+    Navigation: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>,
+    QrCode: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="14" y2="14.01"/><line x1="17.5" y1="14" x2="17.5" y2="17.5"/><line x1="14" y1="17.5" x2="17.5" y2="17.5"/><line x1="14" y1="21" x2="17.5" y2="21"/><line x1="21" y1="14" x2="21" y2="21"/></svg>,
+    Award: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>,
+    Upload: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+    Edit: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>,
+    Plus: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    Trash: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+    Calendar: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+    RotateCcw: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>,
+    FileText: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>,
+    HelpCircle: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+    Bell: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+    User: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth={p.filled?"0":"2"} strokeLinecap="round" strokeLinejoin="round">{p.filled?<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>:<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>}</svg>,
+    Star: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    MapPin: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill={p.filled?(p.color||"currentColor"):"none"} stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+    Camera: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+    Phone: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>,
+    Delete: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>,
+    Shield: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    ShieldCheck: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>,
+    AlertTriangle: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>,
+    AlertOctagon: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+    Info: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>,
+    Clock: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>,
+    Sparkles: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>,
+    Zap: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    Shirt: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 3l-4 3-4-3-6 3 3 5 3-2v11h8V9l3 2 3-5z"/></svg>,
+    Footprints: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 16v-2a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M13 8V6a3 3 0 0 1 3-3h1a3 3 0 0 1 3 3v2a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2z"/></svg>,
+    Flame: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17a2.5 2.5 0 0 0 2.5-2.5c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7.5 7.5 0 1 1-15 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
+    Banknote: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/></svg>,
+    MessageCircle: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
+    Package: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>,
+    SlidersH: (p) => <svg width={p.size||24} height={p.size||24} viewBox="0 0 24 24" fill="none" stroke={p.color||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>,
+};
+/* ============================================================
+   IMAGE HELPER
+   ============================================================ */
+const img = (id, w = 600) => `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;
+const IMG = {
+    avatarMitra: img('photo-1560250097-0b93528c311a', 200),
+    avatarPelangganBudi: img('photo-1507003211169-0a1dd7228f2d', 150),
+    avatarPelangganSinta: img('photo-1544005313-94ddf0286df2', 150),
+    avatarPelangganRina: img('photo-1580489944761-15a19d654956', 150),
+    fridge: img('photo-1484154218962-a197022b5858'),
+    washer: img('photo-1604335399105-a0c585fd81a1'),
+    kompresorBefore: img('photo-1621905251189-08b45d6a269e'),
+    kompresorAfter: img('photo-1592929903627-aa4e5d09d5f0'),
+    tokoUsaha: img('photo-1581092160562-40aa08e78837'),
+    ktpPlaceholder: img('photo-1554224155-8d04cb21cd6c'),
+    portfolio1: img('photo-1581092160562-40aa08e78837'),
+    portfolio2: img('photo-1621905251189-08b45d6a269e'),
+    portfolio3: img('photo-1592929903627-aa4e5d09d5f0'),
+    mapMock: img('photo-1524661135-423995f22d0b', 800),
+    // ---- Kunci berikut memakai foto yang SAMA PERSIS dengan Awetin (lihat IMG
+    // di awetin.html) supaya mitra lain yang disebut di data pesanan bersama
+    // (mis. Bu Sari Jahit, Bengkel Yanto) konsisten secara visual di kedua app.
+    avatarMan1: img('photo-1560249956-b3731ecf3153', 200),
+    avatarMan2: img('photo-1758876204244-930299843f07', 200),
+    avatarWomanTailor: img('photo-1581092795360-fd1ca04f0952', 200),
+    tailorShop: img('photo-1633655442356-ab2dbc69c772'),
+};
+
+/* ============================================================
+   BUTTON — identik dgn design system: radius-full, hero/md/sm/xs
+   ============================================================ */
+const MButton = ({ children, variant = 'primary', size = 'md', fullWidth = false, onClick, disabled = false, isLoading = false, className = '' }) => {
+    const base = "inline-flex items-center justify-center gap-2 font-bold transition-all duration-200 active:scale-[0.97] disabled:active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed select-none rounded-full";
+    const sizes = { hero: "h-[52px] px-6 text-[15px]", md: "h-12 px-6 text-[14px]", sm: "h-10 px-4 text-[13px]", xs: "h-8 px-3 text-[12px]" };
+    const width = fullWidth ? "w-full" : "w-fit";
+    const variants = {
+        primary: "bg-[#00AA13] text-white shadow-[0_4px_12px_rgba(0,170,19,0.2)] hover:bg-[#049F16]",
+        secondary: "bg-white text-[#14181A] border border-[#E8EBEA] shadow-sm hover:bg-[#F8FAFA]",
+        outline: "bg-transparent text-[#00AA13] border border-[#00AA13] hover:bg-[#E3F7E4]",
+        ghost: "bg-transparent text-[#5C6668] hover:bg-[#F8FAFA]",
+        destructive: "bg-[#D42F2F] text-white shadow-[0_4px_12px_rgba(212,47,47,0.2)] hover:bg-[#B82727]",
+        destructiveOutline: "bg-white text-[#D42F2F] border border-[#E8EBEA] shadow-sm hover:bg-[#FCE7E7]",
+    };
+    return (
+        <button onClick={onClick} disabled={disabled || isLoading} className={`${base} ${sizes[size]} ${width} ${variants[variant]} ${className}`}>
+            {isLoading ? <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"/> : children}
+        </button>
+    );
+};
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+const MTopBar = ({ onBack, title, bg = "bg-white", text = "text-[#14181A]", border = true, right = null }) => (
+    <div className={`h-14 flex items-center px-2 pt-safe shrink-0 relative z-10 ${bg} ${border ? 'border-b border-[#E8EBEA]' : ''}`}>
+        {onBack && (
+            <button onClick={onBack} className={`w-12 h-12 flex items-center justify-center ${text} active:bg-black/5 rounded-full transition-colors`}>
+                <Icon.ArrowLeft size={24} />
+            </button>
+        )}
+        {title && <h3 className={`text-[16px] font-extrabold ${text} absolute left-1/2 -translate-x-1/2 tracking-tight max-w-[60%] truncate text-center`}>{title}</h3>}
+        {right && <div className="ml-auto mr-2 flex items-center gap-1">{right}</div>}
+    </div>
+);
+
+/* ============================================================
+   BOTTOM SHEET
+   ============================================================ */
+const MBottomSheet = ({ isOpen, onClose, title, children }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="absolute inset-0 z-[100] flex flex-col justify-end">
+            <div className="absolute inset-0 bg-[#14181A]/40 backdrop-blur-[2px] anim-fade" onClick={onClose} />
+            <div className="bg-white rounded-t-[24px] relative z-10 anim-sheet-in flex flex-col max-h-[88%] shadow-[0_-8px_32px_rgba(0,0,0,0.12)]">
+                <div className="flex justify-center pt-3 pb-2"><div className="w-12 h-1.5 bg-[#E8EBEA] rounded-full" /></div>
+                {title && (
+                    <div className="px-5 pb-4 pt-2 flex justify-between items-center border-b border-[#E8EBEA]">
+                        <h3 className="text-[18px] font-extrabold text-[#14181A] tracking-tight">{title}</h3>
+                        {onClose && <button onClick={onClose} className="w-8 h-8 flex items-center justify-center bg-[#F4F6F6] rounded-full text-[#5C6668] active:scale-95 transition-transform"><Icon.X size={16} /></button>}
+                    </div>
+                )}
+                <div className="overflow-y-auto no-scrollbar px-5 pb-safe pt-4">{children}</div>
+            </div>
+        </div>
+    );
+};
+
+/* ============================================================
+   CONFIRMATION MODAL — dipakai untuk semua aksi destruktif/penting
+   (Tolak pesanan, Batalkan Sepihak, Logout) — WAJIB sebutkan konsekuensi
+   ============================================================ */
+const ConfirmationModal = ({ isOpen, icon: IconComp = Icon.AlertTriangle, iconColor = "#D42F2F", iconBg = "bg-[#FCE7E7]", title, message, consequence, confirmLabel = "Ya, Lanjutkan", confirmVariant = "destructive", cancelLabel = "Batal", onConfirm, onCancel, isLoading = false }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="absolute inset-0 z-[110] flex items-center justify-center px-6">
+            <div className="absolute inset-0 bg-[#14181A]/50 anim-fade" onClick={onCancel} />
+            <div className="bg-white w-full rounded-[24px] relative z-10 anim-fade-scale overflow-hidden shadow-elevation-4 p-6">
+                <div className={`w-14 h-14 rounded-full ${iconBg} flex items-center justify-center mb-4`}>
+                    <IconComp size={26} color={iconColor} />
+                </div>
+                <h3 className="text-[18px] font-extrabold text-[#14181A] mb-2 leading-snug">{title}</h3>
+                <p className="text-[14px] text-[#5C6668] leading-relaxed mb-3">{message}</p>
+                {consequence && (
+                    <div className="bg-[#FFF1D6] rounded-xl p-3 flex gap-2 mb-4">
+                        <Icon.AlertTriangle size={16} color="#B8790A" />
+                        <p className="text-[12px] text-[#8A5D07] leading-snug font-semibold">{consequence}</p>
+                    </div>
+                )}
+                <div className="flex flex-col gap-2 mt-2">
+                    <MButton variant={confirmVariant} fullWidth onClick={onConfirm} isLoading={isLoading}>{confirmLabel}</MButton>
+                    <MButton variant="ghost" fullWidth onClick={onCancel}>{cancelLabel}</MButton>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/* ============================================================
+   TOAST / SNACKBAR
+   ============================================================ */
+const ToastSnackbar = ({ message, show, actionLabel, onAction }) => (
+    <div className={`absolute left-4 right-4 bottom-[84px] z-[120] transition-all duration-300 ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'}`}>
+        <div className="bg-[#14181A] text-white rounded-xl px-4 py-3 shadow-elevation-3 flex items-center justify-between gap-3">
+            <span className="text-[13px] font-semibold leading-snug">{message}</span>
+            {actionLabel && <button onClick={onAction} className="text-[12px] font-bold text-primary-container shrink-0">{actionLabel}</button>}
+        </div>
+    </div>
+);
+
+/* ============================================================
+   SKELETON LOADER — shimmer, mengikuti radius komponen aslinya
+   ============================================================ */
+const Skel = ({ className = '' }) => (
+    <div className={`bg-[#EEF0EF] shimmer-bg ${className}`} />
+);
+const SkeletonOrderCard = () => (
+    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4 flex gap-3">
+        <Skel className="w-16 h-16 rounded-xl shrink-0" />
+        <div className="flex-1 flex flex-col gap-2 py-1">
+            <Skel className="h-3.5 w-2/3 rounded-full" />
+            <Skel className="h-3 w-1/2 rounded-full" />
+            <Skel className="h-3 w-1/3 rounded-full" />
+        </div>
+    </div>
+);
+const SkeletonSummaryRow = () => (
+    <div className="grid grid-cols-3 gap-2">
+        {[0, 1, 2].map(i => (
+            <div key={i} className="bg-white rounded-2xl border border-[#E8EBEA] p-3 flex flex-col gap-2">
+                <Skel className="h-3 w-3/4 rounded-full" />
+                <Skel className="h-5 w-1/2 rounded-full" />
+            </div>
+        ))}
+    </div>
+);
+
+/* ============================================================
+   EMPTY STATE — ajakan bertindak spesifik
+   ============================================================ */
+const EmptyState = ({ icon: IconComp = Icon.Package, title, desc, ctaLabel, onCta }) => (
+    <div className="flex flex-col items-center justify-center text-center px-8 py-16">
+        <div className="w-20 h-20 rounded-full bg-[#F1F3F1] flex items-center justify-center mb-4">
+            <IconComp size={32} color="#8D9699" />
+        </div>
+        <h4 className="text-[16px] font-extrabold text-[#14181A] mb-1.5">{title}</h4>
+        <p className="text-[13px] text-[#5C6668] leading-relaxed max-w-[260px]">{desc}</p>
+        {ctaLabel && <MButton variant="outline" size="sm" className="mt-5" onClick={onCta}>{ctaLabel}</MButton>}
+    </div>
+);
+
+/* ============================================================
+   ERROR / OFFLINE BANNER
+   ============================================================ */
+const OfflineBanner = ({ show, onRetry }) => (
+    <div className={`overflow-hidden transition-all duration-300 ${show ? 'max-h-16' : 'max-h-0'}`}>
+        <div className="bg-[#FCE7E7] px-4 py-2.5 flex items-center gap-2 border-b border-[#F3C6C6]">
+            <Icon.AlertTriangle size={16} color="#D42F2F" />
+            <p className="text-[12px] font-semibold text-[#B82727] flex-1">Koneksi terputus, coba lagi.</p>
+            <button onClick={onRetry} className="text-[12px] font-extrabold text-[#D42F2F] press-scale">Coba Lagi</button>
+        </div>
+    </div>
+);
+
+/* ============================================================
+   OTP INPUT FIELD
+   ============================================================ */
+const OTPInputField = ({ length = 4, value, status = 'idle' }) => {
+    const borderColor = status === 'error' ? 'border-error-default bg-[#FCE7E7]' : status === 'success' ? 'border-success-default bg-[#E4F7EA]' : 'border-[#E8EBEA] bg-[#F8FAFA]';
+    return (
+        <div className="flex gap-3 justify-center">
+            {Array.from({ length }).map((_, i) => (
+                <div key={i} className={`w-12 h-14 rounded-xl border-[1.5px] ${borderColor} flex items-center justify-center text-[22px] font-extrabold text-[#14181A] font-mono transition-colors`}>
+                    {value[i] || ''}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const NumericKeypad = ({ onDigit, onBackspace }) => {
+    const rows = [
+        [{ n: '1', l: '' }, { n: '2', l: 'ABC' }, { n: '3', l: 'DEF' }],
+        [{ n: '4', l: 'GHI' }, { n: '5', l: 'JKL' }, { n: '6', l: 'MNO' }],
+        [{ n: '7', l: 'PQRS' }, { n: '8', l: 'TUV' }, { n: '9', l: 'WXYZ' }],
+    ];
+    const Key = ({ n, l, onClick, children }) => (
+        <button onClick={onClick} className="h-14 flex flex-col items-center justify-center rounded-xl bg-white active:bg-[#F4F6F6] transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.05)] border border-[#E8EBEA]">
+            {children ? children : (
+                <>
+                    <span className="text-[22px] font-extrabold text-[#14181A] leading-none">{n}</span>
+                    {l && <span className="text-[9px] text-[#8D9699] tracking-widest mt-0.5">{l}</span>}
+                </>
+            )}
+        </button>
+    );
+    return (
+        <div className="bg-[#F4F6F6] px-4 pt-3 pb-safe grid grid-cols-3 gap-2 shrink-0 border-t border-[#F0F3F2]">
+            {rows.flat().map(k => <Key key={k.n} n={k.n} l={k.l} onClick={() => onDigit(k.n)} />)}
+            <div />
+            <Key n="0" onClick={() => onDigit('0')} />
+            <Key onClick={onBackspace}><Icon.Delete size={22} color="#5C6668" /></Key>
+        </div>
+    );
+};
+
+/* ============================================================
+   TOGGLE SWITCH — dipakai untuk Buka/Tutup, preferensi notif, dll
+   ============================================================ */
+const Toggle = ({ checked, onChange, size = 'md' }) => {
+    const dims = size === 'lg' ? { w: 'w-14', h: 'h-8', knob: 'w-6 h-6', translate: 'translate-x-6' } : { w: 'w-11', h: 'h-6', knob: 'w-5 h-5', translate: 'translate-x-5' };
+    return (
+        <button onClick={onChange} className={`${dims.w} ${dims.h} rounded-full p-0.5 transition-colors duration-200 shrink-0 ${checked ? 'bg-[#00AA13]' : 'bg-[#DDE2E1]'}`}>
+            <div className={`${dims.knob} bg-white rounded-full shadow-md transition-transform duration-200 ${checked ? dims.translate : 'translate-x-0'}`} />
+        </button>
+    );
+};
+
+/* ============================================================
+   RATING STARS (readonly / interactive)
+   ============================================================ */
+const RatingStars = ({ value = 0, size = 16, interactive = false, onChange }) => (
+    <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map(i => (
+            <button key={i} disabled={!interactive} onClick={() => interactive && onChange(i)} className={interactive ? 'press-scale' : ''}>
+                <Icon.Star size={size} filled={i <= value} color={i <= value ? '#F6A609' : '#DDE2E1'} />
+            </button>
+        ))}
+    </div>
+);
+/* ============================================================
+   BADGE STATUS — chip kecil, warna sesuai status (design system:
+   information=diproses, primary=aktif, success=selesai, error=batal)
+   `STATUS_META`, `BESAR_STEPS`, `KECIL_STEPS`, dan `CANCELLABLE_STATUSES`
+   sekarang didefinisikan SATU KALI di modul "AWETIN ECOSYSTEM — KONTRAK
+   DATA BERSAMA" dekat bagian atas file ini (identik dengan awetin.html),
+   supaya kosakata status yang dilihat mitra & pelanggan selalu sama persis.
+   ============================================================ */
+const StatusBadge = ({ status, small = false }) => {
+    const meta = STATUS_META[status] || STATUS_META.baru;
+    return (
+        <span className={`inline-flex items-center gap-1 rounded-full font-bold ${meta.bg} ${meta.text} ${small ? 'text-[10px] px-2 py-0.5' : 'text-[11px] px-2.5 py-1'}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+            {meta.label}
+        </span>
+    );
+};
+
+/* ============================================================
+   ORDER REQUEST CARD — pesanan baru butuh respon (Terima/Tolak)
+   dipakai di Beranda (ringkas) dan Tab Pesanan Masuk (lengkap)
+   ============================================================ */
+const OrderRequestCard = ({ order, onAccept, onReject, onView, compact = false, isLoadingAccept = false }) => (
+    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4 shadow-elevation-1">
+        <div className="flex gap-3">
+            <img src={order.photo} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0 border border-[#E8EBEA]" />
+            <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-2">
+                    <h4 className="text-[14px] font-extrabold text-[#14181A] leading-snug truncate">{order.itemName}</h4>
+                    <span className="text-[10px] font-bold text-[#8D9699] shrink-0">{order.timeAgo}</span>
+                </div>
+                <p className="text-[12px] text-[#5C6668] mt-0.5 line-clamp-1">{order.issue}</p>
+                <div className="flex items-center gap-3 mt-1.5">
+                    <span className="flex items-center gap-1 text-[11px] font-semibold text-[#8D9699]"><Icon.MapPin size={12} /> {order.distance}</span>
+                    <span className="text-[11px] font-bold text-primary-default bg-primary-container px-1.5 py-0.5 rounded-md">{order.type === 'besar' ? 'Barang Besar' : 'Barang Kecil'}</span>
+                </div>
+            </div>
+        </div>
+        {!compact ? (
+            <div className="flex gap-2 mt-3.5">
+                <MButton variant="destructiveOutline" size="sm" fullWidth onClick={onReject}>Tolak</MButton>
+                <MButton variant="primary" size="sm" fullWidth onClick={onAccept} isLoading={isLoadingAccept}>Terima</MButton>
+            </div>
+        ) : (
+            <button onClick={onView} className="w-full mt-3 h-9 rounded-full bg-[#F4F6F6] text-[12px] font-bold text-[#14181A] press-scale">Lihat & Respon</button>
+        )}
+    </div>
+);
+
+/* ============================================================
+   ORDER AKTIF CARD — untuk pesanan yang sudah diterima
+   ============================================================ */
+const ActiveOrderCard = ({ order, onView }) => (
+    <button onClick={onView} className="w-full text-left bg-white rounded-2xl border border-[#E8EBEA] p-4 shadow-elevation-1 press-scale">
+        <div className="flex items-start justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2 min-w-0">
+                <img src={order.customerAvatar} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                <div className="min-w-0">
+                    <p className="text-[13px] font-extrabold text-[#14181A] truncate">{order.customerName}</p>
+                    <p className="text-[11px] text-[#8D9699]">{order.id}</p>
+                </div>
+            </div>
+            <StatusBadge status={order.status} small />
+        </div>
+        <div className="flex gap-3 mt-2">
+            <img src={order.photo} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0 border border-[#E8EBEA]" />
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <p className="text-[13px] font-bold text-[#14181A] truncate">{order.itemName}</p>
+                <p className="text-[11px] text-[#5C6668] mt-0.5 line-clamp-1">{order.issue}</p>
+            </div>
+            <Icon.ChevronRight size={20} color="#8D9699" />
+        </div>
+    </button>
+);
+
+/* ============================================================
+   STATUS STEPPER — vertikal, dipakai di Detail Pesanan
+   ============================================================ */
+const StatusStepper = ({ steps, currentIndex }) => (
+    <div className="flex flex-col">
+        {steps.map((step, i) => {
+            const done = i < currentIndex;
+            const active = i === currentIndex;
+            const isLast = i === steps.length - 1;
+            return (
+                <div key={i} className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                        <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-primary-default' : active ? 'bg-primary-default anim-pulse-soft' : 'bg-[#E8EBEA]'}`}>
+                            {done && <Icon.Check size={12} color="#fff" />}
+                            {active && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                        {!isLast && <div className={`w-0.5 flex-1 min-h-[28px] ${done ? 'bg-primary-default' : 'bg-[#E8EBEA]'}`} />}
+                    </div>
+                    <div className={`pb-6 ${isLast ? 'pb-0' : ''}`}>
+                        <p className={`text-[13px] leading-tight ${done || active ? 'font-extrabold text-[#14181A]' : 'font-semibold text-[#8D9699]'}`}>{step.label}</p>
+                        {step.time && (done || active) && <p className="text-[11px] text-[#8D9699] mt-0.5">{step.time}</p>}
+                    </div>
+                </div>
+            );
+        })}
+    </div>
+);
+
+/* ============================================================
+   LIVE TRACKING MAP (mock) — peta rute tukang menuju lokasi user
+   ============================================================ */
+const LiveTrackingMap = ({ etaText = '12 menit lagi', distanceText = '3.2 km' }) => (
+    <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#E8EBEA] shrink-0">
+        <img src={IMG.mapMock} alt="Peta rute" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 300 180">
+            <path d="M40 150 Q 100 60 260 40" stroke="#00AA13" strokeWidth="4" strokeDasharray="1 10" strokeLinecap="round" fill="none" />
+        </svg>
+        <div className="absolute" style={{ left: '10%', bottom: '14%' }}>
+            <div className="w-8 h-8 rounded-full bg-primary-default border-[3px] border-white shadow-elevation-2 flex items-center justify-center anim-pulse-soft">
+                <Icon.Navigation size={14} color="#fff" />
+            </div>
+        </div>
+        <div className="absolute" style={{ right: '10%', top: '16%' }}>
+            <div className="w-7 h-7 rounded-full bg-[#14181A] border-[3px] border-white shadow-elevation-2 flex items-center justify-center">
+                <Icon.MapPin size={13} color="#fff" />
+            </div>
+        </div>
+        <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-between shadow-elevation-1">
+            <span className="text-[12px] font-extrabold text-[#14181A]">{etaText}</span>
+            <span className="text-[11px] font-semibold text-[#5C6668]">{distanceText}</span>
+        </div>
+    </div>
+);
+
+/* ============================================================
+   PHOTO UPLOADER — dipakai untuk KTP, foto lokasi usaha, before/after
+   ============================================================ */
+const PhotoUploader = ({ label, hint, image, onUpload, aspect = 'aspect-[4/3]', small = false }) => (
+    <div>
+        {label && <p className="text-[13px] font-bold text-[#14181A] mb-1.5">{label}</p>}
+        <button
+            onClick={onUpload}
+            className={`w-full ${aspect} ${small ? 'max-w-[140px]' : ''} rounded-2xl border-2 border-dashed transition-colors press-scale flex flex-col items-center justify-center gap-2 overflow-hidden relative ${image ? 'border-transparent' : 'border-[#DDE2E1] bg-[#F8FAFA]'}`}
+        >
+            {image ? (
+                <>
+                    <img src={image} alt="" className="w-full h-full object-cover absolute inset-0" />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <span className="text-white text-[11px] font-bold bg-black/40 px-2 py-1 rounded-full">Ganti Foto</span>
+                    </div>
+                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-success-default flex items-center justify-center">
+                        <Icon.Check size={14} color="#fff" />
+                    </div>
+                </>
+            ) : (
+                <>
+                    <div className="w-11 h-11 rounded-full bg-white border border-[#E8EBEA] flex items-center justify-center">
+                        <Icon.Camera size={20} color="#5C6668" />
+                    </div>
+                    <span className="text-[12px] font-bold text-[#5C6668]">Ambil / Unggah Foto</span>
+                </>
+            )}
+        </button>
+        {hint && <p className="text-[11px] text-[#8D9699] mt-1.5 leading-relaxed">{hint}</p>}
+    </div>
+);
+
+/* ============================================================
+   INVOICE EDITOR — input harga final + rincian (Barang Besar)
+   ============================================================ */
+const InvoiceEditor = ({ items, onItemsChange, onSubmit, isLoading = false }) => {
+    const [localItems, setLocalItems] = useState(items || [{ id: 1, name: '', price: '' }]);
+    const update = (id, field, val) => {
+        const next = localItems.map(it => it.id === id ? { ...it, [field]: val } : it);
+        setLocalItems(next);
+        onItemsChange && onItemsChange(next);
+    };
+    const addItem = () => setLocalItems([...localItems, { id: Date.now(), name: '', price: '' }]);
+    const removeItem = (id) => setLocalItems(localItems.filter(it => it.id !== id));
+    const total = localItems.reduce((sum, it) => sum + (parseInt(String(it.price).replace(/\D/g, '')) || 0), 0);
+
+    return (
+        <div>
+            <div className="flex flex-col gap-3">
+                {localItems.map((it, i) => (
+                    <div key={it.id} className="flex gap-2 items-start">
+                        <div className="flex-1 flex flex-col gap-1.5">
+                            <input
+                                value={it.name}
+                                onChange={(e) => update(it.id, 'name', e.target.value)}
+                                placeholder={i === 0 ? 'Contoh: Jasa servis kompresor' : 'Contoh: Sparepart kapasitor'}
+                                className="h-11 rounded-lg border border-[#E8EBEA] px-3.5 text-[13px] font-semibold text-[#14181A] placeholder:text-[#8D9699] placeholder:font-medium focus:border-primary-default outline-none"
+                            />
+                            <div className="relative">
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] font-semibold text-[#8D9699]">Rp</span>
+                                <input
+                                    value={it.price}
+                                    onChange={(e) => update(it.id, 'price', e.target.value.replace(/\D/g, ''))}
+                                    placeholder="0"
+                                    inputMode="numeric"
+                                    className="w-full h-11 rounded-lg border border-[#E8EBEA] pl-9 pr-3.5 text-[13px] font-bold text-[#14181A] font-mono placeholder:text-[#8D9699] placeholder:font-medium focus:border-primary-default outline-none"
+                                />
+                            </div>
+                        </div>
+                        {localItems.length > 1 && (
+                            <button onClick={() => removeItem(it.id)} className="w-11 h-11 rounded-lg bg-[#FCE7E7] flex items-center justify-center shrink-0 mt-0"><Icon.Trash size={16} color="#D42F2F" /></button>
+                        )}
+                    </div>
+                ))}
+            </div>
+            <button onClick={addItem} className="flex items-center gap-1.5 mt-3 text-[12px] font-extrabold text-primary-default press-scale">
+                <Icon.Plus size={14} /> Tambah Rincian
+            </button>
+            <div className="mt-4 pt-4 border-t border-dashed border-[#E8EBEA] flex items-center justify-between">
+                <span className="text-[13px] font-bold text-[#5C6668]">Total Tagihan</span>
+                <span className="text-[20px] font-extrabold text-[#14181A] font-mono">Rp{total.toLocaleString('id-ID')}</span>
+            </div>
+            <MButton fullWidth className="mt-4" onClick={() => onSubmit(localItems, total)} disabled={total === 0 || localItems.some(it => !it.name)} isLoading={isLoading}>Kirim Invoice ke Pelanggan</MButton>
+        </div>
+    );
+};
+
+/* ============================================================
+   EARNINGS CARD — baris riwayat transaksi pendapatan
+   ============================================================ */
+const EarningsCard = ({ tx, onClick }) => (
+    <button onClick={onClick} className="w-full text-left bg-white rounded-2xl border border-[#E8EBEA] p-4 press-scale">
+        <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-extrabold text-[#14181A] truncate">{tx.customerName} · {tx.itemName}</p>
+                <p className="text-[11px] text-[#8D9699] mt-0.5">{tx.date} · {tx.id}</p>
+            </div>
+            <span className="text-[15px] font-extrabold text-[#14181A] font-mono shrink-0">+Rp{tx.netAmount.toLocaleString('id-ID')}</span>
+        </div>
+        <div className="mt-2.5 pt-2.5 border-t border-dashed border-[#F0F3F2] flex flex-col gap-1">
+            <div className="flex justify-between text-[11px]">
+                <span className="text-[#8D9699]">Total Tagihan</span>
+                <span className="font-semibold text-[#5C6668] font-mono">Rp{tx.grossAmount.toLocaleString('id-ID')}</span>
+            </div>
+            <div className="flex justify-between text-[11px]">
+                <span className="text-[#8D9699]">{tx.isCash ? 'Komisi (bayar tunai)' : `Komisi Platform (${tx.commissionPct}%)`}</span>
+                <span className="font-semibold text-[#5C6668] font-mono">- Rp{tx.commissionAmount.toLocaleString('id-ID')}</span>
+            </div>
+            {tx.isCash && <p className="text-[10px] text-[#8D9699] italic">Servis bayar tunai tidak dipotong komisi platform.</p>}
+            {tx.tip > 0 && (
+                <div className="flex justify-between text-[11px]">
+                    <span className="text-success-default font-semibold">Tip dari {tx.customerName.split(' ')[0]}</span>
+                    <span className="font-extrabold text-success-default font-mono">+Rp{tx.tip.toLocaleString('id-ID')}</span>
+                </div>
+            )}
+        </div>
+    </button>
+);
+
+/* ============================================================
+   PORTFOLIO GALLERY ITEM
+   ============================================================ */
+const PortfolioGalleryItem = ({ item, onDelete, editable = false }) => (
+    <div className="relative rounded-xl overflow-hidden aspect-square border border-[#E8EBEA] group">
+        <img src={item.image} alt={item.caption} className="w-full h-full object-cover" />
+        {item.caption && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+                <p className="text-[10px] font-bold text-white truncate">{item.caption}</p>
+            </div>
+        )}
+        {editable && (
+            <button onClick={onDelete} className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center press-scale">
+                <Icon.X size={13} color="#fff" />
+            </button>
+        )}
+    </div>
+);
+
+/* ============================================================
+   BANNER TIP CARD — carousel tips/edukasi mitra di Beranda
+   ============================================================ */
+const BANNER_TIPS = [
+    { id: 1, badge: 'TIPS', title: 'Balas dalam 5 menit', desc: 'Pesanan yang direspons cepat bikin rating naik.', bgFrom: 'from-[#00AA13]', bgTo: 'to-[#038A10]', Icon: Icon.Zap },
+    { id: 2, badge: 'INFO', title: 'Foto Before/After yang jelas', desc: 'Foto terang & fokus bikin pelanggan lebih percaya.', bgFrom: 'from-[#2F72ED]', bgTo: 'to-[#1B57BE]', Icon: Icon.Images },
+    { id: 3, badge: 'PROMO INTERNAL', title: 'Selesaikan 10 pesanan bulan ini', desc: 'Dapatkan badge "Tukang Rajin" di profilmu.', bgFrom: 'from-[#F6A609]', bgTo: 'to-[#D98E00]', Icon: Icon.Award },
+];
+const BannerTipCard = () => {
+    const [slide, setSlide] = useState(0);
+    const scRef = useRef(null);
+    const onScroll = () => {
+        if (!scRef.current) return;
+        const idx = Math.round(scRef.current.scrollLeft / scRef.current.clientWidth);
+        setSlide(idx);
+    };
+    return (
+        <div>
+            <div ref={scRef} onScroll={onScroll} className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory">
+                {BANNER_TIPS.map(b => (
+                    <div key={b.id} className={`snap-start shrink-0 w-[86%] h-[110px] rounded-2xl bg-gradient-to-br ${b.bgFrom} ${b.bgTo} p-4 flex flex-col justify-between relative overflow-hidden`}>
+                        <div className="absolute -right-4 -bottom-4 opacity-20"><b.Icon size={90} color="#fff" /></div>
+                        <span className="text-[10px] font-extrabold text-white/90 bg-white/20 backdrop-blur-sm w-fit px-2 py-0.5 rounded-full tracking-wide">{b.badge}</span>
+                        <div className="relative z-10">
+                            <h4 className="text-[15px] font-extrabold text-white leading-tight">{b.title}</h4>
+                            <p className="text-[11px] text-white/85 mt-0.5">{b.desc}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="flex justify-center gap-1.5 mt-2.5">
+                {BANNER_TIPS.map((_, i) => (
+                    <div key={i} className={`h-1.5 rounded-full transition-all ${i === slide ? 'w-4 bg-primary-default' : 'w-1.5 bg-[#DDE2E1]'}`} />
+                ))}
+            </div>
+        </div>
+    );
+};
+
+/* ============================================================
+   REPUTATION ALERT CARD — dipicu dari pembatalan sepihak, dll
+   ============================================================ */
+const ReputationAlertCard = ({ reason, recovery, onDismiss }) => (
+    <div className="bg-[#FFF1D6] rounded-2xl p-4 border border-[#F5DBA3] relative">
+        {onDismiss && <button onClick={onDismiss} className="absolute top-3 right-3 text-[#B8790A] press-scale"><Icon.X size={16} /></button>}
+        <div className="flex gap-3">
+            <div className="w-9 h-9 rounded-full bg-[#B8790A]/15 flex items-center justify-center shrink-0">
+                <Icon.AlertTriangle size={18} color="#B8790A" />
+            </div>
+            <div className="flex-1 pr-4">
+                <p className="text-[13px] font-extrabold text-[#8A5D07] leading-snug">Visibilitas Profil Diturunkan</p>
+                <p className="text-[12px] text-[#8A5D07]/90 leading-relaxed mt-1">{reason}</p>
+                <div className="flex items-center gap-1.5 mt-2 bg-white/50 rounded-lg px-2.5 py-1.5">
+                    <Icon.TrendingUp size={13} color="#8A5D07" />
+                    <p className="text-[11px] font-bold text-[#8A5D07]">{recovery}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+/* ============================================================
+   DATA MOCK — realistis (nama Indonesia, kategori nyata, Rupiah)
+   ============================================================ */
+const KATEGORI_LIST = [
+    { id: 'elektronik', label: 'Elektronik', Icon: Icon.Zap, color: '#00AA13', bg: 'bg-[#E3F7E4]' },
+    { id: 'jahit', label: 'Jahit / Pakaian', Icon: Icon.Shirt, color: '#EC6F8E', bg: 'bg-[#FCE7EB]' },
+    { id: 'sepatu', label: 'Sepatu', Icon: Icon.Footprints, color: '#F2994A', bg: 'bg-[#FEF1E6]' },
+    { id: 'las', label: 'Las', Icon: Icon.Flame, color: '#5C6BC0', bg: 'bg-[#EFEFF9]' },
+];
+
+/* ============================================================
+   AWETIN ECOSYSTEM — KONTRAK DATA BERSAMA (Awetin ⇄ Awetin Mitra)
+   ------------------------------------------------------------
+   Blok ini SENGAJA ditulis IDENTIK (copy-paste sama persis) di kedua
+   file: awetin.html (pelanggan) dan awetin_mitra.html (tukang, file
+   ini). Tujuannya supaya SATU pesanan yang sama dikenali dengan bentuk
+   data, nama status, dan ID yang sama oleh kedua aplikasi — tidak ada
+   lagi informasi yang "hilang" saat berpindah peran (pelanggan <-> tukang).
+
+   CATATAN UNTUK DEVOPS / BACKEND ENGINEER:
+   - `AwetinDB` di bawah ini adalah pengganti sementara "API client".
+     Nama fungsi & bentuk data (request/response) dibuat semirip
+     mungkin dengan kontrak REST/GraphQL + realtime (WebSocket/Pub-Sub)
+     yang idealnya dipakai nanti. Saat pindah ke backend sungguhan,
+     cukup ganti ISI tiap fungsi (localStorage -> fetch/WS), kontraknya
+     (nama fungsi & parameter) tidak perlu berubah, sehingga kedua
+     aplikasi front-end ini TIDAK perlu dirombak ulang.
+   - Implementasi saat ini pakai localStorage + BroadcastChannel supaya
+     prototipe front-end-only ini bisa didemokan sinkron di browser yang
+     sama tanpa server. SYARAT supaya sinkron real-time antar dua file
+     ini benar-benar terjadi: kedua file harus dibuka dari ORIGIN yang
+     sama (mis. sama-sama disajikan dari satu static server/hosting),
+     BUKAN dua file lokal terpisah (file://), karena localStorage &
+     BroadcastChannel terikat per-origin. Jika dibuka terpisah, masing-
+     masing app tetap berjalan normal dengan data awal (seed) yang
+     identik — hanya live-sync antar tab yang butuh origin yang sama.
+   ============================================================ */
+const AWETIN_DB_NS = 'awetin_ecosystem_v1';
+const AWETIN_DB_KEYS = {
+    orders: `${AWETIN_DB_NS}::orders`,
+    orderSeq: `${AWETIN_DB_NS}::order_seq`,
+    warrantyClaims: `${AWETIN_DB_NS}::warranty_claims`,
+    claimSeq: `${AWETIN_DB_NS}::claim_seq`,
+};
+
+function awetinReadJSON(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch (e) { return fallback; }
+}
+function awetinWriteJSON(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage penuh/nonaktif — abaikan di prototipe */ }
+}
+let _awetinChannel = null;
+try { _awetinChannel = ('BroadcastChannel' in window) ? new BroadcastChannel(AWETIN_DB_NS) : null; } catch (e) { _awetinChannel = null; }
+function awetinBroadcast(type) { if (_awetinChannel) { try { _awetinChannel.postMessage({ type }); } catch (e) {} } }
+
+const AwetinDB = {
+    /** Isi data awal HANYA jika localStorage masih kosong (mensimulasikan seed database sekali jalan, dipanggil dari kedua app). */
+    init(seedOrders, seedClaims) {
+        if (localStorage.getItem(AWETIN_DB_KEYS.orders) === null) awetinWriteJSON(AWETIN_DB_KEYS.orders, seedOrders);
+        if (localStorage.getItem(AWETIN_DB_KEYS.orderSeq) === null) {
+            const maxNum = seedOrders.reduce((max, o) => Math.max(max, parseInt((String(o.id).match(/\d+/) || [0])[0], 10) || 0), 240);
+            awetinWriteJSON(AWETIN_DB_KEYS.orderSeq, maxNum);
+        }
+        if (localStorage.getItem(AWETIN_DB_KEYS.warrantyClaims) === null) awetinWriteJSON(AWETIN_DB_KEYS.warrantyClaims, seedClaims || []);
+        if (localStorage.getItem(AWETIN_DB_KEYS.claimSeq) === null) awetinWriteJSON(AWETIN_DB_KEYS.claimSeq, (seedClaims || []).length + 4);
+    },
+    Orders: {
+        list() { return awetinReadJSON(AWETIN_DB_KEYS.orders, []); },
+        get(id) { return this.list().find(o => o.id === id) || null; },
+        /** Membuat pesanan baru dengan ID yang dijamin unik lintas-app (satu penomor bersama, bukan dua counter terpisah). */
+        create(partial) {
+            const seq = awetinReadJSON(AWETIN_DB_KEYS.orderSeq, 240) + 1;
+            awetinWriteJSON(AWETIN_DB_KEYS.orderSeq, seq);
+            const order = { id: 'ORD-' + seq, createdAt: Date.now(), updatedAt: Date.now(), isFullyDone: false, ...partial };
+            awetinWriteJSON(AWETIN_DB_KEYS.orders, [order, ...this.list()]);
+            awetinBroadcast('orders');
+            return order;
+        },
+        update(id, patch) {
+            const list = this.list().map(o => o.id === id ? { ...o, ...patch, updatedAt: Date.now() } : o);
+            awetinWriteJSON(AWETIN_DB_KEYS.orders, list);
+            awetinBroadcast('orders');
+            return list.find(o => o.id === id) || null;
+        },
+    },
+    WarrantyClaims: {
+        list() { return awetinReadJSON(AWETIN_DB_KEYS.warrantyClaims, []); },
+        create(partial) {
+            const seq = awetinReadJSON(AWETIN_DB_KEYS.claimSeq, 4) + 1;
+            awetinWriteJSON(AWETIN_DB_KEYS.claimSeq, seq);
+            const claim = { id: 'WC-' + String(seq).padStart(2, '0'), status: 'menunggu', scheduledDate: null, scheduledTime: null, ...partial };
+            awetinWriteJSON(AWETIN_DB_KEYS.warrantyClaims, [claim, ...this.list()]);
+            awetinBroadcast('warrantyClaims');
+            return claim;
+        },
+        update(id, patch) {
+            const list = this.list().map(c => c.id === id ? { ...c, ...patch } : c);
+            awetinWriteJSON(AWETIN_DB_KEYS.warrantyClaims, list);
+            awetinBroadcast('warrantyClaims');
+            return list.find(c => c.id === id) || null;
+        },
+    },
+    /** Berlangganan perubahan data lintas-tab / lintas-app (storage event + BroadcastChannel). Mengembalikan fungsi unsubscribe. */
+    subscribe(onChange) {
+        const storageHandler = (e) => { if (e.key === AWETIN_DB_KEYS.orders || e.key === AWETIN_DB_KEYS.warrantyClaims) onChange(); };
+        window.addEventListener('storage', storageHandler);
+        let bcHandler = null;
+        if (_awetinChannel) { bcHandler = () => onChange(); _awetinChannel.addEventListener('message', bcHandler); }
+        return () => { window.removeEventListener('storage', storageHandler); if (_awetinChannel && bcHandler) _awetinChannel.removeEventListener('message', bcHandler); };
+    },
+};
+
+/* ---------- Kosakata status pesanan TUNGGAL — dipakai identik oleh Awetin & Awetin Mitra.
+   `group` dipakai untuk memetakan 12 status rinci ke 3 kelompok besar
+   (ongoing/done/cancelled) supaya komponen lama yang hanya mengenal
+   3 kelompok (kartu pesanan, tab filter) tetap bisa dipakai tanpa
+   diubah tampilannya. ---------- */
+const STATUS_META = {
+    baru: { label: 'Menunggu Konfirmasi Tukang', group: 'ongoing', bg: 'bg-information-container', text: 'text-information-default' },
+    diterima: { label: 'Dikonfirmasi Tukang', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    berangkat: { label: 'Tukang Menuju Lokasi', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    tiba: { label: 'Tukang Tiba di Lokasi', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    verifikasi: { label: 'Verifikasi Kode Kedatangan', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    cek_fisik: { label: 'Cek Fisik Barang', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    invoice: { label: 'Menunggu Persetujuan Invoice', group: 'ongoing', bg: 'bg-[#FFF1D6]', text: 'text-[#B8790A]' },
+    dikerjakan: { label: 'Sedang Dikerjakan', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    menunggu_antar: { label: 'Menunggu Diantar', group: 'ongoing', bg: 'bg-[#FFF1D6]', text: 'text-[#B8790A]' },
+    selesai_upload: { label: 'Unggah Bukti Selesai', group: 'ongoing', bg: 'bg-primary-container', text: 'text-primary-on-container' },
+    serah_terima: { label: 'Selesai', group: 'done', bg: 'bg-success-container', text: 'text-success-default' },
+    dibatalkan: { label: 'Dibatalkan', group: 'cancelled', bg: 'bg-error-container', text: 'text-error-default' },
+    ditolak: { label: 'Ditolak Tukang', group: 'cancelled', bg: 'bg-[#F1F3F1]', text: 'text-text-tertiary' },
+};
+const getStatusMeta = (status) => STATUS_META[status] || STATUS_META.baru;
+const getStatusGroup = (status) => getStatusMeta(status).group;
+
+// Tahapan pesanan "besar" (kunjungan ke lokasi pelanggan) vs "kecil" (drop-off/antar).
+// Sama persis dengan yang dipakai Awetin untuk menggambar stepper di kedua sisi.
+const BESAR_STEPS = [
+    { key: 'diterima', label: 'Pesanan Dikonfirmasi' },
+    { key: 'berangkat', label: 'Tukang Menuju Lokasi' },
+    { key: 'tiba', label: 'Tukang Tiba di Lokasi' },
+    { key: 'verifikasi', label: 'Verifikasi Kode Kedatangan' },
+    { key: 'cek_fisik', label: 'Cek Fisik Barang' },
+    { key: 'invoice', label: 'Persetujuan Invoice' },
+    { key: 'dikerjakan', label: 'Sedang Diperbaiki' },
+    { key: 'selesai_upload', label: 'Bukti Hasil Servis' },
+    { key: 'serah_terima', label: 'Serah Terima & Selesai' },
+];
+const KECIL_STEPS = [
+    { key: 'menunggu_antar', label: 'Menunggu Kamu Antar Barang' },
+    { key: 'diterima', label: 'Barang Diterima Tukang' },
+    { key: 'dikerjakan', label: 'Sedang Dikerjakan' },
+    { key: 'selesai_upload', label: 'Bukti Hasil Servis' },
+    { key: 'serah_terima', label: 'Serah Terima & Selesai' },
+];
+// Status di mana pelanggan MASIH boleh membatalkan sepihak — dipakai juga
+// oleh `canCancel` di OrderDetailScreen Mitra supaya kedua sisi konsisten.
+const CANCELLABLE_STATUSES = {
+    besar: ['baru', 'diterima', 'berangkat', 'tiba', 'verifikasi', 'cek_fisik', 'invoice'],
+    kecil: ['baru', 'menunggu_antar', 'diterima'],
+};
+
+/* ---------- Seed pesanan & klaim garansi bersama (identik dgn awetin.html) ---------- */
+const normalizePhoneId = (phone) => 'cust_' + String(phone || '').replace(/\D/g, '');
+const SEED_CUSTOMER_ID = normalizePhoneId('8111111111');
+
+const SEED_ORDERS = [
+    {
+        id: 'ORD-241', status: 'baru', isFullyDone: false, type: 'besar', category: 'Elektronik',
+        itemName: 'Kulkas LG 2 Pintu', issue: 'Kompresor macet, suara kasar & tidak dingin.',
+        diagnosis: { source: 'ai_scan', summary: 'Kompresor Macet / Overheat', temp: '48°C (Kritis)', noise: '92dB (Kritis)' },
+        photo: IMG.fridge, createdAt: Date.now() - 2 * 60 * 1000, updatedAt: Date.now() - 2 * 60 * 1000,
+        schedule: 'Hari ini, sesegera mungkin', distance: '0.9 km',
+        address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan',
+        estimatedPrice: 'Rp150.000 - Rp350.000',
+        customer: { id: SEED_CUSTOMER_ID, name: 'Budi Hartono', phone: '+62 813-1111-2222', avatar: IMG.avatarPelangganBudi, address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan' },
+        partner: { id: 't1', name: 'Kang Mamat AC', phone: '+62 812-3456-7890', avatar: IMG.avatarMan1, category: 'Elektronik' },
+        verificationCode: '4821',
+        invoiceItems: null, invoiceTotal: 0, paymentMethod: null, paymentConfirmed: false,
+        beforePhoto: null, afterPhoto: null,
+        customerRatingGiven: false, customerRating: null,
+        partnerRatingGiven: false, partnerRating: null, partnerReviewText: '',
+        cancelReason: null, rejectReason: null,
+    },
+    {
+        id: 'ORD-240', status: 'dikerjakan', isFullyDone: false, type: 'besar', category: 'Elektronik',
+        itemName: 'AC Split 1 PK', issue: 'Tidak dingin, muncul bunyi menetes dari indoor.',
+        diagnosis: null,
+        photo: IMG.washer, createdAt: Date.now() - 25 * 60 * 1000, updatedAt: Date.now() - 10 * 60 * 1000,
+        schedule: 'Hari ini, 14:00', distance: '1.4 km',
+        address: 'Jl. Kenanga Blok C2, Jagakarsa, Jakarta Selatan',
+        estimatedPrice: 'Rp100.000 - Rp250.000',
+        customer: { id: SEED_CUSTOMER_ID, name: 'Budi Hartono', phone: '+62 813-1111-2222', avatar: IMG.avatarPelangganBudi, address: 'Jl. Kenanga Blok C2, Jagakarsa, Jakarta Selatan' },
+        partner: { id: 't1', name: 'Kang Mamat AC', phone: '+62 812-3456-7890', avatar: IMG.avatarMan1, category: 'Elektronik' },
+        verificationCode: '7093',
+        invoiceItems: [{ label: 'Jasa servis AC 1 PK', amount: 120000 }, { label: 'Freon R32', amount: 80000 }], invoiceTotal: 200000, paymentMethod: null, paymentConfirmed: false,
+        beforePhoto: null, afterPhoto: null,
+        customerRatingGiven: false, customerRating: null,
+        partnerRatingGiven: false, partnerRating: null, partnerReviewText: '',
+        cancelReason: null, rejectReason: null,
+    },
+    {
+        id: 'ORD-231', status: 'menunggu_antar', isFullyDone: false, type: 'kecil', category: 'Elektronik',
+        itemName: 'Setrika Philips', issue: 'Tidak panas sama sekali, kabel diduga putus di dalam.',
+        diagnosis: null,
+        photo: IMG.washer, createdAt: Date.now() - 60 * 60 * 1000, updatedAt: Date.now() - 60 * 60 * 1000,
+        schedule: 'Disepakati lewat chat: Rp45.000', distance: '0.5 km',
+        address: 'Drop-off ke lokasi usaha mitra',
+        estimatedPrice: 'Rp45.000 (sudah disepakati via chat)',
+        // Pelanggan lain (bukan akun demo di Awetin) — SENGAJA tidak muncul di
+        // riwayat pesanan Awetin, tapi tetap muncul apa adanya di Awetin Mitra,
+        // persis seperti mitra sungguhan yang melayani banyak pelanggan.
+        customer: { id: 'cust_8135556666', name: 'Rina Wulandari', phone: '+62 813-5555-6666', avatar: IMG.avatarPelangganRina, address: 'Drop-off ke lokasi usaha mitra' },
+        partner: { id: 't1', name: 'Kang Mamat AC', phone: '+62 812-3456-7890', avatar: IMG.avatarMan1, category: 'Elektronik' },
+        verificationCode: null,
+        invoiceItems: null, invoiceTotal: 0, paymentMethod: null, paymentConfirmed: false,
+        beforePhoto: null, afterPhoto: null,
+        customerRatingGiven: false, customerRating: null,
+        partnerRatingGiven: false, partnerRating: null, partnerReviewText: '',
+        cancelReason: null, rejectReason: null,
+    },
+    {
+        id: 'ORD-198', status: 'serah_terima', isFullyDone: true, type: 'besar', category: 'Elektronik',
+        itemName: 'Kulkas LG 2 Pintu', issue: 'Kompresor macet & bergetar.',
+        diagnosis: null,
+        photo: IMG.fridge, createdAt: Date.now() - 14 * 24 * 60 * 60 * 1000, updatedAt: Date.now() - 14 * 24 * 60 * 60 * 1000,
+        schedule: '25 Agt 2026', distance: '0.9 km',
+        address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan',
+        estimatedPrice: 'Rp150.000 - Rp350.000',
+        customer: { id: SEED_CUSTOMER_ID, name: 'Budi Hartono', phone: '+62 813-1111-2222', avatar: IMG.avatarPelangganBudi, address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan' },
+        partner: { id: 't1', name: 'Kang Mamat AC', phone: '+62 812-3456-7890', avatar: IMG.avatarMan1, category: 'Elektronik' },
+        verificationCode: '1190',
+        invoiceItems: [{ label: 'Jasa servis kompresor', amount: 150000 }], invoiceTotal: 150000, paymentMethod: 'qris', paymentConfirmed: true,
+        beforePhoto: IMG.kompresorBefore, afterPhoto: IMG.kompresorAfter,
+        customerRatingGiven: true, customerRating: { stars: 5, tags: ['Ramah', 'Bayar tepat waktu'] },
+        partnerRatingGiven: true, partnerRating: 5, partnerReviewText: 'Datang tepat waktu, kerja rapi.',
+        cancelReason: null, rejectReason: null,
+    },
+    {
+        id: 'ORD-176', status: 'serah_terima', isFullyDone: true, type: 'kecil', category: 'Pakaian',
+        itemName: 'Celana Jeans', issue: 'Permak Celana Jeans Bolong',
+        diagnosis: null,
+        photo: IMG.tailorShop, createdAt: new Date('2026-09-02T10:00:00').getTime(), updatedAt: new Date('2026-09-02T10:00:00').getTime(),
+        schedule: '2 Sep 2026', distance: '0.5 km',
+        address: 'Drop-off ke lokasi usaha mitra',
+        estimatedPrice: 'Rp35.000',
+        customer: { id: SEED_CUSTOMER_ID, name: 'Budi Hartono', phone: '+62 813-1111-2222', avatar: IMG.avatarPelangganBudi, address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan' },
+        // Mitra t4 (Bu Sari Jahit) TIDAK terdaftar sebagai akun di file Awetin
+        // Mitra ini, sehingga pesanan ini wajar hanya terlihat di Awetin (sisi
+        // pelanggan) — bukan bug, sama seperti mitra lain yang belum bergabung.
+        partner: { id: 't4', name: 'Bu Sari Jahit', phone: '+62 812-4444-5555', avatar: IMG.avatarWomanTailor, category: 'Pakaian' },
+        verificationCode: null,
+        invoiceItems: [{ label: 'Jasa permak celana', amount: 35000 }], invoiceTotal: 35000, paymentMethod: 'cash', paymentConfirmed: true,
+        beforePhoto: null, afterPhoto: null,
+        customerRatingGiven: true, customerRating: { stars: 5, tags: ['Bayar tepat waktu'] },
+        partnerRatingGiven: false, partnerRating: null, partnerReviewText: '',
+        cancelReason: null, rejectReason: null,
+    },
+    {
+        id: 'ORD-160', status: 'dibatalkan', isFullyDone: true, type: 'kecil', category: 'Elektronik',
+        itemName: 'TV LED', issue: 'Perbaikan TV LED Bergaris',
+        diagnosis: null,
+        photo: IMG.washer, createdAt: new Date('2026-08-28T09:00:00').getTime(), updatedAt: new Date('2026-08-28T09:00:00').getTime(),
+        schedule: '28 Agt 2026', distance: '1.2 km',
+        address: 'Drop-off ke lokasi usaha mitra',
+        estimatedPrice: '-',
+        customer: { id: SEED_CUSTOMER_ID, name: 'Budi Hartono', phone: '+62 813-1111-2222', avatar: IMG.avatarPelangganBudi, address: 'Jl. Mawar No. 12, Jagakarsa, Jakarta Selatan' },
+        partner: { id: 't2', name: 'Bengkel Yanto', phone: '+62 812-2222-3333', avatar: IMG.avatarMan2, category: 'Elektronik' },
+        verificationCode: null,
+        invoiceItems: null, invoiceTotal: 0, paymentMethod: null, paymentConfirmed: false,
+        beforePhoto: null, afterPhoto: null,
+        customerRatingGiven: false, customerRating: null,
+        partnerRatingGiven: false, partnerRating: null, partnerReviewText: '',
+        cancelReason: 'Dibatalkan oleh pelanggan (berubah pikiran).', rejectReason: null,
+    },
+];
+
+const SEED_WARRANTY_CLAIMS = [
+    { id: 'WC-04', originalOrderId: 'ORD-198', customerId: SEED_CUSTOMER_ID, customerName: 'Budi Hartono', partnerId: 't1', itemName: 'Kulkas LG 2 Pintu', photo: IMG.kompresorAfter, keterangan: 'Setelah 2 minggu, suara berisik muncul lagi di bagian kompresor.', status: 'menunggu', scheduledDate: null, scheduledTime: null },
+];
+
+AwetinDB.init(SEED_ORDERS, SEED_WARRANTY_CLAIMS);
+
+const MITRA_PROFILE_INIT = {
+    id: 't1', // PERBAIKAN: sebelumnya profil mitra tidak punya ID sama sekali,
+    // sehingga tidak ada cara menyambungkan "mitra yang sedang login" dengan
+    // `order.partner.id` pada pesanan bersama. ID ini SAMA PERSIS dengan ID
+    // "Kang Mamat AC" di TUKANG_LIST milik Awetin — keduanya merepresentasikan
+    // satu tukang yang sama di dua aplikasi berbeda.
+    name: 'Slamet Riyadi',
+    greetingName: 'Pak Slamet',
+    phone: '+62 812-3456-7890',
+    categories: ['elektronik'],
+    wilayah: 'Jagakarsa, Jakarta Selatan',
+    layananModel: { dropoff: true, keliling: true, kunjungan: true },
+    priceRanges: { elektronik: 'Rp35.000 - Rp150.000' },
+    rating: 4.9,
+    totalUlasan: 86,
+    totalJobs: 128,
+    verified: true,
+    badge: 'Tukang Rajin',
+    avatar: IMG.avatarMitra,
+    tokoPhoto: IMG.tokoUsaha,
+    bio: 'Spesialis servis AC & kulkas rumah tangga. Sudah menangani lebih dari 100 unit di wilayah Jakarta Selatan, cepat tanggap dan bergaransi.',
+    portfolio: [
+        { id: 'p1', image: IMG.portfolio1, caption: 'Servis AC 1 PK' },
+        { id: 'p2', image: IMG.kompresorBefore, caption: 'Sebelum - kompresor kulkas' },
+        { id: 'p3', image: IMG.kompresorAfter, caption: 'Sesudah - normal kembali' },
+    ],
+};
+
+const TRANSACTIONS_INIT = [
+    { id: 'TX-118', customerName: 'Dedi Prasetyo', itemName: 'Servis AC 1/2 PK', date: 'Kemarin, 16:20', grossAmount: 180000, commissionPct: 8, commissionAmount: 14400, netAmount: 165600, tip: 10000, isCash: false },
+    { id: 'TX-117', customerName: 'Wati Suminar', itemName: 'Servis Freezer Usaha', date: '3 hari lalu', grossAmount: 220000, commissionPct: 8, commissionAmount: 17600, netAmount: 202400, tip: 0, isCash: false },
+    { id: 'TX-116', customerName: 'Andra Kusuma', itemName: 'Servis Kulkas 1 Pintu (Tunai)', date: '5 hari lalu', grossAmount: 130000, commissionPct: 0, commissionAmount: 0, netAmount: 130000, tip: 0, isCash: true },
+];
+
+// NOTIF_ITEMS_INIT tetap LOKAL untuk Mitra (notifikasi memang per-akun, tidak
+// dibagi ke pelanggan) — hanya orderId yang diperbarui agar cocok dengan ID
+// pesanan kanonik di atas, dan referensi ORD-220 yang dulu "menggantung"
+// (tidak menunjuk pesanan mana pun) sudah dihapus.
+const NOTIF_ITEMS_INIT = [
+    { id: 'n1', type: 'order', unread: true, title: 'Pesanan baru masuk!', desc: 'Budi Hartono butuh servis Kulkas LG 2 Pintu.', time: '2 menit lalu', orderId: 'ORD-241' },
+    { id: 'n2', type: 'payment', unread: true, title: 'Pembayaran diterima', desc: 'Rp165.600 telah masuk dari pesanan TX-118.', time: '1 hari lalu' },
+    { id: 'n3', type: 'reputation', unread: true, title: 'Visibilitas profil diturunkan sementara', desc: 'Karena ada pembatalan sepihak dalam 30 hari terakhir.', time: '2 hari lalu', reputationReason: 'Terdeteksi 1 pembatalan sepihak dalam 30 hari terakhir.', reputationRecovery: 'Selesaikan 3 pesanan berikutnya dengan rating baik untuk memulihkannya.' },
+    { id: 'n4', type: 'order', unread: false, title: 'Pesanan dibatalkan pelanggan', desc: 'Rina Wulandari membatalkan pesanan sebelumnya.', time: '4 hari lalu' },
+    { id: 'n5', type: 'system', unread: false, title: 'Selamat datang di Awetin Mitra!', desc: 'Lengkapi profil usahamu untuk mulai menerima pesanan.', time: '1 minggu lalu' },
+];
+
+const CANCEL_REASONS = ['Berhalangan mendadak', 'Alat/perlengkapan rusak', 'Lokasi terlalu jauh', 'Lainnya'];
+const REJECT_REASONS = ['Di luar jangkauan', 'Kategori tidak sesuai', 'Sedang penuh'];
+const POSITIVE_TAGS = ['Ramah', 'Jelas soal alamat', 'Bayar tepat waktu'];
+const NEGATIVE_TAGS = ['Sulit dihubungi', 'Alamat tidak sesuai', 'Sering membatalkan'];
+/* ============================================================
+   PROMPT 01 — SPLASH, INTERSTITIAL PERAN, MASUK/DAFTAR, OTP, PEMULIHAN
+   ============================================================ */
+
+const SplashScreen = () => (
+    <div className="h-full w-full flex flex-col items-center justify-center bg-primary-default relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+            <Icon.Wrench size={340} color="#fff" />
+        </div>
+        <div className="relative z-10 flex flex-col items-center">
+            <div className="w-20 h-20 rounded-[24px] bg-white flex items-center justify-center shadow-elevation-3 mb-4">
+                <Icon.Wrench size={36} color="#00AA13" />
+            </div>
+            <h1 className="text-[26px] font-extrabold text-white tracking-tight">Awetin <span className="font-medium text-white/80 text-[16px] align-middle">Mitra</span></h1>
+            <p className="text-[13px] text-white/85 mt-2 text-center px-10">Kerjaan reparasi, langsung dari HP-mu</p>
+        </div>
+        <div className="absolute bottom-14 w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
+    </div>
+);
+
+const MitraInfoModal = ({ isOpen, onClose }) => (
+    <ConfirmationModal
+        isOpen={isOpen}
+        icon={Icon.Info}
+        iconColor="#2F72ED"
+        iconBg="bg-information-container"
+        title="Mau perbaiki barangmu sendiri?"
+        message="Awetin Mitra ini khusus untuk kamu yang menerima pekerjaan reparasi. Kalau kamu ingin mencari tukang untuk memperbaiki barangmu sendiri, unduh aplikasi Awetin (terpisah dari aplikasi ini)."
+        confirmLabel="Buka Store"
+        confirmVariant="primary"
+        cancelLabel="Batal"
+        onConfirm={onClose}
+        onCancel={onClose}
+    />
+);
+
+const RoleInterstitialScreen = ({ onContinue }) => {
+    const [infoOpen, setInfoOpen] = useState(false);
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <div className="flex-1 flex flex-col justify-center px-6">
+                <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center mb-6">
+                    <Icon.Wrench size={30} color="#00AA13" />
+                </div>
+                <h1 className="text-[24px] font-extrabold text-[#14181A] leading-snug mb-3">Awetin Mitra ini untuk kamu yang menerima pekerjaan reparasi.</h1>
+                <p className="text-[14px] text-[#5C6668] leading-relaxed">Kelola pesanan servis, atur harga, dan dapatkan penghasilan tambahan dari keahlianmu memperbaiki barang.</p>
+            </div>
+            <div className="px-6 pb-8 pb-safe">
+                <MButton fullWidth size="hero" onClick={onContinue}>Lanjutkan</MButton>
+                <button onClick={() => setInfoOpen(true)} className="w-full text-center mt-4 text-[13px] font-bold text-[#5C6668] press-scale">
+                    Mau perbaiki barangmu sendiri? <span className="text-primary-default">Unduh Awetin</span>
+                </button>
+            </div>
+            <MitraInfoModal isOpen={infoOpen} onClose={() => setInfoOpen(false)} />
+        </div>
+    );
+};
+
+const isValidPhone = (v) => /^8[0-9]{8,12}$/.test(v.replace(/\s/g, ''));
+
+const PhoneEntryScreen = ({ onContinue, onRecovery }) => {
+    const [phone, setPhone] = useState('');
+    const [agree, setAgree] = useState(false);
+    const [touched, setTouched] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const valid = isValidPhone(phone);
+    const canContinue = valid && agree;
+
+    const handleContinue = () => {
+        setTouched(true);
+        if (!canContinue) return;
+        setLoading(true);
+        setTimeout(() => { setLoading(false); onContinue(phone); }, 900);
+    };
+
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <MTopBar />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-6 pt-2">
+                <h1 className="text-[24px] font-extrabold text-[#14181A] mb-2">Masuk sebagai Mitra</h1>
+                <p className="text-[14px] text-[#5C6668] leading-relaxed mb-6">Masukkan nomor HP aktif kamu. Kami akan kirim kode verifikasi lewat SMS.</p>
+
+                <label className="text-[13px] font-bold text-[#14181A] mb-1.5 block">Nomor HP</label>
+                <div className={`flex items-center h-14 rounded-xl border-[1.5px] px-4 gap-2 transition-colors ${touched && !valid ? 'border-error-default bg-[#FCE7E7]' : 'border-[#E8EBEA] bg-[#F8FAFA] focus-within:border-primary-default'}`}>
+                    <span className="text-[15px] font-bold text-[#14181A]">🇮🇩 +62</span>
+                    <div className="w-px h-6 bg-[#DDE2E1]" />
+                    <input
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                        placeholder="812-3456-7890"
+                        inputMode="numeric"
+                        className="flex-1 bg-transparent outline-none text-[15px] font-semibold text-[#14181A] placeholder:text-[#8D9699] placeholder:font-medium"
+                    />
+                </div>
+                {touched && !valid && <p className="text-[12px] font-semibold text-error-default mt-1.5">Nomor HP tidak valid.</p>}
+
+                <button onClick={() => setAgree(!agree)} className="flex items-start gap-3 mt-6 text-left">
+                    <div className={`w-5 h-5 rounded-md border-[1.5px] flex items-center justify-center shrink-0 mt-0.5 transition-colors ${agree ? 'bg-primary-default border-primary-default' : 'border-[#DDE2E1]'}`}>
+                        {agree && <Icon.Check size={13} color="#fff" />}
+                    </div>
+                    <p className="text-[12.5px] text-[#5C6668] leading-relaxed">Saya menyetujui <span className="text-primary-default font-bold">Syarat & Ketentuan Mitra</span> dan <span className="text-primary-default font-bold">Kebijakan Privasi</span>.</p>
+                </button>
+
+                <button onClick={onRecovery} className="mt-5 text-[13px] font-bold text-primary-default press-scale">Nomor HP lama hilang atau ganti?</button>
+            </div>
+            <div className="px-6 pb-8 pb-safe pt-2">
+                <MButton fullWidth size="hero" onClick={handleContinue} disabled={touched && !canContinue && !loading} isLoading={loading}>Lanjutkan</MButton>
+            </div>
+        </div>
+    );
+};
+
+const OtpEntryScreen = ({ phone, onBack, onVerified }) => {
+    const [otp, setOtp] = useState('');
+    const [status, setStatus] = useState('idle');
+    const [countdown, setCountdown] = useState(60);
+    const [loading, setLoading] = useState(false);
+    const CORRECT_OTP = '1234';
+
+    useEffect(() => {
+        if (countdown <= 0) return;
+        const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+        return () => clearTimeout(t);
+    }, [countdown]);
+
+    useEffect(() => {
+        if (otp.length === 4) {
+            setLoading(true);
+            setTimeout(() => {
+                setLoading(false);
+                if (otp === CORRECT_OTP) { setStatus('success'); setTimeout(onVerified, 400); }
+                else { setStatus('error'); setTimeout(() => { setOtp(''); setStatus('idle'); }, 900); }
+            }, 700);
+        }
+    }, [otp]);
+
+    const onDigit = (d) => { if (otp.length < 4 && status !== 'error') setOtp(otp + d); };
+    const onBackspace = () => setOtp(otp.slice(0, -1));
+
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <MTopBar onBack={onBack} />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-6 pt-2 flex flex-col items-center text-center">
+                <h1 className="text-[22px] font-extrabold text-[#14181A] mb-2">Masukkan Kode Verifikasi</h1>
+                <p className="text-[13px] text-[#5C6668] leading-relaxed mb-8">Kode 4 digit dikirim ke <span className="font-bold text-[#14181A]">+62 {phone}</span></p>
+                <OTPInputField length={4} value={otp} status={status} />
+                {status === 'error' && <p className="text-[12px] font-semibold text-error-default mt-3">Kode salah, coba lagi.</p>}
+                {loading && <div className="w-5 h-5 mt-4 border-2 border-primary-default border-t-transparent rounded-full animate-spin" />}
+
+                <div className="mt-8">
+                    {countdown > 0 ? (
+                        <p className="text-[13px] text-[#8D9699]">Kirim ulang kode dalam <span className="font-bold text-[#14181A] font-mono">00:{String(countdown).padStart(2, '0')}</span></p>
+                    ) : (
+                        <button onClick={() => setCountdown(60)} className="text-[13px] font-extrabold text-primary-default press-scale">Kirim Ulang Kode</button>
+                    )}
+                </div>
+                <p className="text-[11px] text-[#8D9699] mt-8">Untuk kebutuhan simulasi, gunakan kode <span className="font-mono font-bold text-[#5C6668]">1234</span></p>
+            </div>
+            <NumericKeypad onDigit={onDigit} onBackspace={onBackspace} />
+        </div>
+    );
+};
+
+/* ---------- Pemulihan Akun (langkah 3 -> 5 substeps) ---------- */
+const AccountRecoveryFlow = ({ onBack, onDone }) => {
+    const [step, setStep] = useState('old_phone'); // old_phone -> old_otp -> new_phone -> new_otp -> done
+    const [oldPhone, setOldPhone] = useState('');
+    const [newPhone, setNewPhone] = useState('');
+
+    if (step === 'old_phone') {
+        return (
+            <div className="h-full w-full flex flex-col bg-white">
+                <MTopBar onBack={onBack} title="Pemulihan Akun" />
+                <div className="flex-1 px-6 pt-4">
+                    <p className="text-[14px] text-[#5C6668] leading-relaxed mb-5">Masukkan nomor HP lama yang terdaftar di akun Mitra kamu.</p>
+                    <label className="text-[13px] font-bold text-[#14181A] mb-1.5 block">Nomor HP Lama</label>
+                    <div className="flex items-center h-14 rounded-xl border-[1.5px] border-[#E8EBEA] bg-[#F8FAFA] px-4 gap-2 focus-within:border-primary-default">
+                        <span className="text-[15px] font-bold text-[#14181A]">🇮🇩 +62</span>
+                        <div className="w-px h-6 bg-[#DDE2E1]" />
+                        <input value={oldPhone} onChange={(e) => setOldPhone(e.target.value.replace(/\D/g, ''))} placeholder="812-xxxx-xxxx" inputMode="numeric" className="flex-1 bg-transparent outline-none text-[15px] font-semibold" />
+                    </div>
+                </div>
+                <div className="px-6 pb-8 pb-safe"><MButton fullWidth size="hero" disabled={!isValidPhone(oldPhone)} onClick={() => setStep('old_otp')}>Lanjutkan</MButton></div>
+            </div>
+        );
+    }
+    if (step === 'old_otp') {
+        return <OtpEntryScreen phone={oldPhone} onBack={() => setStep('old_phone')} onVerified={() => setStep('new_phone')} />;
+    }
+    if (step === 'new_phone') {
+        return (
+            <div className="h-full w-full flex flex-col bg-white">
+                <MTopBar onBack={() => setStep('old_otp')} title="Pemulihan Akun" />
+                <div className="flex-1 px-6 pt-4">
+                    <p className="text-[14px] text-[#5C6668] leading-relaxed mb-5">Masukkan nomor HP baru yang ingin dipakai untuk akun ini.</p>
+                    <label className="text-[13px] font-bold text-[#14181A] mb-1.5 block">Nomor HP Baru</label>
+                    <div className="flex items-center h-14 rounded-xl border-[1.5px] border-[#E8EBEA] bg-[#F8FAFA] px-4 gap-2 focus-within:border-primary-default">
+                        <span className="text-[15px] font-bold text-[#14181A]">🇮🇩 +62</span>
+                        <div className="w-px h-6 bg-[#DDE2E1]" />
+                        <input value={newPhone} onChange={(e) => setNewPhone(e.target.value.replace(/\D/g, ''))} placeholder="812-xxxx-xxxx" inputMode="numeric" className="flex-1 bg-transparent outline-none text-[15px] font-semibold" />
+                    </div>
+                </div>
+                <div className="px-6 pb-8 pb-safe"><MButton fullWidth size="hero" disabled={!isValidPhone(newPhone)} onClick={() => setStep('new_otp')}>Lanjutkan</MButton></div>
+            </div>
+        );
+    }
+    if (step === 'new_otp') {
+        return <OtpEntryScreen phone={newPhone} onBack={() => setStep('new_phone')} onVerified={() => setStep('done')} />;
+    }
+    return (
+        <div className="h-full w-full flex flex-col items-center justify-center text-center px-8 bg-white">
+            <div className="w-16 h-16 rounded-full bg-success-container flex items-center justify-center mb-4"><Icon.CheckCircle size={32} filled color="#1E9E4A" /></div>
+            <h2 className="text-[19px] font-extrabold text-[#14181A] mb-2">Akun Berhasil Dipindahkan</h2>
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mb-8">Akun mitramu sekarang terhubung ke nomor +62 {newPhone}.</p>
+            <MButton fullWidth size="hero" onClick={() => onDone(newPhone)}>Masuk ke Akun</MButton>
+        </div>
+    );
+};
+/* ============================================================
+   PROMPT 02 — ONBOARDING PROFIL USAHA TUKANG (8 langkah)
+   ============================================================ */
+
+const OnboardingStepShell = ({ onBack, stepIndex, totalSteps, title, subtitle, children, ctaLabel = 'Lanjut', onCta, ctaDisabled = false, isLoading = false }) => (
+    <div className="h-full w-full flex flex-col bg-white">
+        <MTopBar onBack={onBack} />
+        <div className="px-6 pt-1 pb-3 shrink-0">
+            <div className="flex gap-1.5 mb-4">
+                {Array.from({ length: totalSteps }).map((_, i) => (
+                    <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= stepIndex ? 'bg-primary-default' : 'bg-[#EEF0EF]'}`} />
+                ))}
+            </div>
+            <p className="text-[11px] font-extrabold text-primary-default tracking-wide mb-1">LANGKAH {stepIndex + 1} DARI {totalSteps}</p>
+            <h1 className="text-[21px] font-extrabold text-[#14181A] leading-snug">{title}</h1>
+            {subtitle && <p className="text-[13px] text-[#5C6668] leading-relaxed mt-1.5">{subtitle}</p>}
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar px-6 pb-4">{children}</div>
+        <div className="px-6 pb-8 pb-safe pt-2 border-t border-[#F0F3F2]">
+            <MButton fullWidth size="hero" onClick={onCta} disabled={ctaDisabled} isLoading={isLoading}>{ctaLabel}</MButton>
+        </div>
+    </div>
+);
+
+const CategoryStep = (props) => {
+    const [selected, setSelected] = useState(props.value || []);
+    const toggle = (id) => setSelected(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id]);
+    return (
+        <OnboardingStepShell {...props} title="Pilih Kategori Keahlianmu" subtitle="Bisa pilih lebih dari satu kategori." ctaDisabled={selected.length === 0} onCta={() => props.onNext(selected)}>
+            <div className="grid grid-cols-2 gap-3">
+                {KATEGORI_LIST.map(k => {
+                    const active = selected.includes(k.id);
+                    return (
+                        <button key={k.id} onClick={() => toggle(k.id)} className={`relative rounded-2xl p-4 flex flex-col items-start gap-3 border-[1.5px] transition-colors press-scale ${active ? 'border-primary-default bg-primary-container' : 'border-[#E8EBEA] bg-white'}`}>
+                            {active && <div className="w-5 h-5 rounded-full bg-primary-default flex items-center justify-center absolute top-3 right-3"><Icon.Check size={12} color="#fff" /></div>}
+                            <div className={`w-11 h-11 rounded-xl ${k.bg} flex items-center justify-center`}>
+                                <k.Icon size={22} color={k.color} />
+                            </div>
+                            <span className={`text-[13px] font-extrabold ${active ? 'text-primary-on-container' : 'text-[#14181A]'}`}>{k.label}</span>
+                        </button>
+                    );
+                })}
+            </div>
+        </OnboardingStepShell>
+    );
+};
+
+const DataDasarStep = (props) => {
+    const [nama, setNama] = useState(props.value?.nama || '');
+    const [wilayah, setWilayah] = useState(props.value?.wilayah || '');
+    const [model, setModel] = useState(props.value?.model || { dropoff: false, keliling: false, kunjungan: false });
+    const toggleModel = (k) => setModel(m => ({ ...m, [k]: !m[k] }));
+    const valid = nama.trim().length > 2 && wilayah.trim().length > 2 && Object.values(model).some(Boolean);
+
+    const Check = ({ label, hint, checked, onClick }) => (
+        <button onClick={onClick} className="w-full flex items-start gap-3 py-3.5 border-b border-[#F0F3F2] text-left">
+            <div className={`w-5 h-5 rounded-md border-[1.5px] flex items-center justify-center shrink-0 mt-0.5 ${checked ? 'bg-primary-default border-primary-default' : 'border-[#DDE2E1]'}`}>{checked && <Icon.Check size={13} color="#fff" />}</div>
+            <div>
+                <p className="text-[13.5px] font-bold text-[#14181A]">{label}</p>
+                <p className="text-[11.5px] text-[#8D9699] mt-0.5">{hint}</p>
+            </div>
+        </button>
+    );
+
+    return (
+        <OnboardingStepShell {...props} title="Isi Data Dasar Usahamu" ctaDisabled={!valid} onCta={() => props.onNext({ nama, wilayah, model })}>
+            <label className="text-[13px] font-bold text-[#14181A] mb-1.5 block">Nama Lengkap / Usaha</label>
+            <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Contoh: Slamet Riyadi" className="w-full h-[52px] rounded-xl border border-[#E8EBEA] bg-[#F8FAFA] px-4 text-[14px] font-semibold outline-none focus:border-primary-default mb-4" />
+
+            <label className="text-[13px] font-bold text-[#14181A] mb-1.5 block">Wilayah Operasi</label>
+            <input value={wilayah} onChange={(e) => setWilayah(e.target.value)} placeholder="Contoh: Jagakarsa, Jakarta Selatan" className="w-full h-[52px] rounded-xl border border-[#E8EBEA] bg-[#F8FAFA] px-4 text-[14px] font-semibold outline-none focus:border-primary-default mb-5" />
+
+            <label className="text-[13px] font-bold text-[#14181A] mb-1 block">Model Layanan</label>
+            <p className="text-[11.5px] text-[#8D9699] mb-1">Pilih semua yang sesuai — ini menentukan jenis pesanan yang bisa kamu terima.</p>
+            <div>
+                <Check label="Menerima drop-off" hint="Pelanggan mengantar barang ke tempat usahamu." checked={model.dropoff} onClick={() => toggleModel('dropoff')} />
+                <Check label="Bisa keliling / jemput" hint="Kamu bisa menjemput barang dari lokasi pelanggan." checked={model.keliling} onClick={() => toggleModel('keliling')} />
+                <Check label="Menerima kunjungan ke rumah pelanggan" hint="Kamu bisa datang & mengerjakan langsung di lokasi (untuk Barang Besar)." checked={model.kunjungan} onClick={() => toggleModel('kunjungan')} />
+            </div>
+        </OnboardingStepShell>
+    );
+};
+
+const ConsentStep = (props) => {
+    const [checked, setChecked] = useState(false);
+    return (
+        <OnboardingStepShell {...props} ctaDisabled={!checked} onCta={() => props.onNext(true)}>
+            <div className="bg-[#F8FAFA] rounded-2xl p-4 mb-5 flex gap-3">
+                <Icon.ShieldCheck size={22} color="#5C6668" />
+                <p className="text-[12.5px] text-[#5C6668] leading-relaxed">{props.explainText}</p>
+            </div>
+            <button onClick={() => setChecked(!checked)} className="flex items-start gap-3 text-left">
+                <div className={`w-5 h-5 rounded-md border-[1.5px] flex items-center justify-center shrink-0 mt-0.5 ${checked ? 'bg-primary-default border-primary-default' : 'border-[#DDE2E1]'}`}>{checked && <Icon.Check size={13} color="#fff" />}</div>
+                <p className="text-[13px] text-[#14181A] font-semibold leading-relaxed">{props.consentLabel}</p>
+            </button>
+        </OnboardingStepShell>
+    );
+};
+
+const UploadDocStep = (props) => {
+    const [ktp, setKtp] = useState(props.value?.ktp || null);
+    const [lokasi, setLokasi] = useState(props.value?.lokasi || null);
+    const valid = !!ktp && !!lokasi;
+    return (
+        <OnboardingStepShell {...props} title="Unggah Dokumen" subtitle="Pastikan foto jelas, terang, dan tidak buram." ctaDisabled={!valid} onCta={() => props.onNext({ ktp, lokasi })}>
+            <div className="flex flex-col gap-5">
+                <PhotoUploader label="Foto KTP" hint="Pastikan seluruh bagian KTP terlihat & angka bisa dibaca jelas." image={ktp} onUpload={() => setKtp(IMG.ktpPlaceholder)} />
+                <PhotoUploader label="Foto Lokasi / Tempat Usaha" hint="Ambil foto tampak depan tempat kamu biasa menerima/mengerjakan servis." image={lokasi} onUpload={() => setLokasi(IMG.tokoUsaha)} />
+            </div>
+        </OnboardingStepShell>
+    );
+};
+
+const HargaStep = (props) => {
+    const cats = props.categories || ['elektronik'];
+    const [prices, setPrices] = useState(props.value || Object.fromEntries(cats.map(c => [c, { min: '', max: '' }])));
+    const setP = (cat, field, val) => setPrices(p => ({ ...p, [cat]: { ...p[cat], [field]: val.replace(/\D/g, '') } }));
+    const valid = cats.every(c => prices[c]?.min && prices[c]?.max);
+    return (
+        <OnboardingStepShell {...props} title="Isi Kisaran Harga" subtitle="Tampil ke pelanggan sebagai estimasi awal sebelum survey." ctaDisabled={!valid} onCta={() => props.onNext(prices)}>
+            {cats.map(c => {
+                const meta = KATEGORI_LIST.find(k => k.id === c);
+                return (
+                    <div key={c} className="mb-5">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className={`w-7 h-7 rounded-lg ${meta.bg} flex items-center justify-center`}><meta.Icon size={14} color={meta.color} /></div>
+                            <p className="text-[13.5px] font-extrabold text-[#14181A]">{meta.label}</p>
+                        </div>
+                        <div className="flex gap-2 items-center">
+                            <div className="relative flex-1">
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] font-semibold text-[#8D9699]">Rp</span>
+                                <input value={prices[c]?.min || ''} onChange={(e) => setP(c, 'min', e.target.value)} placeholder="Min" inputMode="numeric" className="w-full h-12 rounded-lg border border-[#E8EBEA] pl-9 pr-3 text-[13px] font-bold font-mono outline-none focus:border-primary-default" />
+                            </div>
+                            <span className="text-[#8D9699] font-bold">—</span>
+                            <div className="relative flex-1">
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] font-semibold text-[#8D9699]">Rp</span>
+                                <input value={prices[c]?.max || ''} onChange={(e) => setP(c, 'max', e.target.value)} placeholder="Maks" inputMode="numeric" className="w-full h-12 rounded-lg border border-[#E8EBEA] pl-9 pr-3 text-[13px] font-bold font-mono outline-none focus:border-primary-default" />
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+        </OnboardingStepShell>
+    );
+};
+
+const VerificationPendingScreen = ({ onFinishApproved, onShowRejectedDemo }) => {
+    const [dots, setDots] = useState(0);
+    useEffect(() => {
+        const t = setInterval(() => setDots(d => (d + 1) % 4), 450);
+        const done = setTimeout(onFinishApproved, 2600);
+        return () => { clearInterval(t); clearTimeout(done); };
+    }, []);
+    return (
+        <div className="h-full w-full flex flex-col bg-white px-6">
+            <div className="flex-1 flex flex-col items-center justify-center text-center">
+                <div className="w-20 h-20 rounded-full bg-[#FFF1D6] flex items-center justify-center mb-5">
+                    <Icon.Clock size={34} color="#B8790A" />
+                </div>
+                <h2 className="text-[19px] font-extrabold text-[#14181A] mb-2">Profilmu Sedang Diperiksa{'.'.repeat(dots)}</h2>
+                <p className="text-[13px] text-[#5C6668] leading-relaxed max-w-[280px]">Estimasi 1–2 hari kerja. Kami akan kabari lewat notifikasi begitu selesai.</p>
+                <div className="bg-[#F8FAFA] rounded-2xl p-4 mt-8 text-left w-full flex gap-3">
+                    <Icon.Sparkles size={20} color="#F6A609" />
+                    <p className="text-[12px] text-[#5C6668] leading-relaxed">Tips: siapkan beberapa foto hasil pekerjaanmu sebelumnya untuk portofolio, biar profilmu makin dipercaya pelanggan.</p>
+                </div>
+            </div>
+            <button onClick={onShowRejectedDemo} className="text-[11px] text-[#B7BEBC] pb-6 pb-safe">Lihat contoh tampilan bila ada revisi</button>
+        </div>
+    );
+};
+
+const VerificationApprovedScreen = ({ onEnter }) => (
+    <div className="h-full w-full flex flex-col items-center justify-center text-center px-8 bg-white">
+        <div className="w-24 h-24 rounded-full bg-success-container flex items-center justify-center mb-6 anim-fade-scale">
+            <Icon.CheckCircle size={48} filled color="#1E9E4A" />
+        </div>
+        <h2 className="text-[22px] font-extrabold text-[#14181A] mb-2">Profil Aktif!</h2>
+        <p className="text-[14px] text-[#5C6668] leading-relaxed mb-10">Kamu sekarang bisa mulai menerima pesanan servis dari pelanggan di sekitarmu.</p>
+        <MButton fullWidth size="hero" onClick={onEnter}>Buka Beranda</MButton>
+    </div>
+);
+
+const VerificationRejectedScreen = ({ onBack, onFixStep }) => (
+    <div className="h-full w-full flex flex-col bg-white">
+        <MTopBar onBack={onBack} title="Status Verifikasi" />
+        <div className="flex-1 overflow-y-auto no-scrollbar px-6 pt-6 pb-8">
+            <div className="w-16 h-16 rounded-full bg-error-container flex items-center justify-center mb-5">
+                <Icon.AlertOctagon size={28} color="#D42F2F" />
+            </div>
+            <h2 className="text-[19px] font-extrabold text-[#14181A] mb-2">Profil Belum Bisa Disetujui</h2>
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mb-5">Ada satu bagian yang perlu diperbaiki sebelum profilmu bisa aktif:</p>
+            <div className="bg-[#FCE7E7] rounded-2xl p-4 flex gap-3 mb-6">
+                <Icon.Camera size={20} color="#D42F2F" />
+                <div>
+                    <p className="text-[13px] font-extrabold text-[#B82727]">Foto KTP buram</p>
+                    <p className="text-[12px] text-[#B82727]/90 leading-relaxed mt-0.5">Coba unggah ulang dengan pencahayaan yang lebih terang dan pastikan seluruh angka terbaca.</p>
+                </div>
+            </div>
+            <MButton fullWidth size="hero" onClick={() => onFixStep('upload')}>Perbaiki Foto KTP</MButton>
+        </div>
+    </div>
+);
+
+/* ---------- Koordinator seluruh 8 langkah ---------- */
+const OnboardingUsahaFlow = ({ onApproved }) => {
+    const [step, setStep] = useState(0); // 0..5 form, 6 pending, 7 approved/rejected
+    const [phase, setPhase] = useState('form'); // form | pending | approved | rejected
+    const [data, setData] = useState({ categories: [], dataDasar: null, consentPribadi: false, consentLokasi: false, docs: null, prices: null });
+
+    const stepsMeta = ['Kategori', 'Data Dasar', 'Consent Data Pribadi', 'Consent Data Lokasi', 'Upload Dokumen', 'Kisaran Harga'];
+    const totalSteps = stepsMeta.length;
+
+    const goBack = () => { if (step === 0) return; setStep(step - 1); };
+    const next = (patch) => { setData(d => ({ ...d, ...patch })); setStep(s => { const ns = s + 1; if (ns >= totalSteps) setPhase('pending'); return ns; }); };
+
+    if (phase === 'pending') {
+        return <VerificationPendingScreen onFinishApproved={() => setPhase('approved')} onShowRejectedDemo={() => setPhase('rejected')} />;
+    }
+    if (phase === 'approved') {
+        return <VerificationApprovedScreen onEnter={() => onApproved(data)} />;
+    }
+    if (phase === 'rejected') {
+        return <VerificationRejectedScreen onBack={() => setPhase('pending')} onFixStep={(target) => { setPhase('form'); setStep(4); }} />;
+    }
+
+    const common = { onBack: goBack, stepIndex: step, totalSteps };
+    if (step === 0) return <CategoryStep {...common} value={data.categories} onNext={(v) => next({ categories: v })} />;
+    if (step === 1) return <DataDasarStep {...common} value={data.dataDasar} onNext={(v) => next({ dataDasar: v })} />;
+    if (step === 2) return <ConsentStep {...common} title="Consent Data Pribadi" explainText="Kami perlu menyimpan data KTP-mu untuk verifikasi identitas mitra, sesuai UU Perlindungan Data Pribadi (UU PDP). Data ini tidak akan dibagikan ke pihak lain tanpa izinmu." consentLabel="Saya menyetujui penggunaan data pribadi saya (KTP) untuk keperluan verifikasi." onNext={(v) => next({ consentPribadi: v })} />;
+    if (step === 3) return <ConsentStep {...common} title="Consent Data Lokasi" explainText="Kami perlu data lokasi usahamu agar bisa ditampilkan ke pelanggan di sekitar dan membantu proses verifikasi alamat, sesuai UU PDP." consentLabel="Saya menyetujui penggunaan data lokasi usaha saya." onNext={(v) => next({ consentLokasi: v })} />;
+    if (step === 4) return <UploadDocStep {...common} value={data.docs} onNext={(v) => next({ docs: v })} />;
+    if (step === 5) return <HargaStep {...common} categories={data.categories.length ? data.categories : ['elektronik']} value={data.prices} onNext={(v) => next({ prices: v })} />;
+    return null;
+};
+/* ============================================================
+   PROMPT 03 — BERANDA (DASHBOARD MITRA)
+   ============================================================ */
+
+const HomeScreen = ({ profile, isOpenStatus, onToggleOpen, incomingOrders, todaySummary, isLoading, isOffline, onRetry, onGoPendapatan, onGoRatingProfil, onAccept, onReject, onViewOrder, unreadNotif, onGoNotif }) => {
+    return (
+        <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+            <OfflineBanner show={isOffline} onRetry={onRetry} />
+            <div className="flex-1 overflow-y-auto no-scrollbar">
+                {/* Header */}
+                <div className="bg-white px-5 pt-safe pb-5 rounded-b-[24px] shadow-elevation-1">
+                    <div className="flex items-center justify-between pt-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                            <img src={profile.avatar} alt="" className="w-11 h-11 rounded-full object-cover border-2 border-primary-container shrink-0" />
+                            <div className="min-w-0">
+                                <p className="text-[12px] text-[#8D9699] font-semibold">Selamat datang,</p>
+                                <h2 className="text-[17px] font-extrabold text-[#14181A] truncate">{profile.greetingName}</h2>
+                            </div>
+                        </div>
+                        <button onClick={onGoNotif} className="relative w-11 h-11 rounded-full bg-[#F4F6F6] flex items-center justify-center shrink-0 press-scale">
+                            <Icon.Bell size={20} color="#14181A" />
+                            {unreadNotif > 0 && <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-error-default border-2 border-white" />}
+                        </button>
+                    </div>
+
+                    <div className="mt-5 bg-[#F8FAFA] rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <p className="text-[13px] font-extrabold text-[#14181A]">Status: {isOpenStatus ? 'Buka' : 'Tutup'}</p>
+                            <p className="text-[11.5px] text-[#8D9699] mt-0.5">{isOpenStatus ? 'Kamu bisa menerima pesanan baru.' : 'Kamu tidak menerima pesanan baru.'}</p>
+                        </div>
+                        <Toggle checked={isOpenStatus} onChange={onToggleOpen} size="lg" />
+                    </div>
+                    {!isOpenStatus && (
+                        <div className="mt-2.5 bg-[#FFF1D6] rounded-xl px-3 py-2 flex items-center gap-2">
+                            <Icon.Info size={14} color="#B8790A" />
+                            <p className="text-[11.5px] font-semibold text-[#8A5D07]">Kamu sedang tidak menerima pesanan baru.</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Ringkasan Performa */}
+                <div className="px-5 mt-5">
+                    <h3 className="text-[14px] font-extrabold text-[#14181A] mb-3">Performa Hari Ini</h3>
+                    {isLoading ? <SkeletonSummaryRow /> : (
+                        <div className="grid grid-cols-3 gap-2.5">
+                            <button onClick={onGoPendapatan} className="bg-white rounded-2xl border border-[#E8EBEA] p-3 flex flex-col items-start gap-1 press-scale text-left">
+                                <Icon.Wallet size={16} color="#00AA13" />
+                                <span className="text-[13px] font-extrabold text-[#14181A] font-mono leading-tight">Rp{(todaySummary.earnings / 1000).toFixed(0)}rb</span>
+                                <span className="text-[10px] text-[#8D9699] font-semibold leading-tight">Pendapatan</span>
+                            </button>
+                            <button onClick={onGoPendapatan} className="bg-white rounded-2xl border border-[#E8EBEA] p-3 flex flex-col items-start gap-1 press-scale text-left">
+                                <Icon.CheckCircle size={16} color="#2F72ED" />
+                                <span className="text-[13px] font-extrabold text-[#14181A] font-mono leading-tight">{todaySummary.completed} Pesanan</span>
+                                <span className="text-[10px] text-[#8D9699] font-semibold leading-tight">Selesai</span>
+                            </button>
+                            <button onClick={onGoRatingProfil} className="bg-white rounded-2xl border border-[#E8EBEA] p-3 flex flex-col items-start gap-1 press-scale text-left">
+                                <Icon.Star size={16} filled color="#F6A609" />
+                                <span className="text-[13px] font-extrabold text-[#14181A] font-mono leading-tight">{profile.rating}</span>
+                                <span className="text-[10px] text-[#8D9699] font-semibold leading-tight">Rating Rata-rata</span>
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Banner Tips */}
+                <div className="mt-6 px-5">
+                    <BannerTipCard />
+                </div>
+
+                {/* Pesanan Masuk Realtime */}
+                <div className="mt-7 px-5 pb-8">
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-[14px] font-extrabold text-[#14181A]">Pesanan Masuk</h3>
+                        {incomingOrders.length > 0 && <span className="text-[11px] font-extrabold text-white bg-error-default px-2 py-0.5 rounded-full">{incomingOrders.length} Baru</span>}
+                    </div>
+                    {isLoading ? (
+                        <div className="flex flex-col gap-3"><SkeletonOrderCard /><SkeletonOrderCard /></div>
+                    ) : incomingOrders.length === 0 || !isOpenStatus ? (
+                        <EmptyState
+                            icon={Icon.Package}
+                            title="Belum ada pesanan masuk"
+                            desc={isOpenStatus ? "Pastikan statusmu 'Buka' supaya bisa menerima pesanan baru." : "Nyalakan status 'Buka' di atas supaya pesanan baru bisa masuk."}
+                        />
+                    ) : (
+                        <div className="flex flex-col gap-3">
+                            {incomingOrders.map(o => (
+                                <OrderRequestCard key={o.id} order={o} onAccept={() => onAccept(o)} onReject={() => onReject(o)} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+/* ============================================================
+   PROMPT 04 — TAB PESANAN MASUK (List)
+   ============================================================ */
+
+const PesananMasukScreen = ({ orders, isLoading, onAccept, onReject, onViewOrder }) => {
+    const pending = orders.filter(o => o.status === 'baru');
+    const active = orders.filter(o => !['baru', 'dibatalkan', 'ditolak', 'selesai'].includes(o.status) && !o.isFullyDone);
+    const done = orders.filter(o => o.isFullyDone);
+
+    return (
+        <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+            <div className="bg-white pt-safe pb-3 px-5 border-b border-[#E8EBEA] shrink-0">
+                <h1 className="text-[19px] font-extrabold text-[#14181A] pt-2">Pesanan Masuk</h1>
+            </div>
+            <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5">
+                {isLoading ? (
+                    <div className="flex flex-col gap-3"><SkeletonOrderCard /><SkeletonOrderCard /><SkeletonOrderCard /></div>
+                ) : (
+                    <>
+                        {pending.length > 0 && (
+                            <div className="mb-7">
+                                <h3 className="text-[13px] font-extrabold text-[#14181A] mb-3 flex items-center gap-2">
+                                    Butuh Respon <span className="text-[10px] font-extrabold text-white bg-error-default px-2 py-0.5 rounded-full">{pending.length}</span>
+                                </h3>
+                                <div className="flex flex-col gap-3">
+                                    {pending.map(o => <OrderRequestCard key={o.id} order={o} onAccept={() => onAccept(o)} onReject={() => onReject(o)} />)}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="mb-7">
+                            <h3 className="text-[13px] font-extrabold text-[#14181A] mb-3">Sedang Berjalan</h3>
+                            {active.length === 0 ? (
+                                <EmptyState icon={Icon.Wrench} title="Belum ada pesanan berjalan" desc="Pesanan yang sudah kamu terima akan muncul di sini." />
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    {active.map(o => <ActiveOrderCard key={o.id} order={o} onView={() => onViewOrder(o)} />)}
+                                </div>
+                            )}
+                        </div>
+
+                        {done.length > 0 && (
+                            <div>
+                                <h3 className="text-[13px] font-extrabold text-[#14181A] mb-3">Riwayat Terbaru</h3>
+                                <div className="flex flex-col gap-3">
+                                    {done.map(o => <ActiveOrderCard key={o.id} order={{ ...o, status: 'serah_terima' }} onView={() => onViewOrder(o)} />)}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+        </div>
+    );
+};
+
+/* ---------- Sheet Tolak Pesanan ---------- */
+const RejectOrderSheet = ({ isOpen, onClose, onConfirm }) => {
+    const [reason, setReason] = useState(null);
+    return (
+        <MBottomSheet isOpen={isOpen} onClose={onClose} title="Tolak Pesanan Ini?">
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mb-4">Pilih alasan singkat. Pesanan akan diteruskan ke tukang lain di sekitar.</p>
+            <div className="flex flex-col gap-2 mb-5">
+                {REJECT_REASONS.map(r => (
+                    <button key={r} onClick={() => setReason(r)} className={`w-full text-left px-4 py-3.5 rounded-xl border-[1.5px] text-[13px] font-bold transition-colors ${reason === r ? 'border-primary-default bg-primary-container text-primary-on-container' : 'border-[#E8EBEA] text-[#14181A]'}`}>{r}</button>
+                ))}
+            </div>
+            <MButton fullWidth variant="destructive" disabled={!reason} onClick={() => onConfirm(reason)}>Tolak Pesanan</MButton>
+        </MBottomSheet>
+    );
+};
+/* ============================================================
+   PROMPT 04 — DETAIL PESANAN & UPDATE STATUS (Besar & Kecil)
+   ============================================================ */
+
+// BESAR_STEPS / KECIL_STEPS dipakai dari modul kontrak bersama di atas.
+const CancelOrderModal = ({ isOpen, onClose, onConfirm }) => {
+    const [reason, setReason] = useState(null);
+    const [showReasons, setShowReasons] = useState(true);
+    if (!isOpen) return null;
+    return (
+        <div className="absolute inset-0 z-[110] flex items-end">
+            <div className="absolute inset-0 bg-[#14181A]/50 anim-fade" onClick={onClose} />
+            <div className="bg-white w-full rounded-t-[24px] relative z-10 anim-sheet-in p-6 pb-safe">
+                <div className="w-14 h-14 rounded-full bg-[#FCE7E7] flex items-center justify-center mb-4">
+                    <Icon.AlertOctagon size={26} color="#D42F2F" />
+                </div>
+                <h3 className="text-[18px] font-extrabold text-[#14181A] mb-2">Batalkan Pesanan Ini?</h3>
+                <p className="text-[13px] text-[#5C6668] leading-relaxed mb-4">Pilih alasan pembatalan. Pelanggan akan otomatis menerima pengembalian dana penuh.</p>
+                <div className="flex flex-col gap-2 mb-4">
+                    {CANCEL_REASONS.map(r => (
+                        <button key={r} onClick={() => setReason(r)} className={`w-full text-left px-4 py-3 rounded-xl border-[1.5px] text-[13px] font-bold transition-colors ${reason === r ? 'border-error-default bg-[#FCE7E7] text-error-default' : 'border-[#E8EBEA] text-[#14181A]'}`}>{r}</button>
+                    ))}
+                </div>
+                <div className="bg-[#FFF1D6] rounded-xl p-3 flex gap-2 mb-5">
+                    <Icon.AlertTriangle size={16} color="#B8790A" />
+                    <p className="text-[11.5px] text-[#8A5D07] font-semibold leading-snug">Pembatalan sepihak yang sering terjadi bisa menurunkan visibilitas profilmu.</p>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <MButton variant="destructive" fullWidth disabled={!reason} onClick={() => onConfirm(reason)}>Ya, Batalkan Pesanan</MButton>
+                    <MButton variant="ghost" fullWidth onClick={onClose}>Kembali</MButton>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const RateCustomerSheet = ({ isOpen, customerName, onClose, onSubmit }) => {
+    const [stars, setStars] = useState(0);
+    const [tags, setTags] = useState([]);
+    const tagOptions = stars > 0 && stars < 4 ? NEGATIVE_TAGS : POSITIVE_TAGS;
+    const toggleTag = (t) => setTags(ts => ts.includes(t) ? ts.filter(x => x !== t) : [...ts, t]);
+    return (
+        <MBottomSheet isOpen={isOpen} onClose={onClose} title="Nilai Pelanggan">
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mb-4">Bagaimana pengalaman kerja sama dengan {customerName}?</p>
+            <div className="flex justify-center mb-5"><RatingStars value={stars} size={32} interactive onChange={setStars} /></div>
+            {stars > 0 && (
+                <div className="flex flex-wrap gap-2 mb-5 justify-center">
+                    {tagOptions.map(t => (
+                        <button key={t} onClick={() => toggleTag(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-bold border-[1.5px] transition-colors ${tags.includes(t) ? 'border-primary-default bg-primary-container text-primary-on-container' : 'border-[#E8EBEA] text-[#5C6668]'}`}>{t}</button>
+                    ))}
+                </div>
+            )}
+            <div className="bg-[#F8FAFA] rounded-xl p-3 flex gap-2 mb-5">
+                <Icon.Lock size={14} color="#8D9699" />
+                <p className="text-[11px] text-[#8D9699] leading-relaxed">Penilaian ini hanya tersimpan untuk referensi pribadimu — tidak ditampilkan ke pelanggan atau publik.</p>
+            </div>
+            <div className="flex flex-col gap-2 pb-2">
+                <MButton fullWidth disabled={stars === 0} onClick={() => onSubmit({ stars, tags })}>Kirim Penilaian</MButton>
+                <MButton fullWidth variant="ghost" onClick={onClose}>Lewati</MButton>
+            </div>
+        </MBottomSheet>
+    );
+};
+
+const PaymentConfirmCard = ({ onConfirmQris, onConfirmCash, confirmed, method }) => (
+    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+        <h4 className="text-[13.5px] font-extrabold text-[#14181A] mb-3">Konfirmasi Pembayaran</h4>
+        {confirmed ? (
+            <div className="flex items-center gap-2 bg-success-container rounded-xl px-3.5 py-3">
+                <Icon.CheckCircle filled size={20} color="#1E9E4A" />
+                <p className="text-[12.5px] font-bold text-success-default">{method === 'qris' ? 'Pembayaran QRIS terverifikasi otomatis.' : 'Pembayaran tunai sudah ditandai diterima.'}</p>
+            </div>
+        ) : (
+            <div className="flex flex-col gap-2">
+                <button onClick={onConfirmQris} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E8EBEA] press-scale">
+                    <div className="w-9 h-9 rounded-lg bg-information-container flex items-center justify-center"><Icon.QrCode size={18} color="#2F72ED" /></div>
+                    <div className="text-left flex-1"><p className="text-[13px] font-bold text-[#14181A]">QRIS</p><p className="text-[11px] text-[#8D9699]">Terverifikasi otomatis saat pelanggan bayar</p></div>
+                </button>
+                <button onClick={onConfirmCash} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E8EBEA] press-scale">
+                    <div className="w-9 h-9 rounded-lg bg-[#FFF1D6] flex items-center justify-center"><Icon.Banknote size={18} color="#B8790A" /></div>
+                    <div className="text-left flex-1"><p className="text-[13px] font-bold text-[#14181A]">Tunai</p><p className="text-[11px] text-[#8D9699]">Tandai sudah diterima tunai</p></div>
+                </button>
+            </div>
+        )}
+    </div>
+);
+
+const OrderDetailScreen = ({ order, onBack, onUpdateOrder, onChatCustomer, onFinishOrder }) => {
+    const [rejectSheet, setRejectSheet] = useState(false);
+    const [cancelModal, setCancelModal] = useState(false);
+    const [rateSheet, setRateSheet] = useState(false);
+    const [otpVal, setOtpVal] = useState('');
+    const [otpStatus, setOtpStatus] = useState('idle');
+    const [toast, setToast] = useState('');
+
+    const showToast = (m) => { setToast(m); setTimeout(() => setToast(''), 2200); };
+
+    if (!order) return null;
+    const isBesar = order.type === 'besar';
+    const steps = isBesar ? BESAR_STEPS : KECIL_STEPS;
+    const currentIndex = steps.findIndex(s => s.key === order.status);
+    // PERBAIKAN: sebelumnya daftar status yang boleh dibatalkan ditulis ulang
+    // di sini secara terpisah dari yang dipakai Awetin — kini keduanya membaca
+    // `CANCELLABLE_STATUSES` yang sama dari modul kontrak bersama.
+    const canCancel = CANCELLABLE_STATUSES[order.type]?.includes(order.status);
+
+    const advance = (patch) => onUpdateOrder(order.id, patch);
+
+    const submitVerification = () => {
+        if (otpVal === order.verificationCode) {
+            setOtpStatus('success');
+            setTimeout(() => advance({ status: 'cek_fisik' }), 500);
+        } else {
+            setOtpStatus('error');
+            setTimeout(() => { setOtpVal(''); setOtpStatus('idle'); }, 800);
+        }
+    };
+    useEffect(() => { if (otpVal.length === 4) submitVerification(); }, [otpVal]);
+
+    // PERBAIKAN PENTING: sebelumnya invoice "disetujui otomatis" lewat
+    // setTimeout palsu 2.2 detik — pelanggan sebenarnya tidak pernah benar-benar
+    // menyetujui apa pun. Sekarang status pesanan tetap 'invoice' dan HANYA
+    // berubah ke 'dikerjakan' ketika pelanggan sungguhan menekan "Setujui
+    // Invoice" di aplikasi Awetin (lewat AwetinDB, terlihat live di sini).
+    const submitInvoice = (items, total) => {
+        advance({ status: 'invoice', invoiceItems: items, invoiceTotal: total });
+        showToast('Invoice terkirim, menunggu persetujuan pelanggan.');
+    };
+
+    const confirmCancel = (reason) => {
+        advance({ status: 'dibatalkan', cancelReason: reason, isFullyDone: true });
+        setCancelModal(false);
+        showToast('Pesanan dibatalkan. Pelanggan direfund otomatis.');
+        setTimeout(onBack, 900);
+    };
+
+    const submitRating = (rating) => {
+        advance({ customerRatingGiven: true, customerRating: rating });
+        setRateSheet(false);
+        showToast('Terima kasih atas penilaianmu!');
+    };
+
+    const finalizeOrder = () => {
+        advance({ isFullyDone: true });
+        onFinishOrder(order);
+        setTimeout(onBack, 300);
+    };
+
+    return (
+        <div className="h-full w-full flex flex-col bg-background overflow-hidden relative">
+            <MTopBar onBack={onBack} title={order.id} right={
+                <button onClick={onChatCustomer} className="w-9 h-9 rounded-full bg-[#F4F6F6] flex items-center justify-center press-scale"><Icon.MessageCircle size={17} color="#14181A" /></button>
+            } />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5 flex flex-col gap-4">
+
+                {/* Info Pelanggan */}
+                <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                        <img src={order.customerAvatar} alt="" className="w-11 h-11 rounded-full object-cover" />
+                        <div className="flex-1 min-w-0">
+                            <p className="text-[14px] font-extrabold text-[#14181A] truncate">{order.customerName}</p>
+                            <p className="text-[11.5px] text-[#8D9699]">{order.customerPhone}</p>
+                        </div>
+                        <StatusBadge status={order.status} />
+                    </div>
+                    <div className="flex gap-2 items-start text-[12px] text-[#5C6668] leading-relaxed">
+                        <Icon.MapPin size={14} color="#8D9699" className="shrink-0 mt-0.5" />
+                        <span>{order.address}</span>
+                    </div>
+                </div>
+
+                {/* Info Barang */}
+                <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4 flex gap-3">
+                    <img src={order.photo} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0 border border-[#E8EBEA]" />
+                    <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-extrabold text-[#14181A]">{order.itemName}</p>
+                        <p className="text-[12px] text-[#5C6668] mt-0.5 leading-relaxed">{order.issue}</p>
+                        <p className="text-[11px] font-bold text-primary-default mt-1.5">{order.estimatedPrice}</p>
+                    </div>
+                </div>
+
+                {/* Stepper */}
+                {order.status !== 'dibatalkan' && order.status !== 'ditolak' && (
+                    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                        <h4 className="text-[13px] font-extrabold text-[#14181A] mb-4">Progres Pesanan</h4>
+                        <StatusStepper steps={steps} currentIndex={currentIndex} />
+                    </div>
+                )}
+
+                {order.status === 'dibatalkan' && (
+                    <div className="bg-error-container rounded-2xl p-4 flex gap-3">
+                        <Icon.AlertOctagon size={20} color="#D42F2F" />
+                        <div>
+                            <p className="text-[13px] font-extrabold text-error-default">Pesanan Dibatalkan</p>
+                            <p className="text-[12px] text-error-default/90 mt-0.5">Alasan: {order.cancelReason}. Pelanggan telah direfund penuh.</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* ===== Panel Aksi Sesuai Tahap ===== */}
+                {order.status === 'diterima' && isBesar && (
+                    <MButton fullWidth onClick={() => advance({ status: 'berangkat' })}>Berangkat ke Lokasi</MButton>
+                )}
+
+                {order.status === 'menunggu_antar' && !isBesar && (
+                    <MButton fullWidth onClick={() => advance({ status: 'diterima' })}>Tandai Barang Sudah Diterima</MButton>
+                )}
+
+                {order.status === 'berangkat' && (
+                    <div className="flex flex-col gap-3">
+                        <LiveTrackingMap />
+                        <MButton fullWidth onClick={() => advance({ status: 'tiba' })}>Saya Sudah Tiba di Lokasi</MButton>
+                    </div>
+                )}
+
+                {order.status === 'tiba' && (
+                    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                        <h4 className="text-[13.5px] font-extrabold text-[#14181A] mb-1">Verifikasi Kode Kedatangan</h4>
+                        <p className="text-[12px] text-[#5C6668] leading-relaxed mb-4">Minta pelanggan menyebutkan kode 4 digit yang muncul di aplikasi Awetin mereka.</p>
+                        <OTPInputField length={4} value={otpVal} status={otpStatus} />
+                        {otpStatus === 'error' && <p className="text-[12px] font-semibold text-error-default text-center mt-2">Kode salah. Coba tanyakan ulang ke pelanggan.</p>}
+                        <div className="grid grid-cols-3 gap-2 mt-4">
+                            {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'].map((k, i) => k === '' ? <div key={i} /> : (
+                                <button key={i} onClick={() => k === '⌫' ? setOtpVal(v => v.slice(0, -1)) : setOtpVal(v => v.length < 4 ? v + k : v)} className="h-11 rounded-lg bg-[#F4F6F6] font-extrabold text-[15px] text-[#14181A] active:bg-[#E8EBEA]">{k}</button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {order.status === 'cek_fisik' && (
+                    <MButton fullWidth onClick={() => advance({ status: 'invoice' })}>Sudah Cek Fisik, Lanjut Buat Invoice</MButton>
+                )}
+
+                {order.status === 'invoice' && (
+                    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                        {order.invoiceTotal ? (
+                            <div className="flex flex-col items-center text-center py-4">
+                                <div className="w-9 h-9 border-2 border-primary-default border-t-transparent rounded-full animate-spin mb-3" />
+                                <p className="text-[13px] font-bold text-[#14181A]">Invoice Terkirim, Menunggu Persetujuan Pelanggan</p>
+                                <p className="text-[11.5px] text-[#8D9699] mt-1">Status akan berubah otomatis begitu pelanggan menyetujui di aplikasi Awetin.</p>
+                            </div>
+                        ) : (
+                            <>
+                                <h4 className="text-[13.5px] font-extrabold text-[#14181A] mb-3">Input Harga Final</h4>
+                                <InvoiceEditor onSubmit={submitInvoice} />
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {order.status === 'dikerjakan' && (
+                    <MButton fullWidth onClick={() => advance({ status: 'selesai_upload' })}>Tandai Selesai & Unggah Bukti</MButton>
+                )}
+
+                {order.status === 'selesai_upload' && (
+                    <BeforeAfterUploadPanel order={order} onDone={(before, after) => advance({ status: 'serah_terima', beforePhoto: before, afterPhoto: after })} />
+                )}
+
+                {order.status === 'serah_terima' && !order.isFullyDone && (
+                    <div className="flex flex-col gap-3">
+                        {order.beforePhoto && order.afterPhoto && (
+                            <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                                <h4 className="text-[13px] font-extrabold text-[#14181A] mb-3">Foto Sebelum & Sesudah</h4>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div><img src={order.beforePhoto} className="w-full aspect-square object-cover rounded-lg" /><p className="text-[10px] text-center text-[#8D9699] mt-1 font-semibold">Sebelum</p></div>
+                                    <div><img src={order.afterPhoto} className="w-full aspect-square object-cover rounded-lg" /><p className="text-[10px] text-center text-[#8D9699] mt-1 font-semibold">Sesudah</p></div>
+                                </div>
+                            </div>
+                        )}
+                        {isBesar && <PaymentConfirmCard confirmed={order.paymentConfirmed} method={order.paymentMethod}
+                            onConfirmQris={() => { advance({ paymentConfirmed: true, paymentMethod: 'qris' }); showToast('Pembayaran QRIS terverifikasi.'); }}
+                            onConfirmCash={() => { advance({ paymentConfirmed: true, paymentMethod: 'cash' }); showToast('Ditandai sudah diterima tunai.'); }} />}
+                        {!isBesar && (
+                            <div className="bg-[#F8FAFA] rounded-2xl p-3.5 flex gap-2">
+                                <Icon.Info size={16} color="#8D9699" />
+                                <p className="text-[11.5px] text-[#8D9699] leading-relaxed">Pembayaran servis ini disepakati & diterima langsung dari pelanggan (di luar aplikasi), sesuai kesepakatan awal lewat chat.</p>
+                            </div>
+                        )}
+
+                        <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                            <h4 className="text-[13px] font-extrabold text-[#14181A] mb-2">Nilai Pelanggan</h4>
+                            {order.customerRatingGiven ? (
+                                <div className="flex items-center gap-2"><RatingStars value={order.customerRating?.stars || 0} size={16} /><span className="text-[12px] font-semibold text-[#5C6668]">Penilaian tersimpan</span></div>
+                            ) : (
+                                <MButton variant="outline" size="sm" onClick={() => setRateSheet(true)}>Beri Penilaian</MButton>
+                            )}
+                        </div>
+
+                        <MButton fullWidth onClick={finalizeOrder} disabled={isBesar && !order.paymentConfirmed}>Selesaikan Pesanan</MButton>
+                    </div>
+                )}
+
+                {order.status === 'serah_terima' && order.isFullyDone && (
+                    <div className="bg-success-container rounded-2xl p-4 flex gap-3">
+                        <Icon.CheckCircle filled size={22} color="#1E9E4A" />
+                        <p className="text-[13px] font-bold text-success-default">Pesanan ini telah selesai & tercatat di riwayat.</p>
+                    </div>
+                )}
+
+                {canCancel && (
+                    <button onClick={() => setCancelModal(true)} className="text-center text-[12.5px] font-extrabold text-error-default press-scale mt-1 pb-4">Batalkan Pesanan</button>
+                )}
+            </div>
+
+            <CancelOrderModal isOpen={cancelModal} onClose={() => setCancelModal(false)} onConfirm={confirmCancel} />
+            <RateCustomerSheet isOpen={rateSheet} customerName={order.customerName} onClose={() => setRateSheet(false)} onSubmit={submitRating} />
+            <ToastSnackbar message={toast} show={!!toast} />
+        </div>
+    );
+};
+
+const BeforeAfterUploadPanel = ({ order, onDone }) => {
+    const [before, setBefore] = useState(order.beforePhoto || null);
+    const [after, setAfter] = useState(order.afterPhoto || null);
+    return (
+        <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+            <h4 className="text-[13.5px] font-extrabold text-[#14181A] mb-3">Unggah Foto Sebelum & Sesudah</h4>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+                <PhotoUploader label="Sebelum" image={before} onUpload={() => setBefore(IMG.kompresorBefore)} aspect="aspect-square" />
+                <PhotoUploader label="Sesudah" image={after} onUpload={() => setAfter(IMG.kompresorAfter)} aspect="aspect-square" />
+            </div>
+            <MButton fullWidth disabled={!before || !after} onClick={() => onDone(before, after)}>Lanjut ke Serah Terima</MButton>
+        </div>
+    );
+};
+/* ============================================================
+   CHAT SCREEN — komunikasi mitra <-> pelanggan per pesanan
+   ============================================================ */
+const ChatScreen = ({ order, onBack }) => {
+    const [messages, setMessages] = useState([
+        { id: 1, from: 'customer', text: `Halo kak, ini untuk servis ${order?.itemName || 'barang saya'}. ${order?.issue || ''}`, time: '09:12' },
+        { id: 2, from: 'me', text: 'Baik kak, ditunggu ya barangnya / saya segera meluncur ke lokasi.', time: '09:15' },
+    ]);
+    const [draft, setDraft] = useState('');
+    const scRef = useRef(null);
+    useEffect(() => { if (scRef.current && typeof scRef.current.scrollTo === 'function') scRef.current.scrollTo(0, scRef.current.scrollHeight); }, [messages]);
+
+    const send = () => {
+        if (!draft.trim()) return;
+        setMessages(m => [...m, { id: Date.now(), from: 'me', text: draft, time: 'Baru saja' }]);
+        setDraft('');
+    };
+
+    return (
+        <div className="h-full w-full flex flex-col bg-[#F4F6F6]">
+            <MTopBar onBack={onBack} title={order?.customerName || 'Chat'} />
+            <div ref={scRef} className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 flex flex-col gap-3">
+                {messages.map(m => (
+                    <div key={m.id} className={`flex ${m.from === 'me' ? 'justify-end' : 'justify-start'}`}>
+                        <div className={`max-w-[75%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${m.from === 'me' ? 'bg-primary-default text-white rounded-br-md' : 'bg-white text-[#14181A] rounded-bl-md border border-[#E8EBEA]'}`}>
+                            {m.text}
+                            <div className={`text-[9.5px] mt-1 ${m.from === 'me' ? 'text-white/70' : 'text-[#8D9699]'}`}>{m.time}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="bg-white border-t border-[#E8EBEA] px-3 py-3 pb-safe flex items-center gap-2 shrink-0">
+                <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && send()} placeholder="Tulis pesan..." className="flex-1 h-11 rounded-full bg-[#F4F6F6] px-4 text-[13px] outline-none" />
+                <button onClick={send} className="w-11 h-11 rounded-full bg-primary-default flex items-center justify-center shrink-0 press-scale"><Icon.ArrowRight size={18} color="#fff" /></button>
+            </div>
+        </div>
+    );
+};
+/* ============================================================
+   PROMPT 05 — TAB PROFIL USAHA & PENGATURAN AKUN
+   ============================================================ */
+
+const SettingsRow = ({ icon: IconComp, label, sub, onClick, right, danger = false }) => (
+    <button onClick={onClick} className="w-full flex items-center gap-3.5 py-3.5 active:bg-[#F8FAFA] transition-colors text-left">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${danger ? 'bg-[#FCE7E7]' : 'bg-[#F4F6F6]'}`}>
+            <IconComp size={18} color={danger ? '#D42F2F' : '#5C6668'} />
+        </div>
+        <div className="flex-1 min-w-0">
+            <p className={`text-[13.5px] font-bold ${danger ? 'text-error-default' : 'text-[#14181A]'}`}>{label}</p>
+            {sub && <p className="text-[11.5px] text-[#8D9699] mt-0.5">{sub}</p>}
+        </div>
+        {right || <Icon.ChevronRight size={18} color="#B7BEBC" />}
+    </button>
+);
+
+const ProfilUsahaScreen = ({ profile, onNavigate, onLogout, ratingRef }) => (
+    <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+        <div className="bg-white pt-safe pb-3 px-5 border-b border-[#E8EBEA] shrink-0">
+            <h1 className="text-[19px] font-extrabold text-[#14181A] pt-2">Profil Usaha</h1>
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar">
+            <div className="bg-white px-5 pt-5 pb-6">
+                <div className="flex items-center gap-4">
+                    <img src={profile.avatar} alt="" className="w-16 h-16 rounded-full object-cover border-2 border-primary-container" />
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <h2 className="text-[16px] font-extrabold text-[#14181A] truncate">{profile.name}</h2>
+                            {profile.verified && <Icon.ShieldCheck size={16} color="#00AA13" />}
+                        </div>
+                        <p className="text-[12px] text-[#8D9699] mt-0.5">{profile.wilayah}</p>
+                        <div ref={ratingRef} className="flex items-center gap-1.5 mt-1.5">
+                            <RatingStars value={Math.round(profile.rating)} size={13} />
+                            <span className="text-[12px] font-bold text-[#14181A]">{profile.rating}</span>
+                            <span className="text-[11px] text-[#8D9699]">({profile.totalUlasan} ulasan)</span>
+                        </div>
+                    </div>
+                </div>
+                {profile.badge && (
+                    <div className="mt-4 flex items-center gap-2 bg-[#FFF1D6] rounded-xl px-3 py-2.5 w-fit">
+                        <Icon.Award size={16} color="#B8790A" />
+                        <span className="text-[12px] font-extrabold text-[#8A5D07]">Badge "{profile.badge}"</span>
+                    </div>
+                )}
+                <MButton variant="outline" size="sm" fullWidth className="mt-4" onClick={() => onNavigate('edit_usaha')}>Edit Kategori & Harga</MButton>
+            </div>
+
+            <div className="bg-white mt-2.5 px-5 py-5">
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-[14px] font-extrabold text-[#14181A]">Galeri Portofolio</h3>
+                    <button onClick={() => onNavigate('portfolio')} className="text-[12px] font-extrabold text-primary-default">Kelola</button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                    {profile.portfolio.slice(0, 3).map(p => <PortfolioGalleryItem key={p.id} item={p} />)}
+                </div>
+            </div>
+
+            <div className="bg-white mt-2.5 px-5 py-2">
+                <SettingsRow icon={Icon.Lock} label="Kunci Aplikasi" sub="PIN atau biometrik untuk buka aplikasi" onClick={() => onNavigate('keamanan')} />
+                <SettingsRow icon={Icon.FileText} label="Syarat & Ketentuan Mitra" onClick={() => onNavigate('terms')} />
+                <SettingsRow icon={Icon.Shield} label="Kebijakan Privasi" onClick={() => onNavigate('privacy')} />
+                <SettingsRow icon={Icon.Info} label="Tentang Aplikasi" sub="Versi 1.0.0 (Prototype)" onClick={() => onNavigate('about')} />
+            </div>
+
+            <div className="px-5 mt-5">
+                <button onClick={() => onNavigate('info_pencari_jasa')} className="w-full bg-information-container rounded-2xl p-4 flex items-center gap-3 text-left press-scale">
+                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0"><Icon.Wrench size={18} color="#2F72ED" /></div>
+                    <div className="flex-1">
+                        <p className="text-[13px] font-extrabold text-[#1B4EAE]">Punya barang sendiri yang perlu diperbaiki?</p>
+                        <p className="text-[11.5px] text-[#1B4EAE]/80 mt-0.5">Unduh aplikasi Awetin (terpisah dari aplikasi ini)</p>
+                    </div>
+                    <Icon.ArrowUpRight size={16} color="#2F72ED" />
+                </button>
+            </div>
+
+            <div className="px-5 mt-5 mb-8">
+                <MButton variant="destructiveOutline" fullWidth onClick={onLogout}>Keluar</MButton>
+            </div>
+        </div>
+    </div>
+);
+
+/* ---------- Edit Profil Usaha (reuse form onboarding) ---------- */
+const EditProfileUsahaScreen = ({ profile, onBack, onSave }) => {
+    const [categories, setCategories] = useState(profile.categories);
+    const [prices, setPrices] = useState(profile.priceRanges);
+    const toggleCat = (id) => setCategories(c => c.includes(id) ? c.filter(x => x !== id) : [...c, id]);
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <MTopBar onBack={onBack} title="Edit Kategori & Harga" />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-6 py-5">
+                <p className="text-[13px] font-bold text-[#14181A] mb-2.5">Kategori Keahlian</p>
+                <div className="grid grid-cols-2 gap-2.5 mb-6">
+                    {KATEGORI_LIST.map(k => {
+                        const active = categories.includes(k.id);
+                        return (
+                            <button key={k.id} onClick={() => toggleCat(k.id)} className={`rounded-xl p-3 flex items-center gap-2.5 border-[1.5px] press-scale ${active ? 'border-primary-default bg-primary-container' : 'border-[#E8EBEA]'}`}>
+                                <k.Icon size={16} color={active ? '#046B0C' : '#8D9699'} />
+                                <span className={`text-[12.5px] font-bold ${active ? 'text-primary-on-container' : 'text-[#5C6668]'}`}>{k.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+                <p className="text-[13px] font-bold text-[#14181A] mb-2.5">Kisaran Harga</p>
+                {categories.map(c => {
+                    const meta = KATEGORI_LIST.find(k => k.id === c);
+                    return (
+                        <div key={c} className="mb-3 flex items-center justify-between bg-[#F8FAFA] rounded-xl px-4 py-3">
+                            <span className="text-[12.5px] font-bold text-[#14181A]">{meta.label}</span>
+                            <input defaultValue={prices[c] || ''} onChange={(e) => setPrices(p => ({ ...p, [c]: e.target.value }))} className="text-[12px] font-semibold text-right bg-transparent outline-none w-[150px]" />
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="px-6 pb-8 pb-safe pt-2 border-t border-[#F0F3F2]"><MButton fullWidth size="hero" onClick={() => onSave({ categories, priceRanges: prices })}>Simpan Perubahan</MButton></div>
+        </div>
+    );
+};
+
+/* ---------- Kelola Portofolio ---------- */
+const PortfolioManagerScreen = ({ portfolio, onBack, onAdd, onDelete }) => (
+    <div className="h-full w-full flex flex-col bg-white">
+        <MTopBar onBack={onBack} title="Galeri Portofolio" />
+        <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5">
+            <p className="text-[12.5px] text-[#5C6668] leading-relaxed mb-4">Unggah foto before/after hasil pekerjaanmu untuk menarik lebih banyak pelanggan.</p>
+            <div className="grid grid-cols-3 gap-2.5">
+                <button onClick={onAdd} className="aspect-square rounded-xl border-2 border-dashed border-[#DDE2E1] bg-[#F8FAFA] flex flex-col items-center justify-center gap-1.5 press-scale">
+                    <Icon.Plus size={20} color="#8D9699" />
+                    <span className="text-[10.5px] font-bold text-[#8D9699]">Tambah</span>
+                </button>
+                {portfolio.map(p => <PortfolioGalleryItem key={p.id} item={p} editable onDelete={() => onDelete(p.id)} />)}
+            </div>
+        </div>
+    </div>
+);
+
+/* ---------- Keamanan / Kunci Aplikasi ---------- */
+const KeamananScreen = ({ onBack }) => {
+    const [pinEnabled, setPinEnabled] = useState(false);
+    const [bioEnabled, setBioEnabled] = useState(false);
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <MTopBar onBack={onBack} title="Kunci Aplikasi" />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5">
+                <div className="bg-[#F8FAFA] rounded-2xl p-4 flex gap-3 mb-5">
+                    <Icon.Info size={18} color="#8D9699" />
+                    <p className="text-[12px] text-[#5C6668] leading-relaxed">Ini bukan metode masuk ke akun — masuk tetap pakai nomor HP + kode OTP. Kunci ini cuma untuk mengamankan aplikasi di perangkatmu.</p>
+                </div>
+                <div className="flex items-center justify-between py-3.5 border-b border-[#F0F3F2]">
+                    <div className="flex items-center gap-3"><Icon.Lock size={18} color="#5C6668" /><span className="text-[13.5px] font-bold text-[#14181A]">Kunci dengan PIN</span></div>
+                    <Toggle checked={pinEnabled} onChange={() => setPinEnabled(!pinEnabled)} />
+                </div>
+                <div className="flex items-center justify-between py-3.5">
+                    <div className="flex items-center gap-3"><Icon.Fingerprint size={18} color="#5C6668" /><span className="text-[13.5px] font-bold text-[#14181A]">Kunci dengan Biometrik</span></div>
+                    <Toggle checked={bioEnabled} onChange={() => setBioEnabled(!bioEnabled)} />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/* ---------- Halaman Teks Statis (T&C, Privasi, Tentang) ---------- */
+const StaticTextScreen = ({ title, paragraphs, onBack }) => (
+    <div className="h-full w-full flex flex-col bg-white">
+        <MTopBar onBack={onBack} title={title} />
+        <div className="flex-1 overflow-y-auto no-scrollbar px-6 py-5">
+            {paragraphs.map((p, i) => <p key={i} className="text-[13px] text-[#5C6668] leading-relaxed mb-4">{p}</p>)}
+        </div>
+    </div>
+);
+
+const AboutScreen = ({ onBack, demoOffline, onToggleDemoOffline, onTriggerLoadingDemo }) => (
+    <div className="h-full w-full flex flex-col bg-white">
+        <MTopBar onBack={onBack} title="Tentang Aplikasi" />
+        <div className="flex-1 overflow-y-auto no-scrollbar px-6 py-6 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-2xl bg-primary-container flex items-center justify-center mb-4"><Icon.Wrench size={28} color="#00AA13" /></div>
+            <h2 className="text-[17px] font-extrabold text-[#14181A]">Awetin Mitra</h2>
+            <p className="text-[12px] text-[#8D9699] mt-1">Versi 1.0.0 (Prototype)</p>
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mt-5 max-w-[280px]">Awetin Mitra membantu tukang reparasi informal menerima pesanan servis, mengelola profil usaha, dan mendapat penghasilan tambahan — sambil membantu mengurangi sampah lewat perbaikan barang.</p>
+
+            {(onToggleDemoOffline || onTriggerLoadingDemo) && (
+                <div className="w-full mt-8 pt-6 border-t border-dashed border-[#E8EBEA]">
+                    <p className="text-[11px] font-extrabold text-[#B7BEBC] tracking-wide mb-3">MODE DEMO (KHUSUS PRESENTASI)</p>
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center justify-between bg-[#F8FAFA] rounded-xl px-4 py-3">
+                            <span className="text-[12.5px] font-bold text-[#14181A]">Simulasikan Offline</span>
+                            <Toggle checked={demoOffline} onChange={onToggleDemoOffline} />
+                        </div>
+                        <button onClick={onTriggerLoadingDemo} className="w-full text-left bg-[#F8FAFA] rounded-xl px-4 py-3 press-scale">
+                            <span className="text-[12.5px] font-bold text-[#14181A]">Putar Ulang Skeleton Loading</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    </div>
+);
+/* ============================================================
+   PROMPT 06 — TAB PENDAPATAN
+   ============================================================ */
+
+const PERIOD_TABS = [
+    { id: 'hari', label: 'Hari Ini' },
+    { id: 'minggu', label: 'Minggu Ini' },
+    { id: 'bulan', label: 'Bulan Ini' },
+];
+const PERIOD_SUMMARY = {
+    hari: { total: 165600, count: 1, chart: [20, 0, 0, 0, 0, 0, 40] },
+    minggu: { total: 498000, count: 3, chart: [20, 45, 30, 60, 25, 40, 55] },
+    bulan: { total: 2140000, count: 12, chart: [30, 50, 40, 70, 55, 65, 45] },
+};
+
+const EarningsBarChart = ({ data }) => {
+    const max = Math.max(...data, 1);
+    const days = ['S', 'S', 'R', 'K', 'J', 'S', 'M'];
+    return (
+        <div className="flex items-end justify-between gap-2 h-[80px] mt-4">
+            {data.map((v, i) => (
+                <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                    <div className="w-full rounded-md bg-primary-container relative overflow-hidden" style={{ height: '64px' }}>
+                        <div className="absolute bottom-0 left-0 right-0 bg-primary-default rounded-md transition-all duration-500" style={{ height: `${(v / max) * 100}%` }} />
+                    </div>
+                    <span className="text-[9.5px] font-bold text-[#8D9699]">{days[i]}</span>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const ScheduleServiceSheet = ({ isOpen, onClose, onConfirm }) => {
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
+    return (
+        <MBottomSheet isOpen={isOpen} onClose={onClose} title="Jadwalkan Servis Ulang">
+            <p className="text-[13px] text-[#5C6668] leading-relaxed mb-4">Pilih tanggal & waktu untuk mengunjungi kembali pelanggan ini (garansi).</p>
+            <label className="text-[12.5px] font-bold text-[#14181A] mb-1.5 block">Tanggal</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full h-12 rounded-xl border border-[#E8EBEA] px-3.5 text-[13px] font-semibold mb-4 outline-none focus:border-primary-default" />
+            <label className="text-[12.5px] font-bold text-[#14181A] mb-1.5 block">Jam</label>
+            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full h-12 rounded-xl border border-[#E8EBEA] px-3.5 text-[13px] font-semibold mb-6 outline-none focus:border-primary-default" />
+            <MButton fullWidth disabled={!date || !time} onClick={() => onConfirm(date, time)}>Konfirmasi Jadwal</MButton>
+        </MBottomSheet>
+    );
+};
+
+const WarrantyClaimCard = ({ claim, onSchedule }) => (
+    <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+        <div className="flex gap-3">
+            <img src={claim.photo} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0 border border-[#E8EBEA]" />
+            <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-extrabold text-[#14181A]">{claim.customerName} · {claim.itemName}</p>
+                <p className="text-[11.5px] text-[#5C6668] mt-0.5 leading-relaxed line-clamp-2">{claim.keterangan}</p>
+                <p className="text-[10.5px] text-[#8D9699] mt-1">Pesanan asal: {claim.originalOrderId}</p>
+            </div>
+        </div>
+        {claim.status === 'terjadwal' ? (
+            <div className="mt-3 flex items-center gap-2 bg-success-container rounded-lg px-3 py-2">
+                <Icon.Calendar size={14} color="#1E9E4A" />
+                <span className="text-[12px] font-bold text-success-default">Terjadwal: {claim.scheduledDate} {claim.scheduledTime}</span>
+            </div>
+        ) : (
+            <MButton size="sm" variant="outline" fullWidth className="mt-3" onClick={onSchedule}>Konfirmasi Jadwal Servis Ulang</MButton>
+        )}
+    </div>
+);
+
+const PendapatanScreen = ({ transactions, warrantyClaims, onScheduleClaim }) => {
+    const [period, setPeriod] = useState('minggu');
+    const [claimSheetId, setClaimSheetId] = useState(null);
+    const summary = PERIOD_SUMMARY[period];
+
+    return (
+        <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+            <div className="bg-white pt-safe pb-3 px-5 border-b border-[#E8EBEA] shrink-0">
+                <h1 className="text-[19px] font-extrabold text-[#14181A] pt-2">Pendapatan</h1>
+            </div>
+            <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5">
+
+                <div className="bg-white rounded-2xl border border-[#E8EBEA] p-4">
+                    <div className="flex gap-2 mb-4">
+                        {PERIOD_TABS.map(t => (
+                            <button key={t.id} onClick={() => setPeriod(t.id)} className={`flex-1 h-9 rounded-full text-[12px] font-bold transition-colors ${period === t.id ? 'bg-primary-default text-white' : 'bg-[#F4F6F6] text-[#5C6668]'}`}>{t.label}</button>
+                        ))}
+                    </div>
+                    <p className="text-[11px] font-semibold text-[#8D9699]">Total Pendapatan Bersih</p>
+                    <p className="text-[26px] font-extrabold text-[#14181A] font-mono mt-0.5">Rp{summary.total.toLocaleString('id-ID')}</p>
+                    <p className="text-[11.5px] text-[#8D9699] mt-1">{summary.count} pesanan selesai</p>
+                    <EarningsBarChart data={summary.chart} />
+                </div>
+
+                {warrantyClaims.length > 0 && (
+                    <div className="mt-7">
+                        <h3 className="text-[14px] font-extrabold text-[#14181A] mb-3">Klaim Garansi Masuk</h3>
+                        <div className="flex flex-col gap-3">
+                            {warrantyClaims.map(c => (
+                                <WarrantyClaimCard key={c.id} claim={c} onSchedule={() => setClaimSheetId(c.id)} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="mt-7 mb-4">
+                    <h3 className="text-[14px] font-extrabold text-[#14181A] mb-3">Riwayat Transaksi</h3>
+                    {transactions.length === 0 ? (
+                        <EmptyState icon={Icon.Wallet} title="Belum ada transaksi" desc="Riwayat pendapatanmu akan muncul di sini setelah pesanan selesai." />
+                    ) : (
+                        <div className="flex flex-col gap-3">
+                            {transactions.map(tx => <EarningsCard key={tx.id} tx={tx} />)}
+                        </div>
+                    )}
+                </div>
+
+                <div className="bg-[#F8FAFA] rounded-xl p-3.5 flex gap-2 mb-6">
+                    <Icon.Info size={14} color="#8D9699" className="shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-[#8D9699] leading-relaxed">Pendapatan dari servis Barang Kecil (drop-off) dan pelanggan yang datang langsung tidak tercatat di sini karena transaksinya di luar aplikasi.</p>
+                </div>
+            </div>
+
+            <ScheduleServiceSheet isOpen={!!claimSheetId} onClose={() => setClaimSheetId(null)} onConfirm={(date, time) => { onScheduleClaim(claimSheetId, date, time); setClaimSheetId(null); }} />
+        </div>
+    );
+};
+/* ============================================================
+   PROMPT 07 — TAB NOTIFIKASI & SISTEM REPUTASI
+   ============================================================ */
+
+const NOTIF_TYPE_META = {
+    order: { Icon: Icon.Package, bg: 'bg-information-container', color: '#2F72ED' },
+    payment: { Icon: Icon.Wallet, bg: 'bg-success-container', color: '#1E9E4A' },
+    reputation: { Icon: Icon.AlertTriangle, bg: 'bg-[#FFF1D6]', color: '#B8790A' },
+    system: { Icon: Icon.Sparkles, bg: 'bg-primary-container', color: '#046B0C' },
+};
+
+const NotificationRow = ({ item, onClick }) => {
+    if (item.type === 'reputation') {
+        return <ReputationAlertCard reason={item.reputationReason} recovery={item.reputationRecovery} />;
+    }
+    const meta = NOTIF_TYPE_META[item.type] || NOTIF_TYPE_META.system;
+    return (
+        <button onClick={onClick} className={`w-full flex gap-3 text-left px-4 py-3.5 rounded-2xl transition-colors ${item.unread ? 'bg-primary-container/40' : 'bg-white'} border border-[#E8EBEA]`}>
+            <div className={`w-10 h-10 rounded-full ${meta.bg} flex items-center justify-center shrink-0`}>
+                <meta.Icon size={18} color={meta.color} />
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-extrabold text-[#14181A] leading-snug">{item.title}</p>
+                <p className="text-[12px] text-[#5C6668] mt-0.5 leading-relaxed">{item.desc}</p>
+                <p className="text-[10.5px] text-[#8D9699] mt-1.5">{item.time}</p>
+            </div>
+            {item.unread && <div className="w-2 h-2 rounded-full bg-primary-default shrink-0 mt-1.5" />}
+        </button>
+    );
+};
+
+const NotifikasiScreen = ({ items, onOpenSettings, onOpenOrder }) => (
+    <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+        <div className="bg-white pt-safe pb-3 px-5 border-b border-[#E8EBEA] shrink-0 flex items-center justify-between">
+            <h1 className="text-[19px] font-extrabold text-[#14181A] pt-2">Notifikasi</h1>
+            <button onClick={onOpenSettings} className="w-10 h-10 rounded-full bg-[#F4F6F6] flex items-center justify-center press-scale mt-2"><Icon.SlidersH size={16} color="#14181A" /></button>
+        </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-5">
+            {items.length === 0 ? (
+                <EmptyState icon={Icon.Bell} title="Belum ada notifikasi" desc="Notifikasi tentang pesanan dan akunmu akan muncul di sini." />
+            ) : (
+                <div className="flex flex-col gap-2.5">
+                    {items.map(n => <NotificationRow key={n.id} item={n} onClick={() => n.orderId && onOpenOrder(n.orderId)} />)}
+                </div>
+            )}
+        </div>
+    </div>
+);
+
+const NotifPreferenceScreen = ({ onBack }) => {
+    const [prefs, setPrefs] = useState({ pesanan: true, pembayaran: true, reputasi: true, tips: false });
+    const toggle = (k) => setPrefs(p => ({ ...p, [k]: !p[k] }));
+    const rows = [
+        { key: 'pesanan', label: 'Pesanan Masuk & Update', sub: 'Pesanan baru, perubahan jadwal, pembatalan' },
+        { key: 'pembayaran', label: 'Pembayaran', sub: 'Pembayaran diterima, invoice disetujui' },
+        { key: 'reputasi', label: 'Reputasi Profil', sub: 'Peringatan visibilitas & cara pemulihan' },
+        { key: 'tips', label: 'Tips & Promo Mitra', sub: 'Edukasi dan info program mitra' },
+    ];
+    return (
+        <div className="h-full w-full flex flex-col bg-white">
+            <MTopBar onBack={onBack} title="Preferensi Notifikasi" />
+            <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-2">
+                {rows.map(r => (
+                    <div key={r.key} className="flex items-center justify-between py-4 border-b border-[#F0F3F2]">
+                        <div className="flex-1 pr-4"><p className="text-[13.5px] font-bold text-[#14181A]">{r.label}</p><p className="text-[11.5px] text-[#8D9699] mt-0.5">{r.sub}</p></div>
+                        <Toggle checked={prefs[r.key]} onChange={() => toggle(r.key)} />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+/* ============================================================
+   BOTTOM NAVIGATION — 5 tab, persistent (sesuai design system:
+   navigasi utama TIDAK BOLEH disembunyikan di balik gesture)
+   ============================================================ */
+const BottomNav = ({ active, onChange, pendingCount = 0, unreadNotif = 0 }) => {
+    const tabs = [
+        { id: 'home', label: 'Beranda', Icon: Icon.Home },
+        { id: 'pesanan', label: 'Pesanan', Icon: Icon.Receipt, badge: pendingCount },
+        { id: 'profil', label: 'Profil Usaha', Icon: Icon.Store },
+        { id: 'pendapatan', label: 'Pendapatan', Icon: Icon.Wallet },
+        { id: 'notifikasi', label: 'Notifikasi', Icon: Icon.Bell, badge: unreadNotif },
+    ];
+    return (
+        <div className="absolute bottom-0 w-full bg-surface border-t border-divider pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-30 shrink-0">
+            <div className="flex items-center justify-around h-[64px] relative px-1">
+                {tabs.map((t) => {
+                    const isActive = active === t.id;
+                    return (
+                        <button key={t.id} onClick={() => onChange(t.id)} className="flex flex-col items-center justify-center flex-1 h-full transition-colors duration-200 group relative">
+                            <div className={`mb-1 relative transition-transform duration-200 group-active:scale-90 ${isActive ? 'text-primary-default' : 'text-text-tertiary'}`}>
+                                <t.Icon size={22} filled={isActive} />
+                                {!!t.badge && (
+                                    <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-[3px] rounded-full bg-error-default text-white text-[9px] font-extrabold flex items-center justify-center border-2 border-white">
+                                        {t.badge > 9 ? '9+' : t.badge}
+                                    </span>
+                                )}
+                            </div>
+                            <span className={`text-[10px] font-bold leading-none ${isActive ? 'text-primary-default' : 'text-text-tertiary'}`}>
+                                {t.label}
+                            </span>
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+/* ============================================================
+   MITRA APP SHELL — shell utama 5-tab + overlay stack
+   ============================================================ */
+const TERMS_TEXT = [
+    'Syarat & Ketentuan Mitra ini mengatur hubungan antara kamu (Mitra) dan platform Awetin dalam menyediakan jasa reparasi kepada pengguna.',
+    'Awetin bertindak sebagai penghubung antara Mitra dan pengguna yang membutuhkan jasa reparasi. Awetin tidak mewajibkan setiap transaksi harus dilakukan lewat aplikasi — kunjungan lanjutan pelanggan secara langsung di luar aplikasi adalah bagian wajar dari hubungan kerja yang sehat.',
+    'Mitra bertanggung jawab atas kualitas pekerjaan, kejujuran estimasi harga, dan keakuratan informasi profil usaha yang didaftarkan, termasuk dokumen identitas dan lokasi usaha.',
+    'Komisi platform sebesar 8% berlaku untuk transaksi Barang Besar yang diproses lewat aplikasi. Transaksi Barang Kecil (drop-off) dan pembayaran tunai langsung tidak dikenakan komisi.',
+    'Pelanggaran berulang seperti pembatalan sepihak yang sering terjadi dapat memengaruhi visibilitas profil Mitra di aplikasi.',
+];
+const PRIVACY_TEXT = [
+    'Kebijakan Privasi ini menjelaskan bagaimana Awetin mengumpulkan dan menggunakan data pribadi Mitra, termasuk data KTP dan lokasi usaha, sesuai dengan Undang-Undang Perlindungan Data Pribadi (UU PDP).',
+    'Data KTP digunakan semata-mata untuk keperluan verifikasi identitas Mitra dan tidak dibagikan ke pihak ketiga tanpa persetujuan, kecuali diwajibkan oleh hukum yang berlaku.',
+    'Data lokasi usaha digunakan untuk menampilkan profil Mitra kepada pengguna di sekitar wilayah operasional dan membantu proses verifikasi alamat usaha.',
+    'Mitra berhak meminta penghapusan data pribadi sesuai ketentuan yang berlaku dengan menghubungi layanan bantuan Awetin Mitra.',
+];
+
+const MitraAppShell = ({ onLogout, registrationOverrides }) => {
+    const [tab, setTab] = useState('home');
+    const [overlayStack, setOverlayStack] = useState([]);
+    // PERBAIKAN: sebelumnya wizard pendaftaran (kategori, wilayah, rentang
+    // harga yang diisi mitra) dikumpulkan lengkap tapi lalu DIBUANG begitu
+    // saja saat App root memanggil `onApproved={() => setPhase('main')}`
+    // tanpa membawa datanya. Sekarang `registrationOverrides` (jika ada)
+    // digabung ke atas profil default.
+    const [profile, setProfile] = useState({ ...MITRA_PROFILE_INIT, ...(registrationOverrides || {}) });
+    const [isOpenStatus, setIsOpenStatus] = useState(true);
+    // ---- Pesanan & klaim garansi sekarang dibaca dari AwetinDB (penyimpanan
+    // bersama dgn Awetin), difilter hanya milik mitra yang sedang login.
+    // Sebelumnya ORDERS_INIT/WARRANTY_CLAIMS_INIT adalah data lokal yang
+    // sama sekali terisolasi dari apa yang dibuat pelanggan di Awetin.
+    // Alias datar (customerName/customerAvatar/customerPhone) ditambahkan di
+    // sini SUPAYA komponen lama (ActiveOrderCard, OrderDetailScreen, ChatScreen,
+    // dst.) tetap jalan tanpa diubah — objek `o.customer` kanonik tetap ada
+    // juga di sisi lain untuk kode yang butuh bentuk aslinya.
+    const enrichOrder = (o) => o ? { ...o, customerName: o.customer.name, customerAvatar: o.customer.avatar, customerPhone: o.customer.phone } : null;
+    const loadPartnerOrders = () => AwetinDB.Orders.list()
+        .filter(o => o.partner.id === profile.id)
+        .map(enrichOrder)
+        .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    const loadPartnerClaims = () => AwetinDB.WarrantyClaims.list().filter(c => c.partnerId === profile.id);
+    const [orders, setOrders] = useState(loadPartnerOrders);
+    const [transactions, setTransactions] = useState(TRANSACTIONS_INIT);
+    const [warrantyClaims, setWarrantyClaims] = useState(loadPartnerClaims);
+    const prevOrdersRef = useRef(orders);
+    const [notifItems, setNotifItems] = useState(NOTIF_ITEMS_INIT);
+    const [toast, setToast] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+    const [demoOffline, setDemoOffline] = useState(false);
+    const [logoutConfirm, setLogoutConfirm] = useState(false);
+    const ratingRef = useRef(null);
+
+    useEffect(() => { const t = setTimeout(() => setIsLoading(false), 1000); return () => clearTimeout(t); }, []);
+    const triggerLoadingDemo = () => { setIsLoading(true); setTimeout(() => setIsLoading(false), 1400); };
+
+    const showToast = (m) => { setToast(m); setTimeout(() => setToast(''), 2200); };
+
+    // ---- Sinkronisasi lintas-app: setiap kali AwetinDB berubah (mis.
+    // pelanggan baru saja memesan, menyetujui invoice, atau membatalkan
+    // pesanan di Awetin), tarik ulang data & buat notifikasi otomatis.
+    // Sebelumnya perubahan di sisi Awetin tidak pernah terlihat di sini
+    // sampai halaman dimuat ulang manual.
+    useEffect(() => {
+        const refresh = () => {
+            const fresh = loadPartnerOrders();
+            const prev = prevOrdersRef.current;
+            fresh.forEach(o => {
+                const before = prev.find(p => p.id === o.id);
+                if (!before) {
+                    setNotifItems(items => [{ id: 'n_new_' + o.id, type: 'order', unread: true, title: 'Pesanan baru masuk!', desc: `${o.customer.name} butuh servis ${o.itemName}.`, time: 'Baru saja', orderId: o.id }, ...items]);
+                } else if (before.status !== o.status && o.status === 'dikerjakan' && before.status === 'invoice') {
+                    setNotifItems(items => [{ id: 'n_invoice_' + o.id + '_' + o.updatedAt, type: 'payment', unread: true, title: 'Invoice disetujui pelanggan!', desc: `${o.customer.name} menyetujui invoice pesanan ${o.id}.`, time: 'Baru saja', orderId: o.id }, ...items]);
+                } else if (before.status !== o.status && o.status === 'dibatalkan') {
+                    setNotifItems(items => [{ id: 'n_cancel_' + o.id + '_' + o.updatedAt, type: 'order', unread: true, title: 'Pesanan dibatalkan pelanggan', desc: `${o.customer.name} membatalkan pesanan ${o.id}.`, time: 'Baru saja', orderId: o.id }, ...items]);
+                }
+            });
+            prevOrdersRef.current = fresh;
+            setOrders(fresh);
+            setWarrantyClaims(loadPartnerClaims());
+        };
+        return AwetinDB.subscribe(refresh);
+    }, [profile.id]);
+
+    const overlay = overlayStack[overlayStack.length - 1] || null;
+    const push = (screen, data) => setOverlayStack(s => [...s, { screen, data }]);
+    const closeOverlay = () => setOverlayStack(s => s.slice(0, -1));
+    const closeAllOverlays = () => setOverlayStack([]);
+
+    const pendingCount = orders.filter(o => o.status === 'baru').length;
+    const unreadNotif = notifItems.filter(n => n.unread).length;
+    const todaySummary = { earnings: 165600, completed: transactions.length > 0 ? 1 : 0 };
+
+    // Satu fungsi generik untuk SEMUA aksi mitra pada pesanan — ditulis lewat
+    // AwetinDB supaya Awetin (pelanggan) langsung melihat perubahan yang sama persis.
+    const updateOrder = (id, patch) => { AwetinDB.Orders.update(id, patch); setOrders(loadPartnerOrders()); };
+
+    const handleToggleOpen = () => {
+        if (demoOffline) { showToast('Perubahan akan tersimpan setelah koneksi kembali.'); setIsOpenStatus(s => !s); return; }
+        setIsOpenStatus(s => !s);
+    };
+
+    const acceptOrder = (order) => {
+        updateOrder(order.id, { status: order.type === 'besar' ? 'diterima' : 'menunggu_antar' });
+        showToast('Pesanan diterima! Cek detail untuk mulai bekerja.');
+        setTab('pesanan');
+    };
+
+    const [rejectTarget, setRejectTarget] = useState(null);
+    const confirmReject = (reason) => {
+        updateOrder(rejectTarget.id, { status: 'ditolak', rejectReason: reason, isFullyDone: true });
+        setRejectTarget(null);
+        showToast('Pesanan diteruskan ke tukang lain.');
+    };
+
+    const finishOrderToEarnings = (order) => {
+        if (order.type === 'besar') {
+            const gross = order.invoiceTotal || 150000;
+            const commission = Math.round(gross * 0.08);
+            setTransactions(tx => [{
+                id: 'TX-' + Math.floor(100 + Math.random() * 900),
+                customerName: order.customer.name, itemName: order.itemName,
+                date: 'Baru saja', grossAmount: gross, commissionPct: 8, commissionAmount: order.paymentMethod === 'cash' ? 0 : commission,
+                netAmount: order.paymentMethod === 'cash' ? gross : gross - commission, tip: 0, isCash: order.paymentMethod === 'cash',
+            }, ...tx]);
+        }
+        showToast('Pesanan selesai. Terima kasih! 🎉');
+    };
+
+    const scheduleWarrantyClaim = (id, date, time) => {
+        AwetinDB.WarrantyClaims.update(id, { status: 'terjadwal', scheduledDate: date, scheduledTime: time });
+        setWarrantyClaims(loadPartnerClaims());
+    };
+
+    const markNotifRead = () => setNotifItems(items => items.map(n => ({ ...n, unread: false })));
+
+    const handleProfileNav = (route) => {
+        if (route === 'info_pencari_jasa') { push('info_pencari_jasa'); return; }
+        push(route);
+    };
+
+    const openOrderFromNotif = (orderId) => {
+        const order = orders.find(o => o.id === orderId) || enrichOrder(AwetinDB.Orders.get(orderId));
+        if (order) { setTab('pesanan'); push('order_detail', order); }
+    };
+
+    return (
+        <div className="relative h-full w-full bg-background overflow-hidden">
+            <div className="h-full w-full pb-[64px] overflow-hidden">
+                {tab === 'home' && (
+                    <HomeScreen
+                        profile={profile} isOpenStatus={isOpenStatus} onToggleOpen={handleToggleOpen}
+                        incomingOrders={orders.filter(o => o.status === 'baru')} todaySummary={todaySummary}
+                        isLoading={isLoading} isOffline={demoOffline} onRetry={() => setDemoOffline(false)}
+                        onGoPendapatan={() => setTab('pendapatan')}
+                        onGoRatingProfil={() => { setTab('profil'); }}
+                        onAccept={acceptOrder} onReject={(o) => setRejectTarget(o)}
+                        onViewOrder={(o) => { setTab('pesanan'); push('order_detail', o); }}
+                        unreadNotif={unreadNotif} onGoNotif={() => setTab('notifikasi')}
+                    />
+                )}
+                {tab === 'pesanan' && (
+                    <PesananMasukScreen orders={orders} isLoading={isLoading}
+                        onAccept={acceptOrder} onReject={(o) => setRejectTarget(o)}
+                        onViewOrder={(o) => push('order_detail', o)} />
+                )}
+                {tab === 'profil' && (
+                    <ProfilUsahaScreen profile={profile} ratingRef={ratingRef} onNavigate={handleProfileNav} onLogout={() => setLogoutConfirm(true)} />
+                )}
+                {tab === 'pendapatan' && (
+                    <PendapatanScreen transactions={transactions} warrantyClaims={warrantyClaims}
+                        onScheduleClaim={scheduleWarrantyClaim} />
+                )}
+                {tab === 'notifikasi' && (
+                    <NotifikasiScreen items={notifItems} onOpenSettings={() => push('notif_settings')} onOpenOrder={openOrderFromNotif} />
+                )}
+            </div>
+
+            <BottomNav active={tab} onChange={(id) => { setTab(id); if (id === 'notifikasi') markNotifRead(); closeAllOverlays(); }} pendingCount={pendingCount} unreadNotif={unreadNotif} />
+
+            {overlayStack.map((ov, i) => {
+                const isTop = i === overlayStack.length - 1;
+                const style = isTop ? {} : { display: 'none' };
+                const liveOrder = ov.screen === 'order_detail' ? (orders.find(o => o.id === ov.data?.id) || ov.data) : null;
+                return (
+                    <div key={i} className="absolute inset-0" style={style}>
+                        {ov.screen === 'order_detail' && (
+                            <OrderDetailScreen order={liveOrder} onBack={closeOverlay} onUpdateOrder={updateOrder}
+                                onChatCustomer={() => push('chat', liveOrder)} onFinishOrder={finishOrderToEarnings} />
+                        )}
+                        {ov.screen === 'chat' && <ChatScreen order={ov.data} onBack={closeOverlay} />}
+                        {ov.screen === 'edit_usaha' && <EditProfileUsahaScreen profile={profile} onBack={closeOverlay} onSave={(patch) => { setProfile(p => ({ ...p, ...patch })); closeOverlay(); showToast('Profil usaha diperbarui!'); }} />}
+                        {ov.screen === 'portfolio' && <PortfolioManagerScreen portfolio={profile.portfolio} onBack={closeOverlay}
+                            onAdd={() => { setProfile(p => ({ ...p, portfolio: [...p.portfolio, { id: 'p' + Date.now(), image: IMG.portfolio2, caption: 'Hasil pekerjaan baru' }] })); showToast('Foto ditambahkan!'); }}
+                            onDelete={(id) => setProfile(p => ({ ...p, portfolio: p.portfolio.filter(x => x.id !== id) }))} />}
+                        {ov.screen === 'keamanan' && <KeamananScreen onBack={closeOverlay} />}
+                        {ov.screen === 'terms' && <StaticTextScreen title="Syarat & Ketentuan Mitra" paragraphs={TERMS_TEXT} onBack={closeOverlay} />}
+                        {ov.screen === 'privacy' && <StaticTextScreen title="Kebijakan Privasi" paragraphs={PRIVACY_TEXT} onBack={closeOverlay} />}
+                        {ov.screen === 'about' && <AboutScreen onBack={closeOverlay} demoOffline={demoOffline} onToggleDemoOffline={() => setDemoOffline(d => !d)} onTriggerLoadingDemo={triggerLoadingDemo} />}
+                        {ov.screen === 'notif_settings' && <NotifPreferenceScreen onBack={closeOverlay} />}
+                    </div>
+                );
+            })}
+
+            <MitraInfoModal isOpen={overlay?.screen === 'info_pencari_jasa'} onClose={closeOverlay} />
+
+            <RejectOrderSheet isOpen={!!rejectTarget} onClose={() => setRejectTarget(null)} onConfirm={confirmReject} />
+
+            <ConfirmationModal
+                isOpen={logoutConfirm}
+                icon={Icon.LogOut} iconColor="#D42F2F" iconBg="bg-[#FCE7E7]"
+                title="Keluar dari Akun?"
+                message="Kamu perlu masuk lagi dengan nomor HP dan kode OTP untuk mengakses akun mitra ini."
+                confirmLabel="Ya, Keluar" confirmVariant="destructive" cancelLabel="Batal"
+                onConfirm={() => { setLogoutConfirm(false); onLogout(); }}
+                onCancel={() => setLogoutConfirm(false)}
+            />
+
+            <ToastSnackbar message={toast} show={!!toast} />
+        </div>
+    );
+};
+
+/* ============================================================
+   ROOT APP — Splash -> Interstitial -> Auth -> Onboarding Usaha -> Shell
+   ============================================================ */
+// PERBAIKAN: mengubah data pendaftaran (kategori, wilayah, model layanan,
+// rentang harga) yang diisi mitra di wizard `OnboardingUsahaFlow` menjadi
+// override profil. Sebelumnya `onApproved={() => setPhase('main')}` MEMBUANG
+// argumen `data` sepenuhnya, sehingga apa pun yang diisi mitra saat
+// pendaftaran tidak pernah benar-benar dipakai oleh aplikasi.
+const mapRegistrationToProfile = (data) => {
+    if (!data) return {};
+    const overrides = {};
+    if (data.categories?.length) overrides.categories = data.categories;
+    if (data.dataDasar?.nama) { overrides.name = data.dataDasar.nama; overrides.greetingName = 'Pak/Bu ' + data.dataDasar.nama.split(' ')[0]; }
+    if (data.dataDasar?.wilayah) overrides.wilayah = data.dataDasar.wilayah;
+    if (data.dataDasar?.model) overrides.layananModel = data.dataDasar.model;
+    if (data.prices) {
+        const priceRanges = {};
+        Object.entries(data.prices).forEach(([cat, range]) => {
+            if (range?.min && range?.max) priceRanges[cat] = `Rp${Number(range.min).toLocaleString('id-ID')} - Rp${Number(range.max).toLocaleString('id-ID')}`;
+        });
+        if (Object.keys(priceRanges).length) overrides.priceRanges = priceRanges;
+    }
+    return overrides;
+};
+
+const App = () => {
+    const [phase, setPhase] = useState('splash');
+    const [phone, setPhone] = useState('');
+    const [shellKey, setShellKey] = useState(0);
+    const [registrationData, setRegistrationData] = useState(null);
+
+    useEffect(() => {
+        if (phase === 'splash') {
+            const t = setTimeout(() => setPhase('interstitial'), 1600);
+            return () => clearTimeout(t);
+        }
+    }, [phase]);
+
+    if (phase === 'splash') return <SplashScreen />;
+    if (phase === 'interstitial') return <RoleInterstitialScreen onContinue={() => setPhase('phone')} />;
+    if (phase === 'phone') return <PhoneEntryScreen onContinue={(p) => { setPhone(p); setPhase('otp'); }} onRecovery={() => setPhase('recovery')} />;
+    if (phase === 'otp') return <OtpEntryScreen phone={phone} onBack={() => setPhase('phone')} onVerified={() => setPhase('onboarding_usaha')} />;
+    if (phase === 'recovery') return <AccountRecoveryFlow onBack={() => setPhase('phone')} onDone={(newPhone) => { setPhone(newPhone); setPhase('onboarding_usaha'); }} />;
+    if (phase === 'onboarding_usaha') return <OnboardingUsahaFlow onApproved={(data) => { setRegistrationData(data); setPhase('main'); }} />;
+
+    return <MitraAppShell key={shellKey} registrationOverrides={mapRegistrationToProfile(registrationData)} onLogout={() => { setShellKey(k => k + 1); setPhase('phone'); }} />;
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
