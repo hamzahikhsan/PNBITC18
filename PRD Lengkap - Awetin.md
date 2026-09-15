@@ -1,11 +1,21 @@
 # Product Requirements Document (PRD) Lengkap: Awetin
 ## PNBITC#18 — Desain UI/UX — Tech for Nature by Crafting Sustainable Digital Solutions
 
-**Disusun:** 31 Agustus 2026 (Revisi 2 — pasca-audit)
+**Disusun:** 31 Agustus 2026 (Revisi 2 — pasca-audit) — **Revisi 3: 15 September 2026**
 **Status:** Blueprint final untuk tahap wireframe/hi-fi Figma
 **Konteks:** Menerjemahkan seluruh riset ("Deep Research - Ekosistem Menyeluruh Awetin.md" dan dokumen-dokumen sebelumnya) menjadi satu dokumen produk tunggal — tidak ada flow yang buntu dari awal sampai akhir
 
 ---
+
+## Catatan Revisi 3 (15 September 2026 — berdasar build nyata tim + notulensi resmi panitia)
+
+Dokumen ini direvisi lagi setelah menganalisis dua build HTML/React baru dari Saif (`Dokumen Handofff saif/Saif Baru/awetin.html` dan `awetin_mitra.html`, keduanya berbagi data lewat `AwetinDB`) dan `NOTULENSI DESAIN UIUX PNBITC#18.pdf` (notulensi resmi Technical Meeting panitia, 5 Sept 2026). Perubahan utama:
+
+1. **Arsitektur user/tukang resmi jadi "dua aplikasi terpisah total"** (Awetin + Awetin Mitra), bukan lagi asumsi "satu app dua mode" — lihat Bagian 5.3 dan Bagian 14 poin 3. Diputuskan karena build aktual tim konsisten dibangun begitu di dua kesempatan berturut-turut, diterima Hamzah sebagai revisi resmi.
+2. **Navbar Tukang resmi jadi 5 tab** (tambah "Beranda" sebagai dashboard terpisah), bukan lagi 4 tab — lihat Bagian 5.3. Alasan sama seperti poin 1.
+3. **Ditemukan Awetin Mitra ternyata SUDAH dibangun** (`awetin_mitra.html`, 2775 baris/~99 komponen) — sebelumnya (audit 6 Sept) disimpulkan 0% ada. Build ini genuinely bagus untuk Flow Onboarding Usaha (Bagian 7.9) dan sudah menerapkan pemisahan Consent Data Pribadi vs Consent Data Lokasi sesuai celah audit sebelumnya.
+4. **⚠️ Ditemukan regresi di build konsumen baru (`awetin.html`) yang TIDAK diikuti ke PRD ini** — build itu kehilangan Triase 3-arah, segmentasi Barang Besar/Kecil dari hasil Scan AI, Daur Ulang Resmi, dark mode, dan guest browsing. Semua keputusan/fitur itu **tetap final di PRD ini** (lihat Bagian 4/7/11 versi terkait) — prototype tim sendiri (`Prototype/awetin-prototype.html`) yang sudah menerapkannya dengan benar, build Saif yang perlu di-update menyusul, bukan sebaliknya.
+5. **🚩🚩 Temuan kritis dari notulensi panitia, lihat detail lengkap di Bagian 14 poin 7:** (a) larangan asset hasil AI-generated, (b) **wajib pakai data responden REAL untuk analisis pengguna di proposal, tim belum punya data ini per 15 Sept** — risiko besar, butuh tindakan segera. (c) Sub-tema turunan kemungkinan besar tidak ada (tidak disebut di notulensi).
 
 ## Catatan Revisi 2 (Pasca-Audit)
 
@@ -101,9 +111,9 @@ Struktur dasar tim sudah tepat dan dipertahankan — perubahan yang diusulkan be
 
 Jawabannya **ya, tegas berbeda** — ini bukan cuma preferensi desain, tapi kebutuhan fungsional nyata. Pengguna (pemilik barang) dan tukang (mitra) punya *job to be done* yang sepenuhnya berbeda: satu mencari & meminta jasa, satu menerima & mengerjakan jasa. Kalau dipaksa dalam satu navbar yang sama, kemungkinan besar akan membingungkan (Persona B, tukang dengan literasi digital terbatas, butuh antarmuka yang sangat sederhana dan fokus, bukan navbar multifungsi yang juga menampung fitur pencarian tukang lain).
 
-**Rekomendasi:** dua mode antarmuka terpisah, dipilih di layar Onboarding awal ("Saya ingin memperbaiki/menjual barang" vs "Saya tukang, ingin menerima pesanan") — bukan toggle di dalam satu akun yang sama (ini mempermudah proses desain di Figma dan lebih realistis, karena mayoritas orang cenderung salah satu peran, meski secara konsep tidak menutup kemungkinan satu akun punya dua peran).
+**Rekomendasi (✅ DIPUTUSKAN FINAL 15 September 2026, revisi dari draf awal):** **dua aplikasi terpisah total** — "Awetin" (sisi pengguna) dan "Awetin Mitra" (sisi tukang), bukan satu app dengan mode/toggle, dan bukan juga dual-role dalam satu akun. Ini awalnya draf dokumen ini yang mengusulkan "dua mode dalam satu konsep app", tapi build aktual dari tim (`Dokumen Handofff saif/Saif Baru/awetin.html` + `awetin_mitra.html`, dua file HTML/React independen yang saling berbagi data lewat `AwetinDB`/`localStorage` namespace `awetin_ecosystem_v1`) konsisten dibangun sebagai dua aplikasi terpisah di dua kesempatan berturut-turut (versi 9 September dan revisi 12 September) — pola ini diterima tim sebagai keputusan resmi, bukan lagi dianggap penyimpangan. Menjawab Pertanyaan Terbuka #3 (lihat Bagian 14).
 
-**Navbar Tukang (4 tab, lebih sederhana dari sisi pengguna):** **Pesanan Masuk** (utama, termasuk terima/tolak order) — **Profil Usaha** (kelola kategori, harga, foto before/after) — **Pendapatan** (riwayat transaksi, transparan, jawaban langsung untuk isu status "mitra" minim proteksi dari riset regulasi) — **Notifikasi**.
+**Navbar Tukang (✅ DIREVISI 15 September 2026: 5 tab, bukan 4):** **Beranda** (dashboard ringkasan: status buka/tutup, pesanan masuk terbaru, ringkasan performa hari ini) — **Pesanan** (daftar penuh terima/tolak order) — **Profil Usaha** (kelola kategori, harga, foto before/after, portofolio) — **Pendapatan** (riwayat transaksi, transparan, jawaban langsung untuk isu status "mitra" minim proteksi dari riset regulasi) — **Notifikasi**. Draf awal dokumen ini mengusulkan 4 tab (tanpa "Beranda" terpisah, dengan "Pesanan Masuk" sebagai tab utama/home-like) supaya navbar sesederhana mungkin untuk Persona B (literasi digital terbatas) — tapi build aktual tim (`awetin_mitra.html`) konsisten memakai struktur 5 tab dengan "Beranda" sebagai dashboard terpisah di dua build berturut-turut, dan pola ini diterima tim sebagai revisi resmi. Kalau presentasi ke juri butuh justifikasi: "Beranda" tetap menampilkan ringkasan pesanan masuk paling atas, jadi mitra dengan literasi digital terbatas tidak kehilangan akses cepat ke fungsi utama meski ada 1 tab tambahan.
 
 ---
 
@@ -385,11 +395,18 @@ Mengingat keterbatasan waktu presentasi (10 menit) dan waktu pengerjaan, tidak s
 
 1. **Konfirmasi nama produk final** — "Awetin" adalah usulan kerja hasil brainstorming cepat pasca-audit, tim perlu memutuskan sendiri (dan memverifikasi ke Google Play/App Store/PDKI) sebelum dipakai di proposal resmi.
 2. Apakah fitur "Jual" barang (bukan cuma donasi) benar-benar diprototipekan penuh atau cukup konsep ringan — mengingat kompleksitas kepercayaan peer-to-peer lebih tinggi dari reparasi.
-3. Apakah satu akun bisa berperan ganda (pengguna sekaligus tukang) atau dipisah total — dokumen ini mengasumsikan dipisah untuk kesederhanaan desain, tapi ini keputusan tim.
+3. ~~Apakah satu akun bisa berperan ganda (pengguna sekaligus tukang) atau dipisah total~~ — **✅ TERJAWAB 15 September 2026:** dipisah total, dua aplikasi independen (Awetin + Awetin Mitra). Lihat Bagian 5.3 untuk detail dan alasan.
 4. Kategori mana yang jadi fokus utama demo Figma (disarankan pilih 1–2 dari 4 kategori: elektronik/jahit/sepatu/las) supaya presentasi 10 menit tetap fokus, bukan mencoba menunjukkan semua kategori sekaligus.
 5. Nama & istilah final untuk fitur Scan AI, Skor Kelayakan, dan tab "Tukang" — dokumen ini pakai istilah kerja, tim bebas menyesuaikan dengan bahasa yang paling nyaman dipresentasikan.
 6. **Konfirmasi angka komisi platform** — Bagian 6.5 mengusulkan 5–10% sebagai asumsi kerja, tim perlu memutuskan angka final (atau memastikan tetap disebut "asumsi" saat presentasi kalau belum final) supaya siap kalau juri bertanya soal model bisnis.
-7. **Belum dikonfirmasi ke panitia:** daftar sub-tema resmi turunan dari "Tech for Nature by Crafting Sustainable Digital Solutions" (lihat Deep Research Bagian 1) — ini sebaiknya ditanyakan di Technical Meeting 5 September sebelum konsep benar-benar dikunci, karena berpotensi memengaruhi validitas seluruh kerangka Awetin kalau sub-tema resmi ternyata lebih sempit/berbeda dari yang diasumsikan.
+7. ~~Belum dikonfirmasi ke panitia: daftar sub-tema resmi turunan~~ — **✅ EFEKTIF TERJAWAB, per `NOTULENSI DESAIN UIUX PNBITC#18.pdf` (notulensi resmi Technical Meeting 5 September 2026):** dokumen notulensi lengkap (5 halaman, dibaca penuh 15 September 2026) TIDAK PERNAH menyebut adanya daftar sub-tema turunan — hanya ada satu tema besar "Tech for Nature by Crafting Sustainable Digital Solutions" yang disebut berulang tanpa breakdown lebih lanjut. Kesimpulan: kemungkinan besar tidak ada daftar turunan resmi, tim bebas menafsirkan sendiri dalam tema besar itu (seperti yang sudah dilakukan Awetin) — tapi ini kesimpulan dari KETIADAAN penyebutan di notulensi, bukan konfirmasi eksplisit "tidak ada daftar turunan" dari panitia, jadi status risikonya turun drastis tapi belum 100% nol.
+
+   **Temuan baru dari notulensi yang sama, belum pernah tercatat di dokumen manapun sebelumnya — WAJIB dibaca tim sebelum submit:**
+   - **🚩 Larangan asset hasil AI-generated** — "Peserta diharapkan tidak menggunakan assets hasil generated AI, untuk menjaga orisinalitas karya." Asset dari internet boleh asal bebas hak cipta (mis. freepik). Semua icon di file Figma submission sejauh ini adalah SVG yang ditulis manual (bukan image-generation AI) — aman — tapi ini jadi rambu keras untuk aset apapun yang ditambahkan setelah ini (foto produk, ilustrasi, dll).
+   - **🚩🚩 PALING KRITIS — wajib data responden REAL, bukan dummy, untuk analisis pengguna di proposal:** "Peserta diharapkan untuk menggunakan data dari responden real/asli, karena jika menggunakan data dummy tidak bisa mendefinisikan analisis pengguna real nya." **Per konfirmasi Hamzah (15 September 2026): tim BELUM punya data survei/wawancara responden asli** — seluruh riset yang mendasari PRD ini adalah riset sekunder/desk research (Deep Research, kompetitor, dll), bukan wawancara/survei primer. Ini risiko besar untuk penilaian bagian "analisis pengguna" proposal dan **butuh tindakan tim segera** (survei/wawancara kilat ke responden nyata) sebelum deadline pengumpulan karya 14–16 September 2026 — catatan: per 15 September ini, jendela waktu sudah sangat sempit atau mungkin sudah lewat, cek tanggal submit aktual ke tim.
+   - Maks anggota tim: **3 orang**. Pengumuman Finalis **20 September 2026**, Babak Final **2 Oktober**, Pengumuman Juara **3 Oktober**.
+   - Proses submit: proposal PDF (pakai template wajib `bit.ly/TemplateProposalPNBITC182026`) + Form Orisinalitas Karya (`bit.ly/FormOrisinalitasPNBITC18`) + link Figma **published & "Anyone with the link can view"** → email ke `pnbitcompetition@pnb.ac.id`, nama file `UIUX_PNBITC#18_[Nama Tim].pdf`, subjek `Pengumpulan Karya_UIUX_PNBITC#18_[Nama Tim]` → wajib konfirmasi screenshot via WhatsApp dalam 1×24 jam ke CP (Degus +62 819-1362-9753 / Vianne +62 838-3551-3161).
+   - Bobot nilai: Babak Penyisihan (Interface&Design 15% / Kesesuaian Tema 25% / Kreativitas&Inovasi 30% / UX&Aksesibilitas 30%) = 40% nilai akhir; Babak Final (Presentasi 40% / Tanya Jawab 60%) = 60% nilai akhir. **Implikasi prioritas: sesi tanya-jawab lebih menentukan dari presentasi itu sendiri, dan kreativitas+UX lebih berat dari sekadar kerapian visual — siapkan argumen/justifikasi desain sekuat mungkin, bukan cuma polish tampilan.**
 
 ---
 
